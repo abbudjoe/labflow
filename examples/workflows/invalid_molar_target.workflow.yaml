@@ -1,0 +1,50 @@
+workflow:
+  name: invalid_molar_target
+  version: "0.1"
+  type: dna_normalization
+
+batch:
+  batch_id: DNA_NORM_BAD_MOLAR
+  containers_per_batch: 1
+  plate_format: 96
+  samples_per_plate: 95
+  blank_well: H12
+
+standards:
+  standards_plate_id: DNA_STD_001
+  curve_model: linear
+  wells:
+    A1: STD_1
+    B1: STD_2
+    C1: STD_3
+    D1: STD_4
+    E1: STD_5
+    F1: STD_6
+    G1: STD_7
+    H1: STD_8
+
+containers:
+  source:
+    registry_container_type: matrix_96_1ml_septum
+  destination:
+    registry_container_type: matrix_96_1ml_screwtop
+
+normalization:
+  target_final_volume_ul: 50
+  nM: 2
+  minimum_transfer_volume_ul: 1
+  source_residual_dead_volume_ul: 2
+  robot_aspiration_safety_margin_ul: 1
+  max_destination_volume_ul: 999
+
+samples:
+  - sample_id: DNA_MOLAR_001
+    source_container_id: DNA_SRC_001
+    source_well: A1
+    stock_concentration_ng_per_ul: 20
+    available_volume_ul: 50
+    destination_container_id: DNA_DST_001
+    destination_well: A1
+
+outputs:
+  janus: true

@@ -1,0 +1,34 @@
+{
+  "manifest_version": "0.1.0",
+  "created_for": "Stage 18.15 STARLIMS portfolio readiness",
+  "artifacts": [
+    {
+      "id": "semantic_generalization_live",
+      "kind": "inference_eval_ladder",
+      "suite": "semantic_generalization",
+      "path": "artifacts/inference_eval_ladders/inference_eval_ladder_20260611T182645477712Z.json",
+      "why_canonical": "Latest live semantic/generalization evidence after frozen keyword baseline reporting."
+    },
+    {
+      "id": "grounded_answer_quality_live",
+      "kind": "inference_eval_ladder",
+      "suite": "grounded_answer_quality",
+      "path": "artifacts/inference_eval_ladders/inference_eval_ladder_20260611T181433514172Z.json",
+      "why_canonical": "Latest live grounded-answer evidence after Stage 18.14 claim and source-family hardening."
+    },
+    {
+      "id": "repair_planning_live",
+      "kind": "inference_eval_ladder",
+      "suite": "repair_planning",
+      "path": "artifacts/inference_eval_ladders/inference_eval_ladder_20260611T180238570518Z.json",
+      "why_canonical": "Live repair-planning evidence with dry-run patch/refusal safety checks."
+    },
+    {
+      "id": "rag_retrieval_sop_check",
+      "kind": "rag_eval",
+      "suite": "retrieval_only",
+      "path": "artifacts/eval_reports/sop_retrieval_only_check.json",
+      "why_canonical": "Retrieval-only corpus check after SOP alignment work."
+    }
+  ]
+}

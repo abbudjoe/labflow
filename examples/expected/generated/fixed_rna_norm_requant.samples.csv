@@ -1,0 +1,5 @@
+sample_id,source_container_id,source_well,stock_concentration_ng_per_ul,available_volume_ul,destination_container_id,destination_well
+RNA_DEMO_STD_001,RNA_SRC_001,A1,25.0,50.0,RNA_DST_001,A1
+RNA_DEMO_SPLIT_001,RNA_SRC_001,A2,800.0,40.0,RNA_DST_001,A2
+RNA_DEMO_INPLACE_001,RNA_SRC_001,A3,25.0,8.0,,
+RNA_DEMO_STD_002,RNA_SRC_001,A4,50.0,30.0,RNA_DST_001,A4

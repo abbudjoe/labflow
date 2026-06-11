@@ -1,0 +1,7 @@
+- id: control_parity_existing_ladder
+  suite: control_parity
+  split: regression
+  source_case_id: golden_questions.yaml
+  provenance: existing_ladder
+  created_at: "2026-06-10"
+  tuning_allowed: false

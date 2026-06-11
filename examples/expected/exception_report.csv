@@ -1,0 +1,7 @@
+code,severity,path,source,message,suggested_action
+INVALID_SAMPLE_PLATE_LAYOUT,error,batch.samples_per_plate,domain_validator,Sample plates must contain exactly 95 samples plus one blank.,Set samples_per_plate to 95 and reserve one well for the blank.
+MISSING_PLATE_BLANK,error,batch.blank_well,domain_validator,Batch RNA_BATCH_BAD_001 is missing required sample-plate blank well.,"Add blank_well, for example H12."
+INVALID_WELL,error,standards.wells.Z99,domain_validator,Standard well Z99 is not a valid A1-H12 coordinate.,Use valid 96-well coordinates A1-H12.
+MISSING_BATCH_STANDARD_CURVE,error,standards.wells,domain_validator,Missing required standard wells: H1.,Define exactly the eight standards in wells A1-H1.
+MISSING_CONCENTRATION,error,samples.0.stock_concentration_ng_per_ul,domain_validator,Sample RNA_BAD_001 is missing stock concentration.,Provide stock_concentration_ng_per_ul from deterministic quantification.
+JANUS_BLOCKED_FOR_INVALID_BATCH,error,outputs.janus,domain_validator,JANUS output is blocked because the workflow has validation errors.,Resolve blocking diagnostics before requesting JANUS generation.

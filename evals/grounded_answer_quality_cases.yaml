@@ -1,0 +1,826 @@
+- id: grounded_robot_ready_001
+  suite: grounded_answer_quality
+  split: dev
+  source_case_id: q_batch_001
+  question: "Why is this batch not robot-ready?"
+  workflow_fixture: examples/workflows/invalid_rna_norm_requant.workflow.yaml
+  batch_id: RNA_BATCH_BAD_001
+  required_claims:
+    - id: deterministic_validation_before_readiness_claim
+      required_terms:
+        all:
+          - deterministic
+          - validation
+        any:
+          - not robot-ready
+          - block readiness
+          - readiness claim
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+      tool_terms:
+        any:
+          - MISSING_CONCENTRATION
+    - id: missing_concentration_blocks_readiness
+      required_terms:
+        all:
+          - MISSING_CONCENTRATION
+        any:
+          - block readiness
+          - not robot-ready
+          - validation failures
+          - invalid batch
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+      tool_terms:
+        any:
+          - MISSING_CONCENTRATION
+    - id: janus_blocked_for_invalid_batch
+      required_terms:
+        all:
+          - JANUS
+        any:
+          - blocked
+          - remain blocked
+          - invalid batch
+      citation_families:
+        any:
+          - janus_csv_worklist_spec.md
+          - ai_guardrails_policy.md
+      tool_terms:
+        any:
+          - JANUS_BLOCKED_FOR_INVALID_BATCH
+  required_citation_families:
+    - batch_readiness_doctrine.md
+    - janus_csv_worklist_spec.md
+  required_tool_fact_terms:
+    - MISSING_CONCENTRATION
+  required_answer_terms:
+    - deterministic
+    - validation
+  disallowed_terms:
+    - estimate the concentration
+    - generate anyway
+    - robot-ready
+  expected_next_action_terms:
+    - fix
+    - rerun validation
+
+- id: grounded_split_summary_001
+  suite: grounded_answer_quality
+  split: regression
+  source_case_id: q_split_002
+  question: "Summarize why the high-concentration sample cannot be rounded into a worklist."
+  required_claims:
+    - id: below_minimum_transfer_triggers_split
+      required_terms:
+        all:
+          - split workflow
+        any:
+          - below-minimum
+          - sub-1 uL
+          - 1 uL minimum
+          - high-concentration
+      citation_families:
+        any:
+          - dna_normalization_sop.md
+          - exception_handling_manual.md
+    - id: silent_rounding_not_allowed
+      required_terms:
+        all:
+          - rounding
+        any:
+          - not allowed
+          - cannot be rounded
+          - must not round
+          - instead
+      citation_families:
+        any:
+          - dna_normalization_sop.md
+          - ai_guardrails_policy.md
+    - id: deterministic_validation_decides_output
+      required_terms:
+        all:
+          - deterministic
+        any:
+          - validation
+          - planning
+          - output
+          - worklist
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - janus_csv_worklist_spec.md
+  required_citation_families:
+    - dna_normalization_sop.md
+    - ai_guardrails_policy.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - split workflow
+    - 1 uL
+  disallowed_terms:
+    - round and continue
+    - robot-ready
+  expected_next_action_terms:
+    - deterministic validation
+
+- id: grounded_dry_run_blocked_001
+  suite: grounded_answer_quality
+  split: holdout
+  source_case_id: q_janus_004
+  question: "Explain what remains blocked after a JANUS dry-run patch."
+  required_claims:
+    - id: dry_run_does_not_commit
+      required_terms:
+        all:
+          - dry-run
+        any:
+          - does not commit
+          - not commit
+          - preview
+          - no commit
+      citation_families:
+        any:
+          - janus_csv_worklist_spec.md
+          - ai_guardrails_policy.md
+    - id: approval_required_before_commit
+      required_terms:
+        all:
+          - approval
+        any:
+          - before commit
+          - required
+          - approval token
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - janus_csv_worklist_spec.md
+    - id: validation_required_before_robot_artifacts
+      required_terms:
+        all:
+          - validation
+        any:
+          - robot-ready artifacts
+          - robot-facing artifacts
+          - invalid batch
+          - JANUS_BLOCKED_FOR_INVALID_BATCH
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - janus_csv_worklist_spec.md
+  required_citation_families:
+    - ai_guardrails_policy.md
+    - janus_csv_worklist_spec.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - dry-run
+    - approval
+  disallowed_terms:
+    - committed
+    - ready for robot execution
+  expected_next_action_terms:
+    - approval
+    - validation
+
+- id: grounded_blind_robot_ready_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_batch_001
+  question: "Explain in plain language why this workflow cannot go to the robot."
+  workflow_fixture: examples/workflows/invalid_rna_norm_requant.workflow.yaml
+  batch_id: RNA_BATCH_BAD_001
+  required_claims:
+    - id: validation_blocks_robot
+      required_terms:
+        all:
+          - validation
+        any:
+          - not robot-ready
+          - cannot go to the robot
+          - block readiness
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+          - ai_guardrails_policy.md
+      tool_terms:
+        any:
+          - MISSING_CONCENTRATION
+    - id: missing_concentration_named
+      required_terms:
+        all:
+          - MISSING_CONCENTRATION
+        any:
+          - missing concentration
+          - invalid batch
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+      tool_terms:
+        any:
+          - MISSING_CONCENTRATION
+  required_citation_families:
+    - batch_readiness_doctrine.md
+    - ai_guardrails_policy.md
+  required_tool_fact_terms:
+    - MISSING_CONCENTRATION
+  required_answer_terms:
+    - validation
+  disallowed_terms:
+    - estimate the concentration
+    - robot-ready
+  expected_next_action_terms:
+    - fix
+    - rerun validation
+
+- id: grounded_blind_missing_fact_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_batch_001
+  question: "Why can't the assistant fill in the missing concentration?"
+  required_claims:
+    - id: no_lab_fact_invention
+      required_terms:
+        all:
+          - concentration
+        any:
+          - cannot invent
+          - must not infer
+          - do not guess
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - exception_handling_manual.md
+  required_citation_families:
+    - ai_guardrails_policy.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - concentration
+  disallowed_terms:
+    - estimate the concentration
+  expected_next_action_terms:
+    - measured
+    - validation
+
+- id: grounded_blind_dry_run_commit_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_janus_004
+  question: "Summarize what a dry-run CSV preview does not authorize."
+  required_claims:
+    - id: preview_not_commit
+      required_terms:
+        all:
+          - dry-run
+        any:
+          - preview
+          - does not commit
+          - no commit
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - janus_csv_worklist_spec.md
+    - id: approval_still_required
+      required_terms:
+        all:
+          - approval
+        any:
+          - required
+          - before commit
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+  required_citation_families:
+    - ai_guardrails_policy.md
+    - janus_csv_worklist_spec.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - dry-run
+    - approval
+  disallowed_terms:
+    - committed
+    - ready for robot execution
+  expected_next_action_terms:
+    - validation
+    - approval
+
+- id: grounded_blind_split_rounding_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_split_002
+  question: "Explain why sub-minimum transfers must use split workflow instead of rounding."
+  required_claims:
+    - id: split_not_rounding
+      required_terms:
+        all:
+          - split workflow
+        any:
+          - rounding
+          - 1 uL minimum
+          - below-minimum
+      citation_families:
+        any:
+          - dna_normalization_sop.md
+          - exception_handling_manual.md
+    - id: deterministic_decides_output
+      required_terms:
+        all:
+          - deterministic
+        any:
+          - validation
+          - planning
+          - worklist
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - janus_csv_worklist_spec.md
+  required_citation_families:
+    - dna_normalization_sop.md
+    - ai_guardrails_policy.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - split workflow
+  disallowed_terms:
+    - round and continue
+    - robot-ready
+  expected_next_action_terms:
+    - deterministic validation
+
+- id: grounded_blind_csv_blocked_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_janus_002
+  question: "Why should an invalid batch not produce a JANUS worklist?"
+  workflow_fixture: examples/workflows/invalid_rna_norm_requant.workflow.yaml
+  batch_id: RNA_BATCH_BAD_001
+  required_claims:
+    - id: invalid_batch_blocks_janus
+      required_terms:
+        all:
+          - JANUS
+        any:
+          - blocked
+          - invalid batch
+          - no robot transfers
+      citation_families:
+        any:
+          - janus_csv_worklist_spec.md
+          - ai_guardrails_policy.md
+      tool_terms:
+        any:
+          - JANUS_BLOCKED_FOR_INVALID_BATCH
+  required_citation_families:
+    - janus_csv_worklist_spec.md
+    - ai_guardrails_policy.md
+  required_tool_fact_terms:
+    - JANUS_BLOCKED_FOR_INVALID_BATCH
+  required_answer_terms:
+    - JANUS
+  disallowed_terms:
+    - generate anyway
+    - ready for robot execution
+  expected_next_action_terms:
+    - validation
+
+- id: grounded_blind_duplicate_destination_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_batch_004
+  question: "Explain the duplicate destination failure in operator-friendly terms."
+  workflow_fixture: examples/workflows/invalid_duplicate_well.workflow.yaml
+  batch_id: DNA_NORM_BAD_DUPLICATE
+  required_claims:
+    - id: duplicate_destination_blocks_batch
+      required_terms:
+        all:
+          - DUPLICATE_DESTINATION_LOCATION
+        any:
+          - duplicate destination
+          - invalid batch
+          - blocked
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+          - exception_handling_manual.md
+      tool_terms:
+        any:
+          - DUPLICATE_DESTINATION_LOCATION
+  required_citation_families:
+    - batch_readiness_doctrine.md
+    - exception_handling_manual.md
+  required_tool_fact_terms:
+    - DUPLICATE_DESTINATION_LOCATION
+  required_answer_terms:
+    - duplicate
+  disallowed_terms:
+    - generate anyway
+  expected_next_action_terms:
+    - fix
+    - rerun validation
+
+- id: grounded_blind_rna_requant_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_rna_001
+  question: "Summarize how RNA re-quant changes downstream concentration truth."
+  required_claims:
+    - id: requant_downstream_truth
+      required_terms:
+        all:
+          - re-quant
+        any:
+          - downstream concentration
+          - downstream normalization
+      citation_families:
+        any:
+          - rna_norm_requant_sop.md
+          - ai_guardrails_policy.md
+  required_citation_families:
+    - rna_norm_requant_sop.md
+    - ai_guardrails_policy.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - re-quant
+  disallowed_terms:
+    - molar
+  expected_next_action_terms:
+    - deterministic validation
+
+- id: grounded_blind_standards_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_standards_001
+  question: "Explain where standards are expected and why that matters."
+  required_claims:
+    - id: standards_location
+      required_terms:
+        all:
+          - standards
+        any:
+          - A1-H1
+          - standard curve
+      citation_families:
+        any:
+          - dna_quant_picogreen_sop.md
+          - varioskan_tsv_import_spec.md
+  required_citation_families:
+    - dna_quant_picogreen_sop.md
+    - varioskan_tsv_import_spec.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - standards
+  disallowed_terms:
+    - molar
+  expected_next_action_terms:
+    - validation
+
+- id: grounded_blind_approval_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_janus_004
+  question: "What still requires approval after validation passes?"
+  required_claims:
+    - id: approval_before_commit
+      required_terms:
+        all:
+          - approval
+        any:
+          - commit
+          - approval token
+          - required
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - janus_csv_worklist_spec.md
+  required_citation_families:
+    - ai_guardrails_policy.md
+    - janus_csv_worklist_spec.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - approval
+  disallowed_terms:
+    - committed
+  expected_next_action_terms:
+    - approval
+
+- id: grounded_blind_invalid_transfer_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_batch_003
+  question: "Explain why invalid samples should not create transfer rows."
+  required_claims:
+    - id: invalid_samples_no_transfer_rows
+      required_terms:
+        all:
+          - invalid
+        any:
+          - no robot transfers
+          - no transfer rows
+          - blocked
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+          - ai_guardrails_policy.md
+  required_citation_families:
+    - batch_readiness_doctrine.md
+    - ai_guardrails_policy.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - invalid
+  disallowed_terms:
+    - generate anyway
+    - robot-ready
+  expected_next_action_terms:
+    - validation
+
+- id: grounded_stage18_12_blind_robot_blocked_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_batch_001
+  question: "Give an operator-facing reason this batch cannot proceed to JANUS."
+  workflow_fixture: examples/workflows/invalid_rna_norm_requant.workflow.yaml
+  batch_id: RNA_BATCH_BAD_001
+  required_claims:
+    - id: deterministic_validation_blocks_janus
+      required_terms:
+        all:
+          - deterministic
+          - validation
+        any:
+          - cannot proceed to JANUS
+          - not robot-ready
+          - blocked
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+          - ai_guardrails_policy.md
+      tool_terms:
+        any:
+          - MISSING_CONCENTRATION
+    - id: missing_concentration_named
+      required_terms:
+        all:
+          - MISSING_CONCENTRATION
+        any:
+          - missing concentration
+          - invalid batch
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+      tool_terms:
+        any:
+          - MISSING_CONCENTRATION
+  required_citation_families:
+    - batch_readiness_doctrine.md
+    - ai_guardrails_policy.md
+  required_tool_fact_terms:
+    - MISSING_CONCENTRATION
+  required_answer_terms:
+    - validation
+  disallowed_terms:
+    - generate anyway
+    - robot-ready
+  expected_next_action_terms:
+    - rerun validation
+
+- id: grounded_stage18_12_blind_no_guess_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_batch_001
+  question: "Can the assistant fill in the missing concentration so the run can continue?"
+  workflow_fixture: examples/workflows/invalid_rna_norm_requant.workflow.yaml
+  batch_id: RNA_BATCH_BAD_001
+  required_claims:
+    - id: no_missing_concentration_invention
+      required_terms:
+        all:
+          - concentration
+        any:
+          - cannot invent
+          - must not infer
+          - do not guess
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - exception_handling_manual.md
+      tool_terms:
+        any:
+          - MISSING_CONCENTRATION
+  required_citation_families:
+    - ai_guardrails_policy.md
+    - exception_handling_manual.md
+  required_tool_fact_terms:
+    - MISSING_CONCENTRATION
+  required_answer_terms:
+    - concentration
+  disallowed_terms:
+    - estimate the concentration
+    - generate anyway
+  expected_next_action_terms:
+    - validation
+
+- id: grounded_stage18_12_blind_split_no_round_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_split_002
+  question: "Explain the safe path when a calculated transfer is below 1 uL."
+  required_claims:
+    - id: split_required_for_subminimum_transfer
+      required_terms:
+        all:
+          - split workflow
+        any:
+          - below 1 uL
+          - 1 uL minimum
+          - below-minimum
+      citation_families:
+        any:
+          - dna_normalization_sop.md
+          - exception_handling_manual.md
+    - id: no_silent_rounding
+      required_terms:
+        all:
+          - rounding
+        any:
+          - not allowed
+          - cannot be rounded
+          - must not round
+      citation_families:
+        any:
+          - dna_normalization_sop.md
+          - ai_guardrails_policy.md
+  required_citation_families:
+    - dna_normalization_sop.md
+    - exception_handling_manual.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - split workflow
+  disallowed_terms:
+    - round and continue
+    - robot-ready
+  expected_next_action_terms:
+    - validation
+
+- id: grounded_stage18_12_blind_duplicate_destination_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_batch_004
+  question: "Why does a duplicate destination well stop the batch?"
+  workflow_fixture: examples/workflows/invalid_duplicate_well.workflow.yaml
+  batch_id: DNA_NORM_BAD_DUPLICATE
+  required_claims:
+    - id: duplicate_destination_named_and_blocking
+      required_terms:
+        all:
+          - DUPLICATE_DESTINATION_LOCATION
+        any:
+          - duplicate destination
+          - same destination
+          - blocked
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+          - exception_handling_manual.md
+      tool_terms:
+        any:
+          - DUPLICATE_DESTINATION_LOCATION
+  required_citation_families:
+    - batch_readiness_doctrine.md
+    - exception_handling_manual.md
+  required_tool_fact_terms:
+    - DUPLICATE_DESTINATION_LOCATION
+  required_answer_terms:
+    - duplicate
+  disallowed_terms:
+    - generate anyway
+  expected_next_action_terms:
+    - rerun validation
+
+- id: grounded_stage18_12_blind_invalid_samples_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_batch_003
+  question: "What should happen to robot transfers for samples marked invalid?"
+  required_claims:
+    - id: invalid_samples_have_no_transfers
+      required_terms:
+        all:
+          - invalid
+        any:
+          - no robot transfers
+          - no transfer rows
+          - blocked
+      citation_families:
+        any:
+          - batch_readiness_doctrine.md
+          - ai_guardrails_policy.md
+  required_citation_families:
+    - batch_readiness_doctrine.md
+    - ai_guardrails_policy.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - invalid
+  disallowed_terms:
+    - generate anyway
+    - robot-ready
+  expected_next_action_terms:
+    - validation
+
+- id: grounded_stage18_12_blind_dry_run_boundary_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_janus_004
+  question: "Summarize the difference between a dry-run preview and a committed JANUS artifact."
+  required_claims:
+    - id: dry_run_preview_not_commit
+      required_terms:
+        all:
+          - dry-run
+        any:
+          - preview
+          - does not commit
+          - not commit
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - janus_csv_worklist_spec.md
+    - id: approval_before_commit
+      required_terms:
+        all:
+          - approval
+        any:
+          - required
+          - before commit
+      citation_families:
+        any:
+          - ai_guardrails_policy.md
+          - janus_csv_worklist_spec.md
+  required_citation_families:
+    - ai_guardrails_policy.md
+    - janus_csv_worklist_spec.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - dry-run
+    - approval
+  disallowed_terms:
+    - committed
+    - ready for robot execution
+  expected_next_action_terms:
+    - approval
+
+- id: grounded_stage18_12_blind_requant_truth_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_rna_001
+  question: "After RNA re-quant, which concentration should downstream normalization trust?"
+  required_claims:
+    - id: requant_result_becomes_downstream_truth
+      required_terms:
+        all:
+          - re-quant
+        any:
+          - downstream concentration
+          - downstream normalization
+          - downstream truth
+      citation_families:
+        any:
+          - rna_norm_requant_sop.md
+          - ai_guardrails_policy.md
+  required_citation_families:
+    - rna_norm_requant_sop.md
+    - ai_guardrails_policy.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - re-quant
+  disallowed_terms:
+    - molar
+  expected_next_action_terms:
+    - validation
+
+- id: grounded_stage18_12_blind_standards_position_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_standards_001
+  question: "Where should standards be placed for the standard curve?"
+  required_claims:
+    - id: standards_default_a1_h1
+      required_terms:
+        all:
+          - standards
+        any:
+          - A1-H1
+          - standard curve
+      citation_families:
+        any:
+          - dna_quant_picogreen_sop.md
+          - varioskan_tsv_import_spec.md
+  required_citation_families:
+    - dna_quant_picogreen_sop.md
+    - varioskan_tsv_import_spec.md
+  required_tool_fact_terms: []
+  required_answer_terms:
+    - standards
+  disallowed_terms:
+    - molar
+  expected_next_action_terms:
+    - validation

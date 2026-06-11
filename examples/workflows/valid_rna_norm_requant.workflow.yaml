@@ -1,0 +1,54 @@
+workflow:
+  name: valid_rna_norm_requant
+  version: "0.1"
+  type: rna_norm_requant
+
+batch:
+  batch_id: RNA_BATCH_001
+  containers_per_batch: 3
+  plate_format: 96
+  samples_per_plate: 95
+  blank_well: H12
+
+standards:
+  standards_plate_id: RNA_STD_001
+  curve_model: linear
+  wells:
+    A1: STD_1
+    B1: STD_2
+    C1: STD_3
+    D1: STD_4
+    E1: STD_5
+    F1: STD_6
+    G1: STD_7
+    H1: STD_8
+
+containers:
+  source:
+    registry_container_type: matrix_96_1ml_screwtop
+  destination:
+    registry_container_type: matrix_96_1ml_screwtop
+
+normalization:
+  target_concentration_ng_per_ul: 5
+  target_final_volume_ul: 100
+  minimum_transfer_volume_ul: 1
+  source_residual_dead_volume_ul: 2
+  robot_aspiration_safety_margin_ul: 1
+  max_destination_volume_ul: 999
+
+requant:
+  assay: RiboGreen
+  result_handling: use_as_downstream_concentration
+
+samples:
+  - sample_id: RNA_N_001
+    source_container_id: RNA_SRC_001
+    source_well: A1
+    stock_concentration_ng_per_ul: 25
+    available_volume_ul: 50
+    destination_container_id: RNA_DST_001
+    destination_well: A1
+
+outputs:
+  janus: true

@@ -1,0 +1,12 @@
+analyte_type: total_RNA
+batch_id: RNA_BATCH_BAD_001
+containers:
+- container_id: RNA_DST_001
+  container_type_id: matrix_96_1ml_screwtop
+- container_id: RNA_SRC_001
+  container_type_id: matrix_96_1ml_screwtop
+input_csv: invalid_rna_norm_requant.samples.csv
+target:
+  target_concentration_ng_per_ul: 5.0
+  target_final_volume_ul: 100.0
+workflow_type: RNA_NORMALIZATION_REQUANT

@@ -1,0 +1,28 @@
+{
+  "baseline_id": "stage18_2_initial_baseline",
+  "created_at": "2026-06-10",
+  "runner_version": "0.1.0",
+  "control_parity_evidence": {
+    "artifact": "artifacts/model_eval_ladders/model_eval_ladder_20260610T185121008242Z.json",
+    "deterministic": "59/59 overlapping tier executions",
+    "openrouter_nano": "59/59 overlapping tier executions"
+  },
+  "baseline_rotation": [],
+  "case_file_sha256": {
+    "semantic_generalization": "sha256:b316f8d7af20af1dd84c767fb3112829fed77b98a2f5bdd05e22be48b7f1e5c4",
+    "grounded_answer_quality": "sha256:3808993b741067ea09957bb76150511d5476dcf5d66b108ce576e589e36ea606",
+    "repair_planning": "sha256:753d8d38642262768a84f3c138bd50f3476b4c935e916557eb9b04a8fd7ce502"
+  },
+  "prompt_sha256": {
+    "agent_planner": "sha256:b814ea1f789ad9c97e34a9bbc5820bc1f02ce5ef55d34835ba65b1d84ae08a87"
+  },
+  "model_adapter": {
+    "provider": "labflow-local",
+    "model_id": "deterministic_fake_planner",
+    "version": "0.1.0"
+  },
+  "notes": [
+    "Hashes are recomputed into run reports by scripts/run_inference_eval_ladder.py.",
+    "Holdout cases are not tuning targets."
+  ]
+}

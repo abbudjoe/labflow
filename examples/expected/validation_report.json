@@ -1,0 +1,118 @@
+{
+  "demo_cases": {
+    "fixed_workflow_generates_janus_preview": true,
+    "high_concentration_split_required": true,
+    "in_place_normalization_selected": true,
+    "janus_generation_blocked_until_errors_resolved": true,
+    "missing_blank": true,
+    "missing_concentration": true
+  },
+  "demo_id": "stage16_rna_norm_requant",
+  "eval": {
+    "eval_run_id": "demo_eval_stage16",
+    "metrics": {
+      "case_count": 37,
+      "citation_precision_proxy": 0.3198198198198198,
+      "disallowed_answer_violations": 0,
+      "failed_count": 0,
+      "latency_ms_avg": 0.42471955089855035,
+      "latency_ms_p50": 0.4211660707369447,
+      "latency_ms_p95": 0.5153329111635685,
+      "passed_count": 37,
+      "required_answer_contains_match": 0.09999999999999999,
+      "retrieval_recall_at_k": 1.0,
+      "tool_call_expectation_match": 0.5675675675675675,
+      "unsupported_claim_count": 0
+    },
+    "report_path": "/Users/joseph/labflow/examples/expected/eval_report.json"
+  },
+  "janus": {
+    "fixed_status": "ok",
+    "invalid_error_codes": [
+      "MISSING_CONCENTRATION",
+      "JANUS_BLOCKED_FOR_INVALID_BATCH"
+    ],
+    "invalid_status": "blocked",
+    "preview_path": "/Users/joseph/labflow/examples/expected/janus_rna_preview.csv"
+  },
+  "synthetic": true,
+  "varioskan": {
+    "dna_plate_001": {
+      "reading_count": 5,
+      "status": "ok"
+    },
+    "dna_standards": {
+      "reading_count": 8,
+      "status": "ok"
+    },
+    "rna_plate_001": {
+      "reading_count": 5,
+      "status": "ok"
+    },
+    "rna_standards": {
+      "reading_count": 8,
+      "status": "ok"
+    }
+  },
+  "workflows": {
+    "fixed": {
+      "diagnostics": [],
+      "path": "examples/workflows/fixed_rna_norm_requant.workflow.yaml",
+      "valid": true
+    },
+    "invalid": {
+      "diagnostics": [
+        {
+          "code": "INVALID_SAMPLE_PLATE_LAYOUT",
+          "message": "Sample plates must contain exactly 95 samples plus one blank.",
+          "path": "batch.samples_per_plate",
+          "severity": "error",
+          "source": "domain_validator",
+          "suggested_action": "Set samples_per_plate to 95 and reserve one well for the blank."
+        },
+        {
+          "code": "MISSING_PLATE_BLANK",
+          "message": "Batch RNA_BATCH_BAD_001 is missing required sample-plate blank well.",
+          "path": "batch.blank_well",
+          "severity": "error",
+          "source": "domain_validator",
+          "suggested_action": "Add blank_well, for example H12."
+        },
+        {
+          "code": "INVALID_WELL",
+          "message": "Standard well Z99 is not a valid A1-H12 coordinate.",
+          "path": "standards.wells.Z99",
+          "severity": "error",
+          "source": "domain_validator",
+          "suggested_action": "Use valid 96-well coordinates A1-H12."
+        },
+        {
+          "code": "MISSING_BATCH_STANDARD_CURVE",
+          "message": "Missing required standard wells: H1.",
+          "path": "standards.wells",
+          "severity": "error",
+          "source": "domain_validator",
+          "suggested_action": "Define exactly the eight standards in wells A1-H1."
+        },
+        {
+          "code": "MISSING_CONCENTRATION",
+          "message": "Sample RNA_BAD_001 is missing stock concentration.",
+          "path": "samples.0.stock_concentration_ng_per_ul",
+          "severity": "error",
+          "source": "domain_validator",
+          "suggested_action": "Provide stock_concentration_ng_per_ul from deterministic quantification."
+        },
+        {
+          "code": "JANUS_BLOCKED_FOR_INVALID_BATCH",
+          "message": "JANUS output is blocked because the workflow has validation errors.",
+          "path": "outputs.janus",
+          "severity": "error",
+          "source": "domain_validator",
+          "suggested_action": "Resolve blocking diagnostics before requesting JANUS generation."
+        }
+      ],
+      "path": "examples/workflows/invalid_rna_norm_requant.workflow.yaml",
+      "valid": false
+    }
+  }
+}

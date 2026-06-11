@@ -1,0 +1,571 @@
+{
+  "baseline_set_id": "stage18_15_portfolio_frozen_baselines",
+  "baselines": {
+    "grounded_answer_quality": {
+      "case_count": 21,
+      "cases": [
+        {
+          "acceptance_slice": "diagnostic_dev",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": false,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_robot_ready_001",
+          "passed": false,
+          "score": 0.65,
+          "split": "dev"
+        },
+        {
+          "acceptance_slice": "regression_context_diagnostic",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": false,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_split_summary_001",
+          "passed": true,
+          "score": 0.825,
+          "split": "regression"
+        },
+        {
+          "acceptance_slice": "inspected_holdout_regression",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": false,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_dry_run_blocked_001",
+          "passed": false,
+          "score": 0.75,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_blind_robot_ready_001",
+          "passed": false,
+          "score": 0.45,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_blind_missing_fact_001",
+          "passed": true,
+          "score": 0.95,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_blind_dry_run_commit_001",
+          "passed": false,
+          "score": 0.675,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_blind_split_rounding_001",
+          "passed": false,
+          "score": 0.7,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_blind_csv_blocked_001",
+          "passed": false,
+          "score": 0.75,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_blind_duplicate_destination_001",
+          "passed": false,
+          "score": 0.75,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_blind_rna_requant_001",
+          "passed": true,
+          "score": 1.0,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_blind_standards_001",
+          "passed": false,
+          "score": 0.7,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_blind_approval_001",
+          "passed": true,
+          "score": 0.9,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_blind_invalid_transfer_001",
+          "passed": false,
+          "score": 0.85,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality_stage18_12",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_stage18_12_blind_robot_blocked_001",
+          "passed": false,
+          "score": 0.6,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality_stage18_12",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_stage18_12_blind_no_guess_001",
+          "passed": false,
+          "score": 0.45,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality_stage18_12",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_stage18_12_blind_split_no_round_001",
+          "passed": true,
+          "score": 1.0,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality_stage18_12",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_stage18_12_blind_duplicate_destination_001",
+          "passed": false,
+          "score": 0.75,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality_stage18_12",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 1,
+          "id": "grounded_stage18_12_blind_invalid_samples_001",
+          "passed": false,
+          "score": 0.85,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality_stage18_12",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_stage18_12_blind_dry_run_boundary_001",
+          "passed": false,
+          "score": 0.75,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality_stage18_12",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_stage18_12_blind_requant_truth_001",
+          "passed": true,
+          "score": 1.0,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_grounded_answer_quality_stage18_12",
+          "answer_quality_evaluable": true,
+          "blind_acceptance_allowed": true,
+          "fixed_context_unwinnable": false,
+          "groundedness_violation_count": 0,
+          "id": "grounded_stage18_12_blind_standards_position_001",
+          "passed": false,
+          "score": 0.7,
+          "split": "blind_acceptance"
+        }
+      ],
+      "fail_count": 15,
+      "mean_score": 0.7642857142857143,
+      "model": {
+        "model_id": "deterministic_answer_composer",
+        "provider": "labflow-local",
+        "version": "0.1.0"
+      },
+      "pass_count": 6,
+      "provider": "frozen_grounded_deterministic_baseline"
+    },
+    "semantic_generalization": {
+      "case_count": 26,
+      "cases": [
+        {
+          "acceptance_slice": "diagnostic_dev",
+          "blind_acceptance_allowed": false,
+          "id": "sem_robot_ready_001",
+          "passed": false,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 0.0,
+          "score": 0.55,
+          "split": "dev"
+        },
+        {
+          "acceptance_slice": "semantic_expansion_required",
+          "blind_acceptance_allowed": false,
+          "id": "sem_missing_value_001",
+          "passed": false,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 0.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.7,
+          "split": "regression"
+        },
+        {
+          "acceptance_slice": "diagnostic_dev",
+          "blind_acceptance_allowed": false,
+          "id": "sem_standards_location_001",
+          "passed": true,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 1.0,
+          "split": "dev"
+        },
+        {
+          "acceptance_slice": "regression",
+          "blind_acceptance_allowed": false,
+          "id": "sem_csv_export_001",
+          "passed": false,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 0.0,
+          "score": 0.45,
+          "split": "regression"
+        },
+        {
+          "acceptance_slice": "inspected_holdout_regression",
+          "blind_acceptance_allowed": false,
+          "id": "sem_dry_run_prereq_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "inspected_holdout_regression",
+          "blind_acceptance_allowed": false,
+          "id": "sem_yaml_blocked_001",
+          "passed": false,
+          "required_source_family_recall": 0.0,
+          "retrieval_intent_match": 0.0,
+          "safe_tool_decision_match": 0.0,
+          "score": 0.15,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "blind_control_parity",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_robot_not_ready_001",
+          "passed": false,
+          "required_source_family_recall": 0.0,
+          "retrieval_intent_match": 0.0,
+          "safe_tool_decision_match": 0.0,
+          "score": 0.15,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_semantic_generalization",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_missing_value_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_semantic_generalization",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_csv_no_workflow_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_policy_explanation",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_dry_run_policy_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_semantic_generalization",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_split_rounding_001",
+          "passed": true,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 1.0,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_semantic_generalization",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_standards_plate_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_control_parity",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_duplicate_yaml_001",
+          "passed": false,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 0.0,
+          "safe_tool_decision_match": 0.0,
+          "score": 0.25,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_semantic_generalization",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_rna_requant_truth_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_policy_explanation",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_approval_token_001",
+          "passed": true,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 1.0,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "blind_semantic_generalization",
+          "blind_acceptance_allowed": true,
+          "id": "sem_blind_invalid_samples_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "blind_acceptance"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_missing_fact_001",
+          "passed": false,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 0.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.7,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_janus_block_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_dry_run_commit_001",
+          "passed": true,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 1.0,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_rna_requant_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_invalid_transfer_001",
+          "passed": false,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 0.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.8,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_duplicate_destination_001",
+          "passed": false,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 0.0,
+          "score": 0.55,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_standards_001",
+          "passed": true,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 1.0,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_molarity_001",
+          "passed": true,
+          "required_source_family_recall": 0.5,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 0.9,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_split_rounding_001",
+          "passed": true,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 1.0,
+          "split": "holdout"
+        },
+        {
+          "acceptance_slice": "stage18_14_source_blind_holdout",
+          "blind_acceptance_allowed": false,
+          "id": "sem_stage18_14_holdout_robot_artifact_001",
+          "passed": true,
+          "required_source_family_recall": 1.0,
+          "retrieval_intent_match": 1.0,
+          "safe_tool_decision_match": 1.0,
+          "score": 1.0,
+          "split": "holdout"
+        }
+      ],
+      "fail_count": 9,
+      "mean_score": 0.7807692307692308,
+      "model": {
+        "model_id": "frozen_keyword_rag_baseline",
+        "provider": "labflow-eval",
+        "version": "0.1.0"
+      },
+      "pass_count": 17,
+      "provider": "frozen_keyword_baseline"
+    }
+  },
+  "case_file_sha256": {
+    "grounded_answer_quality": "sha256:83e9467e175b201a54dcc95c585c5b6c7b3b9198eafa342d9dec23eaf5791b80",
+    "semantic_generalization": "sha256:f602ee79722700564038f39edd7594e32975c7e97472b4a0a7affc8681e0fa65"
+  },
+  "corpus_sha256": "sha256:d83079f7e42f8f7bf4e7417a6e355b4423a4cc061a6babd1aac6cc4b62733cd5",
+  "created_at": "2026-06-11T18:30:00Z",
+  "prompt_hashes": {
+    "openrouter_answer_composer": "sha256:bd958311401ee3be1d875c8ef7e129d3a48938f22eb30d641dd1d292ee7d5b38",
+    "openrouter_planner": "sha256:581945652277eb1450a162f645ac36d6904b820d8d879b75549d5f31297488bc"
+  },
+  "purpose": "Stable portfolio acceptance baselines for semantic generalization and grounded answer quality.",
+  "acceptance_rationale": "Freeze conservative deterministic/keyword baselines so live inference must show semantic or grounded-answer lift without moving the comparison target during implementation.",
+  "retriever_version": {
+    "implementation": "labflow_rag.retrieval.HybridRetriever",
+    "sha256": "sha256:3e574845a0b271d02fb8b2c78b0affbb0bc7459c6a9335ea3445dabe3fa16e61"
+  },
+  "rotation_policy": "Rotate only with documented human approval, case/corpus hash deltas, and old-vs-new comparison evidence.",
+  "source_artifacts": {
+    "grounded_answer_quality": "artifacts/inference_eval_ladders/inference_eval_ladder_20260611T181433514172Z.json",
+    "semantic_generalization": "artifacts/inference_eval_ladders/inference_eval_ladder_20260611T182645477712Z.json"
+  }
+}

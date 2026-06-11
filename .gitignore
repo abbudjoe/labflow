@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Node
+node_modules/
+out/
+.vscode-test/
+
+# Env/secrets
+.env
+.env.*
+!.env.example
+
+# Artifacts
+artifacts/
+.codex_build/
+coverage/
+htmlcov/
+.coverage
+*.log
+logs/
+.DS_Store
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Codex/session logs
+.codex-log/
+*.jsonl

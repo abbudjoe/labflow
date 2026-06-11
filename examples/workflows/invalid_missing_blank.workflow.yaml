@@ -1,0 +1,30 @@
+workflow:
+  name: invalid_missing_blank
+  version: "0.1"
+  type: dna_quant
+
+batch:
+  batch_id: DNA_QUANT_BAD_BLANK
+  containers_per_batch: 1
+  plate_format: 96
+  samples_per_plate: 95
+
+standards:
+  standards_plate_id: DNA_STD_001
+  curve_model: linear
+  wells:
+    A1: STD_1
+    B1: STD_2
+    C1: STD_3
+    D1: STD_4
+    E1: STD_5
+    F1: STD_6
+    G1: STD_7
+    H1: STD_8
+
+containers:
+  source:
+    registry_container_type: matrix_96_1ml_septum
+
+outputs:
+  janus: true

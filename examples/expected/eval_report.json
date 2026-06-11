@@ -1,0 +1,2056 @@
+{
+  "baseline_comparison": {
+    "baseline_metrics": null,
+    "baseline_report_path": null,
+    "metric_deltas": {}
+  },
+  "cases": [
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.25,
+      "case_id": "q_batch_001",
+      "category": "batch_readiness",
+      "citation_precision_proxy": 0.5,
+      "cited_sources": [
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "dna_quant_picogreen_sop.md",
+        "janus_csv_worklist_spec.md",
+        "throughput_optimization_case.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.5502919666469097,
+      "missing_answer_terms": [
+        "MISSING_CONCENTRATION",
+        "not robot-ready",
+        "deterministic validation"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "validate_batch"
+      ],
+      "passed": true,
+      "question": "Can a JANUS CSV be generated if a sample is missing concentration?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "required_tool_calls": [
+        "validate_batch"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "batch_readiness_doctrine.md#chunk-006",
+        "exception_handling_manual.md#chunk-010",
+        "dna_quant_picogreen_sop.md#chunk-006",
+        "janus_csv_worklist_spec.md#chunk-010",
+        "throughput_optimization_case.md#chunk-007",
+        "rna_norm_requant_sop.md#chunk-005"
+      ],
+      "retrieved_sources": [
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "dna_quant_picogreen_sop.md",
+        "janus_csv_worklist_spec.md",
+        "throughput_optimization_case.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_batch_002",
+      "category": "batch_readiness",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "batch_readiness_doctrine.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md",
+        "throughput_optimization_case.md",
+        "janus_csv_worklist_spec.md",
+        "exception_handling_manual.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.3774580545723438,
+      "missing_answer_terms": [
+        "sample IDs",
+        "source locations",
+        "concentrations",
+        "exceptions",
+        "deterministic"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What gates must pass before a batch is robot-ready?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "batch_readiness_doctrine.md",
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "batch_readiness_doctrine.md#chunk-004",
+        "ai_guardrails_policy.md#chunk-006",
+        "sample_ancestry_policy.md#chunk-004",
+        "throughput_optimization_case.md#chunk-005",
+        "janus_csv_worklist_spec.md#chunk-007",
+        "exception_handling_manual.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "batch_readiness_doctrine.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md",
+        "throughput_optimization_case.md",
+        "janus_csv_worklist_spec.md",
+        "exception_handling_manual.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.3333333333333333,
+      "case_id": "q_batch_003",
+      "category": "batch_readiness",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "rna_norm_requant_sop.md",
+        "throughput_optimization_case.md",
+        "exception_handling_manual.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.4432499408721924,
+      "missing_answer_terms": [
+        "validate_batch",
+        "deterministic validation"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "validate_batch"
+      ],
+      "passed": true,
+      "question": "Can the assistant say a concrete workflow is valid from docs alone?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "batch_readiness_doctrine.md",
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [
+        "validate_batch"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "ai_guardrails_policy.md#chunk-004",
+        "batch_readiness_doctrine.md#chunk-004",
+        "labflow_dsl_reference.md#chunk-012",
+        "rna_norm_requant_sop.md#chunk-004",
+        "throughput_optimization_case.md#chunk-007",
+        "exception_handling_manual.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "rna_norm_requant_sop.md",
+        "throughput_optimization_case.md",
+        "exception_handling_manual.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_batch_004",
+      "category": "batch_readiness",
+      "citation_precision_proxy": 0.5,
+      "cited_sources": [
+        "sample_ancestry_policy.md",
+        "exception_handling_manual.md",
+        "batch_readiness_doctrine.md",
+        "varioskan_tsv_import_spec.md",
+        "janus_csv_worklist_spec.md",
+        "throughput_optimization_case.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.40187500417232513,
+      "missing_answer_terms": [
+        "DUPLICATE_DESTINATION_LOCATION",
+        "destination",
+        "blocks",
+        "robot transfer"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "validate_batch"
+      ],
+      "passed": true,
+      "question": "Why does a duplicate destination well block robot readiness?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md"
+      ],
+      "required_tool_calls": [
+        "validate_batch"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "sample_ancestry_policy.md#chunk-006",
+        "exception_handling_manual.md#chunk-005",
+        "batch_readiness_doctrine.md#chunk-004",
+        "varioskan_tsv_import_spec.md#chunk-006",
+        "janus_csv_worklist_spec.md#chunk-004",
+        "throughput_optimization_case.md#chunk-007"
+      ],
+      "retrieved_sources": [
+        "sample_ancestry_policy.md",
+        "exception_handling_manual.md",
+        "batch_readiness_doctrine.md",
+        "varioskan_tsv_import_spec.md",
+        "janus_csv_worklist_spec.md",
+        "throughput_optimization_case.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_standards_001",
+      "category": "standards_blank_rules",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "exception_handling_manual.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.4177499795332551,
+      "missing_answer_terms": [
+        "A1-H1",
+        "eight standards",
+        "separate standards plate"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Where are the default standards for the DNA quantification batch?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "dna_quant_picogreen_sop.md#chunk-004",
+        "varioskan_tsv_import_spec.md#chunk-007",
+        "batch_readiness_doctrine.md#chunk-005",
+        "labflow_dsl_reference.md#chunk-006",
+        "exception_handling_manual.md#chunk-007",
+        "rna_norm_requant_sop.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "exception_handling_manual.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_standards_002",
+      "category": "standards_blank_rules",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "dna_quant_picogreen_sop.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "varioskan_tsv_import_spec.md",
+        "ai_guardrails_policy.md",
+        "throughput_optimization_case.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.4037079634144902,
+      "missing_answer_terms": [
+        "one blank",
+        "95 samples",
+        "sample plate"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "How many blanks does each sample plate need?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "dna_quant_picogreen_sop.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "dna_quant_picogreen_sop.md#chunk-004",
+        "batch_readiness_doctrine.md#chunk-005",
+        "labflow_dsl_reference.md#chunk-006",
+        "varioskan_tsv_import_spec.md#chunk-005",
+        "ai_guardrails_policy.md#chunk-004",
+        "throughput_optimization_case.md#chunk-007"
+      ],
+      "retrieved_sources": [
+        "dna_quant_picogreen_sop.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "varioskan_tsv_import_spec.md",
+        "ai_guardrails_policy.md",
+        "throughput_optimization_case.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_standards_003",
+      "category": "standards_blank_rules",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "dna_quant_picogreen_sop.md",
+        "exception_handling_manual.md",
+        "varioskan_tsv_import_spec.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "sample_ancestry_policy.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.4290409851819277,
+      "missing_answer_terms": [
+        "MISSING_PLATE_BLANK",
+        "blank",
+        "sample plate"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "process_quantification"
+      ],
+      "passed": true,
+      "question": "What exception should appear if a sample plate lacks its blank?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "exception_handling_manual.md",
+        "dna_quant_picogreen_sop.md"
+      ],
+      "required_tool_calls": [
+        "process_quantification"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "dna_quant_picogreen_sop.md#chunk-007",
+        "exception_handling_manual.md#chunk-007",
+        "varioskan_tsv_import_spec.md#chunk-008",
+        "batch_readiness_doctrine.md#chunk-005",
+        "labflow_dsl_reference.md#chunk-010",
+        "sample_ancestry_policy.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "dna_quant_picogreen_sop.md",
+        "exception_handling_manual.md",
+        "varioskan_tsv_import_spec.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "sample_ancestry_policy.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.2,
+      "case_id": "q_standards_004",
+      "category": "standards_blank_rules",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md",
+        "exception_handling_manual.md",
+        "dna_normalization_sop.md",
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.5153329111635685,
+      "missing_answer_terms": [
+        "raw instrument reading",
+        "blank correction",
+        "standard curve",
+        "dilution factor"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Is a Varioskan reading already a stock concentration?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "dna_quant_picogreen_sop.md#chunk-006",
+        "varioskan_tsv_import_spec.md#chunk-004",
+        "exception_handling_manual.md#chunk-006",
+        "dna_normalization_sop.md#chunk-008",
+        "sample_ancestry_policy.md#chunk-005",
+        "rna_norm_requant_sop.md#chunk-006"
+      ],
+      "retrieved_sources": [
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md",
+        "exception_handling_manual.md",
+        "dna_normalization_sop.md",
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_split_001",
+      "category": "split_workflow",
+      "citation_precision_proxy": 0.5,
+      "cited_sources": [
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.47258392442017794,
+      "missing_answer_terms": [
+        "split workflow",
+        "1 uL",
+        "child sample",
+        "re-quant",
+        "follow-up normalization"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "generate_normalization_plan"
+      ],
+      "passed": true,
+      "question": "What happens when calculated sample transfer volume is below 1 uL?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md"
+      ],
+      "required_tool_calls": [
+        "generate_normalization_plan"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "dna_normalization_sop.md#chunk-007",
+        "exception_handling_manual.md#chunk-006",
+        "sample_ancestry_policy.md#chunk-004",
+        "batch_readiness_doctrine.md#chunk-005",
+        "labflow_dsl_reference.md#chunk-010",
+        "rna_norm_requant_sop.md#chunk-007"
+      ],
+      "retrieved_sources": [
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.25,
+      "case_id": "q_split_002",
+      "category": "split_workflow",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md",
+        "batch_readiness_doctrine.md",
+        "janus_csv_worklist_spec.md",
+        "dna_quant_picogreen_sop.md",
+        "ai_guardrails_policy.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.5247920053079724,
+      "missing_answer_terms": [
+        "below 1 uL",
+        "split workflow",
+        "must not"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "generate_normalization_plan"
+      ],
+      "passed": true,
+      "question": "Can the agent round a 0.4 uL DNA transfer to make a standard worklist?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "dna_normalization_sop.md",
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [
+        "generate_normalization_plan"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "dna_normalization_sop.md#chunk-007",
+        "exception_handling_manual.md#chunk-006",
+        "batch_readiness_doctrine.md#chunk-005",
+        "janus_csv_worklist_spec.md#chunk-007",
+        "dna_quant_picogreen_sop.md#chunk-004",
+        "ai_guardrails_policy.md#chunk-006"
+      ],
+      "retrieved_sources": [
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md",
+        "batch_readiness_doctrine.md",
+        "janus_csv_worklist_spec.md",
+        "dna_quant_picogreen_sop.md",
+        "ai_guardrails_policy.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_split_003",
+      "category": "split_workflow",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "sample_ancestry_policy.md",
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md",
+        "rna_norm_requant_sop.md",
+        "throughput_optimization_case.md",
+        "dna_quant_picogreen_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.3964999923482537,
+      "missing_answer_terms": [
+        "SPLIT_CREATED",
+        "child sample",
+        "parent",
+        "re-quant"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What ancestry record is created for a high-concentration split?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "sample_ancestry_policy.md",
+        "dna_normalization_sop.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "sample_ancestry_policy.md#chunk-005",
+        "dna_normalization_sop.md#chunk-007",
+        "exception_handling_manual.md#chunk-008",
+        "rna_norm_requant_sop.md#chunk-004",
+        "throughput_optimization_case.md#chunk-007",
+        "dna_quant_picogreen_sop.md#chunk-006"
+      ],
+      "retrieved_sources": [
+        "sample_ancestry_policy.md",
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md",
+        "rna_norm_requant_sop.md",
+        "throughput_optimization_case.md",
+        "dna_quant_picogreen_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_inplace_001",
+      "category": "in_place_normalization",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.34191692247986794,
+      "missing_answer_terms": [
+        "no destination container",
+        "only diluent",
+        "no sample transfer",
+        "mixing is skipped"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What is in-place normalization?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "dna_normalization_sop.md",
+        "sample_ancestry_policy.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "dna_normalization_sop.md#chunk-006",
+        "exception_handling_manual.md#chunk-008",
+        "sample_ancestry_policy.md#chunk-006",
+        "rna_norm_requant_sop.md#chunk-001",
+        "batch_readiness_doctrine.md#chunk-001",
+        "labflow_dsl_reference.md#chunk-010"
+      ],
+      "retrieved_sources": [
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.3333333333333333,
+      "case_id": "q_inplace_002",
+      "category": "in_place_normalization",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "dna_normalization_sop.md",
+        "sample_ancestry_policy.md",
+        "exception_handling_manual.md",
+        "varioskan_tsv_import_spec.md",
+        "labflow_dsl_reference.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.39233407005667686,
+      "missing_answer_terms": [
+        "DESTINATION_SUPPLIED_FOR_IN_PLACE",
+        "invalid"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "generate_normalization_plan"
+      ],
+      "passed": true,
+      "question": "Should an in-place normalization row include a destination well?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md"
+      ],
+      "required_tool_calls": [
+        "generate_normalization_plan"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "dna_normalization_sop.md#chunk-006",
+        "sample_ancestry_policy.md#chunk-006",
+        "exception_handling_manual.md#chunk-005",
+        "varioskan_tsv_import_spec.md#chunk-006",
+        "labflow_dsl_reference.md#chunk-010",
+        "janus_csv_worklist_spec.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "dna_normalization_sop.md",
+        "sample_ancestry_policy.md",
+        "exception_handling_manual.md",
+        "varioskan_tsv_import_spec.md",
+        "labflow_dsl_reference.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_inplace_003",
+      "category": "in_place_normalization",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "sample_ancestry_policy.md",
+        "dna_normalization_sop.md",
+        "ai_guardrails_policy.md",
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.42283395305275917,
+      "missing_answer_terms": [
+        "NORMALIZED_IN_PLACE",
+        "source well",
+        "ancestry"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Does in-place normalization create an ancestry event?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "sample_ancestry_policy.md",
+        "dna_normalization_sop.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "sample_ancestry_policy.md#chunk-004",
+        "dna_normalization_sop.md#chunk-006",
+        "ai_guardrails_policy.md#chunk-005",
+        "rna_norm_requant_sop.md#chunk-003",
+        "exception_handling_manual.md#chunk-008",
+        "janus_csv_worklist_spec.md#chunk-007"
+      ],
+      "retrieved_sources": [
+        "sample_ancestry_policy.md",
+        "dna_normalization_sop.md",
+        "ai_guardrails_policy.md",
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.3333333333333333,
+      "case_id": "q_rna_001",
+      "category": "rna_requant",
+      "citation_precision_proxy": 0.16666666666666666,
+      "cited_sources": [
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "dna_quant_picogreen_sop.md",
+        "throughput_optimization_case.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.4094169707968831,
+      "missing_answer_terms": [
+        "downstream concentration",
+        "measured re-quant"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Does RNA re-quant use percent tolerance by default?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "rna_norm_requant_sop.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "rna_norm_requant_sop.md#chunk-004",
+        "exception_handling_manual.md#chunk-008",
+        "sample_ancestry_policy.md#chunk-004",
+        "dna_quant_picogreen_sop.md#chunk-004",
+        "throughput_optimization_case.md#chunk-006",
+        "batch_readiness_doctrine.md#chunk-005"
+      ],
+      "retrieved_sources": [
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "dna_quant_picogreen_sop.md",
+        "throughput_optimization_case.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_rna_002",
+      "category": "rna_requant",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "labflow_dsl_reference.md",
+        "dna_quant_picogreen_sop.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.43062493205070496,
+      "missing_answer_terms": [
+        "MISSING_REQUANT_RESULT",
+        "manual review",
+        "repeat"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "process_rna_requant"
+      ],
+      "passed": true,
+      "question": "What happens when an expected RNA re-quant result is missing?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md"
+      ],
+      "required_tool_calls": [
+        "process_rna_requant"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "rna_norm_requant_sop.md#chunk-004",
+        "exception_handling_manual.md#chunk-008",
+        "sample_ancestry_policy.md#chunk-004",
+        "labflow_dsl_reference.md#chunk-006",
+        "dna_quant_picogreen_sop.md#chunk-007",
+        "batch_readiness_doctrine.md#chunk-005"
+      ],
+      "retrieved_sources": [
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "labflow_dsl_reference.md",
+        "dna_quant_picogreen_sop.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_rna_003",
+      "category": "rna_requant",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "batch_readiness_doctrine.md",
+        "throughput_optimization_case.md",
+        "dna_quant_picogreen_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.44299999717622995,
+      "missing_answer_terms": [
+        "measured re-quant",
+        "downstream concentration",
+        "REQUANTIFIED"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What concentration should downstream RNA steps use after re-quant?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "rna_norm_requant_sop.md",
+        "sample_ancestry_policy.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "rna_norm_requant_sop.md#chunk-004",
+        "exception_handling_manual.md#chunk-008",
+        "sample_ancestry_policy.md#chunk-005",
+        "batch_readiness_doctrine.md#chunk-005",
+        "throughput_optimization_case.md#chunk-005",
+        "dna_quant_picogreen_sop.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "batch_readiness_doctrine.md",
+        "throughput_optimization_case.md",
+        "dna_quant_picogreen_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_rna_004",
+      "category": "rna_requant",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "labflow_dsl_reference.md",
+        "dna_quant_picogreen_sop.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.44720794539898634,
+      "missing_answer_terms": [
+        "INVALID_REQUANT_RESULT",
+        "expected normalized sample",
+        "manual review"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "process_rna_requant"
+      ],
+      "passed": true,
+      "question": "What should happen to an unmatched RNA re-quant sample ID?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md"
+      ],
+      "required_tool_calls": [
+        "process_rna_requant"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "sample_ancestry_policy.md#chunk-004",
+        "rna_norm_requant_sop.md#chunk-004",
+        "exception_handling_manual.md#chunk-008",
+        "labflow_dsl_reference.md#chunk-006",
+        "dna_quant_picogreen_sop.md#chunk-005",
+        "batch_readiness_doctrine.md#chunk-005"
+      ],
+      "retrieved_sources": [
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "labflow_dsl_reference.md",
+        "dna_quant_picogreen_sop.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_janus_001",
+      "category": "janus_gating",
+      "citation_precision_proxy": 0.16666666666666666,
+      "cited_sources": [
+        "janus_csv_worklist_spec.md",
+        "varioskan_tsv_import_spec.md",
+        "batch_readiness_doctrine.md",
+        "dna_normalization_sop.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.33083290327340364,
+      "missing_answer_terms": [
+        "well",
+        "diluent_volume_ul",
+        "sample_volume_ul"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What columns are in the minimal JANUS preview?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "janus_csv_worklist_spec.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "janus_csv_worklist_spec.md#chunk-004",
+        "varioskan_tsv_import_spec.md#chunk-006",
+        "batch_readiness_doctrine.md#chunk-005",
+        "dna_normalization_sop.md#chunk-006",
+        "ai_guardrails_policy.md#chunk-006",
+        "sample_ancestry_policy.md#chunk-008"
+      ],
+      "retrieved_sources": [
+        "janus_csv_worklist_spec.md",
+        "varioskan_tsv_import_spec.md",
+        "batch_readiness_doctrine.md",
+        "dna_normalization_sop.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.25,
+      "case_id": "q_janus_002",
+      "category": "janus_gating",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "batch_readiness_doctrine.md",
+        "janus_csv_worklist_spec.md",
+        "ai_guardrails_policy.md",
+        "dna_quant_picogreen_sop.md",
+        "throughput_optimization_case.md",
+        "dna_normalization_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.47341606114059687,
+      "missing_answer_terms": [
+        "invalid samples",
+        "must not appear",
+        "robot transfer"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "generate_janus_csv"
+      ],
+      "passed": true,
+      "question": "Can invalid samples appear in JANUS transfer rows?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "janus_csv_worklist_spec.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "required_tool_calls": [
+        "generate_janus_csv"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "batch_readiness_doctrine.md#chunk-005",
+        "janus_csv_worklist_spec.md#chunk-007",
+        "ai_guardrails_policy.md#chunk-006",
+        "dna_quant_picogreen_sop.md#chunk-006",
+        "throughput_optimization_case.md#chunk-007",
+        "dna_normalization_sop.md#chunk-005"
+      ],
+      "retrieved_sources": [
+        "batch_readiness_doctrine.md",
+        "janus_csv_worklist_spec.md",
+        "ai_guardrails_policy.md",
+        "dna_quant_picogreen_sop.md",
+        "throughput_optimization_case.md",
+        "dna_normalization_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_janus_003",
+      "category": "janus_gating",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "janus_csv_worklist_spec.md",
+        "ai_guardrails_policy.md",
+        "exception_handling_manual.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "dna_normalization_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.3943750634789467,
+      "missing_answer_terms": [
+        "durable approval",
+        "artifact store",
+        "COMMIT_MODE_NOT_AVAILABLE",
+        "dry-run"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "generate_janus_csv"
+      ],
+      "passed": true,
+      "question": "Why is commit-mode JANUS generation blocked in this project stage?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "janus_csv_worklist_spec.md",
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [
+        "generate_janus_csv"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "janus_csv_worklist_spec.md#chunk-007",
+        "ai_guardrails_policy.md#chunk-008",
+        "exception_handling_manual.md#chunk-009",
+        "batch_readiness_doctrine.md#chunk-005",
+        "labflow_dsl_reference.md#chunk-010",
+        "dna_normalization_sop.md#chunk-003"
+      ],
+      "retrieved_sources": [
+        "janus_csv_worklist_spec.md",
+        "ai_guardrails_policy.md",
+        "exception_handling_manual.md",
+        "batch_readiness_doctrine.md",
+        "labflow_dsl_reference.md",
+        "dna_normalization_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_janus_004",
+      "category": "janus_gating",
+      "citation_precision_proxy": 0.5,
+      "cited_sources": [
+        "janus_csv_worklist_spec.md",
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "labflow_dsl_reference.md",
+        "throughput_optimization_case.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.45691709965467453,
+      "missing_answer_terms": [
+        "deterministic validation",
+        "dry_run=true",
+        "generate_janus_csv"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "validate_batch",
+        "generate_janus_csv"
+      ],
+      "passed": true,
+      "question": "What should the assistant do before generating a JANUS dry-run preview?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "janus_csv_worklist_spec.md",
+        "batch_readiness_doctrine.md",
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [
+        "validate_batch",
+        "generate_janus_csv"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "janus_csv_worklist_spec.md#chunk-007",
+        "ai_guardrails_policy.md#chunk-005",
+        "batch_readiness_doctrine.md#chunk-006",
+        "exception_handling_manual.md#chunk-009",
+        "labflow_dsl_reference.md#chunk-004",
+        "throughput_optimization_case.md#chunk-007"
+      ],
+      "retrieved_sources": [
+        "janus_csv_worklist_spec.md",
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "labflow_dsl_reference.md",
+        "throughput_optimization_case.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_ancestry_001",
+      "category": "sample_ancestry",
+      "citation_precision_proxy": 0.16666666666666666,
+      "cited_sources": [
+        "sample_ancestry_policy.md",
+        "labflow_dsl_reference.md",
+        "varioskan_tsv_import_spec.md",
+        "dna_normalization_sop.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.40679192170500755,
+      "missing_answer_terms": [
+        "parent",
+        "child",
+        "sample ID",
+        "ancestry"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "How does LabFlow track derived samples?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "sample_ancestry_policy.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "sample_ancestry_policy.md#chunk-004",
+        "labflow_dsl_reference.md#chunk-006",
+        "varioskan_tsv_import_spec.md#chunk-004",
+        "dna_normalization_sop.md#chunk-007",
+        "batch_readiness_doctrine.md#chunk-005",
+        "exception_handling_manual.md#chunk-005"
+      ],
+      "retrieved_sources": [
+        "sample_ancestry_policy.md",
+        "labflow_dsl_reference.md",
+        "varioskan_tsv_import_spec.md",
+        "dna_normalization_sop.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_ancestry_002",
+      "category": "sample_ancestry",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "dna_quant_picogreen_sop.md",
+        "dna_normalization_sop.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.43295789510011673,
+      "missing_answer_terms": [
+        "REQUANTIFIED",
+        "downstream concentration",
+        "sample ID"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What ancestry event is used when re-quant becomes downstream concentration?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "sample_ancestry_policy.md#chunk-005",
+        "rna_norm_requant_sop.md#chunk-006",
+        "exception_handling_manual.md#chunk-008",
+        "dna_quant_picogreen_sop.md#chunk-004",
+        "dna_normalization_sop.md#chunk-007",
+        "batch_readiness_doctrine.md#chunk-005"
+      ],
+      "retrieved_sources": [
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "dna_quant_picogreen_sop.md",
+        "dna_normalization_sop.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.3333333333333333,
+      "case_id": "q_ancestry_003",
+      "category": "sample_ancestry",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "sample_ancestry_policy.md",
+        "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md",
+        "dna_normalization_sop.md",
+        "batch_readiness_doctrine.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.4211660707369447,
+      "missing_answer_terms": [
+        "must not invent",
+        "audit"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Can the assistant invent a parent-child relationship to fix ancestry?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "sample_ancestry_policy.md",
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "sample_ancestry_policy.md#chunk-004",
+        "ai_guardrails_policy.md#chunk-008",
+        "janus_csv_worklist_spec.md#chunk-007",
+        "dna_normalization_sop.md#chunk-007",
+        "batch_readiness_doctrine.md#chunk-009",
+        "rna_norm_requant_sop.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "sample_ancestry_policy.md",
+        "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md",
+        "dna_normalization_sop.md",
+        "batch_readiness_doctrine.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_molar_001",
+      "category": "molarity_exclusion",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "labflow_dsl_reference.md",
+        "dna_normalization_sop.md",
+        "ai_guardrails_policy.md",
+        "rna_norm_requant_sop.md",
+        "sample_ancestry_policy.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.42079202830791473,
+      "missing_answer_terms": [
+        "out of scope",
+        "unsupported",
+        "ng/uL",
+        "uL",
+        "ng"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "How do I configure molar normalization?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "labflow_dsl_reference.md",
+        "dna_normalization_sop.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "labflow_dsl_reference.md#chunk-004",
+        "dna_normalization_sop.md#chunk-009",
+        "ai_guardrails_policy.md#chunk-008",
+        "rna_norm_requant_sop.md#chunk-001",
+        "sample_ancestry_policy.md#chunk-006",
+        "batch_readiness_doctrine.md#chunk-001"
+      ],
+      "retrieved_sources": [
+        "labflow_dsl_reference.md",
+        "dna_normalization_sop.md",
+        "ai_guardrails_policy.md",
+        "rna_norm_requant_sop.md",
+        "sample_ancestry_policy.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.25,
+      "case_id": "q_molar_002",
+      "category": "molarity_exclusion",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "labflow_dsl_reference.md",
+        "ai_guardrails_policy.md",
+        "dna_normalization_sop.md",
+        "rna_norm_requant_sop.md",
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.47800003085285425,
+      "missing_answer_terms": [
+        "molarity",
+        "unsupported",
+        "UNSUPPORTED_CONCENTRATION_UNIT"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "validate_workflow"
+      ],
+      "passed": true,
+      "question": "Can I use nM or pmol in a LabFlow workflow YAML?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "labflow_dsl_reference.md",
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [
+        "validate_workflow"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "labflow_dsl_reference.md#chunk-004",
+        "ai_guardrails_policy.md#chunk-007",
+        "dna_normalization_sop.md#chunk-004",
+        "rna_norm_requant_sop.md#chunk-004",
+        "dna_quant_picogreen_sop.md#chunk-001",
+        "varioskan_tsv_import_spec.md#chunk-005"
+      ],
+      "retrieved_sources": [
+        "labflow_dsl_reference.md",
+        "ai_guardrails_policy.md",
+        "dna_normalization_sop.md",
+        "rna_norm_requant_sop.md",
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_molar_003",
+      "category": "molarity_exclusion",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "dna_normalization_sop.md",
+        "labflow_dsl_reference.md",
+        "rna_norm_requant_sop.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.3903750330209732,
+      "missing_answer_terms": [
+        "ng/uL",
+        "uL",
+        "ng"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What canonical units does LabFlow use for normalization?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "dna_normalization_sop.md",
+        "labflow_dsl_reference.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "dna_normalization_sop.md#chunk-009",
+        "labflow_dsl_reference.md#chunk-010",
+        "rna_norm_requant_sop.md#chunk-001",
+        "batch_readiness_doctrine.md#chunk-001",
+        "exception_handling_manual.md#chunk-001",
+        "janus_csv_worklist_spec.md#chunk-001"
+      ],
+      "retrieved_sources": [
+        "dna_normalization_sop.md",
+        "labflow_dsl_reference.md",
+        "rna_norm_requant_sop.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.3333333333333333,
+      "case_id": "q_guardrails_001",
+      "category": "guardrails",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "dna_quant_picogreen_sop.md",
+        "dna_normalization_sop.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.4637079546228051,
+      "missing_answer_terms": [
+        "must not invent",
+        "MISSING_CONCENTRATION"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Can the AI fill in a missing concentration so validation passes?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "ai_guardrails_policy.md",
+        "exception_handling_manual.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "ai_guardrails_policy.md#chunk-004",
+        "batch_readiness_doctrine.md#chunk-006",
+        "exception_handling_manual.md#chunk-004",
+        "dna_quant_picogreen_sop.md#chunk-006",
+        "dna_normalization_sop.md#chunk-008",
+        "rna_norm_requant_sop.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "dna_quant_picogreen_sop.md",
+        "dna_normalization_sop.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_guardrails_002",
+      "category": "guardrails",
+      "citation_precision_proxy": 0.16666666666666666,
+      "cited_sources": [
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "dna_normalization_sop.md",
+        "rna_norm_requant_sop.md",
+        "throughput_optimization_case.md",
+        "dna_quant_picogreen_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.39162510074675083,
+      "missing_answer_terms": [
+        "not supported",
+        "cite",
+        "knowledge"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What does a RAG answer do when the corpus does not support a claim?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "ai_guardrails_policy.md#chunk-004",
+        "batch_readiness_doctrine.md#chunk-009",
+        "dna_normalization_sop.md#chunk-009",
+        "rna_norm_requant_sop.md#chunk-008",
+        "throughput_optimization_case.md#chunk-006",
+        "dna_quant_picogreen_sop.md#chunk-008"
+      ],
+      "retrieved_sources": [
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "dna_normalization_sop.md",
+        "rna_norm_requant_sop.md",
+        "throughput_optimization_case.md",
+        "dna_quant_picogreen_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_guardrails_003",
+      "category": "guardrails",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "varioskan_tsv_import_spec.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.32895791810005903,
+      "missing_answer_terms": [
+        "prior dry-run",
+        "approval token",
+        "deterministic validation",
+        "audit event"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What is required before committing a generated artifact?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "varioskan_tsv_import_spec.md#chunk-008",
+        "batch_readiness_doctrine.md#chunk-005",
+        "exception_handling_manual.md#chunk-009",
+        "ai_guardrails_policy.md#chunk-005",
+        "sample_ancestry_policy.md#chunk-006",
+        "janus_csv_worklist_spec.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "varioskan_tsv_import_spec.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.3333333333333333,
+      "case_id": "q_guardrails_004",
+      "category": "guardrails",
+      "citation_precision_proxy": 0.16666666666666666,
+      "cited_sources": [
+        "ai_guardrails_policy.md",
+        "labflow_dsl_reference.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "throughput_optimization_case.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.44966593850404024,
+      "missing_answer_terms": [
+        "synthetic",
+        "non-production"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Can the assistant claim LabFlow is clinical or production-ready?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "ai_guardrails_policy.md#chunk-007",
+        "labflow_dsl_reference.md#chunk-002",
+        "batch_readiness_doctrine.md#chunk-002",
+        "exception_handling_manual.md#chunk-002",
+        "throughput_optimization_case.md#chunk-006",
+        "janus_csv_worklist_spec.md#chunk-002"
+      ],
+      "retrieved_sources": [
+        "ai_guardrails_policy.md",
+        "labflow_dsl_reference.md",
+        "batch_readiness_doctrine.md",
+        "exception_handling_manual.md",
+        "throughput_optimization_case.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_throughput_001",
+      "category": "throughput",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "throughput_optimization_case.md",
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "labflow_dsl_reference.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.4695829702541232,
+      "missing_answer_terms": [
+        "three containers",
+        "reduced robot idle time",
+        "batch automation"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "compare_throughput"
+      ],
+      "passed": true,
+      "question": "What change drives the modeled RNA throughput improvement?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "throughput_optimization_case.md",
+        "rna_norm_requant_sop.md"
+      ],
+      "required_tool_calls": [
+        "compare_throughput"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "throughput_optimization_case.md#chunk-006",
+        "rna_norm_requant_sop.md#chunk-004",
+        "exception_handling_manual.md#chunk-008",
+        "sample_ancestry_policy.md#chunk-001",
+        "labflow_dsl_reference.md#chunk-003",
+        "janus_csv_worklist_spec.md#chunk-003"
+      ],
+      "retrieved_sources": [
+        "throughput_optimization_case.md",
+        "rna_norm_requant_sop.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md",
+        "labflow_dsl_reference.md",
+        "janus_csv_worklist_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.25,
+      "case_id": "q_throughput_002",
+      "category": "throughput",
+      "citation_precision_proxy": 0.16666666666666666,
+      "cited_sources": [
+        "throughput_optimization_case.md",
+        "exception_handling_manual.md",
+        "labflow_dsl_reference.md",
+        "rna_norm_requant_sop.md",
+        "batch_readiness_doctrine.md",
+        "varioskan_tsv_import_spec.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.36637496668845415,
+      "missing_answer_terms": [
+        "synthetic",
+        "modeling assumption",
+        "not a production benchmark"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Is the 3x RNA throughput improvement a production benchmark?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "throughput_optimization_case.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "throughput_optimization_case.md#chunk-006",
+        "exception_handling_manual.md#chunk-002",
+        "labflow_dsl_reference.md#chunk-002",
+        "rna_norm_requant_sop.md#chunk-004",
+        "batch_readiness_doctrine.md#chunk-002",
+        "varioskan_tsv_import_spec.md#chunk-002"
+      ],
+      "retrieved_sources": [
+        "throughput_optimization_case.md",
+        "exception_handling_manual.md",
+        "labflow_dsl_reference.md",
+        "rna_norm_requant_sop.md",
+        "batch_readiness_doctrine.md",
+        "varioskan_tsv_import_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.25,
+      "case_id": "q_throughput_003",
+      "category": "throughput",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "throughput_optimization_case.md",
+        "batch_readiness_doctrine.md",
+        "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md",
+        "labflow_dsl_reference.md",
+        "dna_quant_picogreen_sop.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.3822080325335264,
+      "missing_answer_terms": [
+        "readiness gates",
+        "invalid samples",
+        "no robot transfers"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Can throughput optimization bypass validation gates?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "throughput_optimization_case.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "throughput_optimization_case.md#chunk-007",
+        "batch_readiness_doctrine.md#chunk-004",
+        "ai_guardrails_policy.md#chunk-005",
+        "janus_csv_worklist_spec.md#chunk-010",
+        "labflow_dsl_reference.md#chunk-009",
+        "dna_quant_picogreen_sop.md#chunk-008"
+      ],
+      "retrieved_sources": [
+        "throughput_optimization_case.md",
+        "batch_readiness_doctrine.md",
+        "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md",
+        "labflow_dsl_reference.md",
+        "dna_quant_picogreen_sop.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_tsv_001",
+      "category": "standards_blank_rules",
+      "citation_precision_proxy": 0.16666666666666666,
+      "cited_sources": [
+        "varioskan_tsv_import_spec.md",
+        "labflow_dsl_reference.md",
+        "dna_quant_picogreen_sop.md",
+        "dna_normalization_sop.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.3967919619753957,
+      "missing_answer_terms": [
+        "column names may vary",
+        "schema mapping",
+        "deterministic"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "parse_varioskan_tsv"
+      ],
+      "passed": true,
+      "question": "Why does LabFlow use schema mapping for Varioskan TSV import?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "varioskan_tsv_import_spec.md"
+      ],
+      "required_tool_calls": [
+        "parse_varioskan_tsv"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "varioskan_tsv_import_spec.md#chunk-006",
+        "labflow_dsl_reference.md#chunk-009",
+        "dna_quant_picogreen_sop.md#chunk-001",
+        "dna_normalization_sop.md#chunk-007",
+        "ai_guardrails_policy.md#chunk-001",
+        "sample_ancestry_policy.md#chunk-001"
+      ],
+      "retrieved_sources": [
+        "varioskan_tsv_import_spec.md",
+        "labflow_dsl_reference.md",
+        "dna_quant_picogreen_sop.md",
+        "dna_normalization_sop.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_dsl_001",
+      "category": "guardrails",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "labflow_dsl_reference.md",
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "varioskan_tsv_import_spec.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.44016691390424967,
+      "missing_answer_terms": [
+        "domain validation",
+        "validate_workflow",
+        "deterministic"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "validate_workflow"
+      ],
+      "passed": true,
+      "question": "Which validator should the VS Code extension use for domain rules?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "labflow_dsl_reference.md",
+        "batch_readiness_doctrine.md"
+      ],
+      "required_tool_calls": [
+        "validate_workflow"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "labflow_dsl_reference.md#chunk-001",
+        "ai_guardrails_policy.md#chunk-004",
+        "batch_readiness_doctrine.md#chunk-005",
+        "varioskan_tsv_import_spec.md#chunk-006",
+        "exception_handling_manual.md#chunk-004",
+        "sample_ancestry_policy.md#chunk-004"
+      ],
+      "retrieved_sources": [
+        "labflow_dsl_reference.md",
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "varioskan_tsv_import_spec.md",
+        "exception_handling_manual.md",
+        "sample_ancestry_policy.md"
+      ],
+      "unsupported_claim_count": 0
+    }
+  ],
+  "cases_path": "/Users/joseph/labflow/evals/golden_questions.yaml",
+  "corpus_dir": "/Users/joseph/labflow/knowledge",
+  "eval_run_id": "demo_eval_stage16",
+  "generated_at": "2026-06-10T01:38:08.759665Z",
+  "metrics": {
+    "case_count": 37,
+    "citation_precision_proxy": 0.3198198198198198,
+    "disallowed_answer_violations": 0,
+    "failed_count": 0,
+    "latency_ms_avg": 0.42471955089855035,
+    "latency_ms_p50": 0.4211660707369447,
+    "latency_ms_p95": 0.5153329111635685,
+    "passed_count": 37,
+    "required_answer_contains_match": 0.09999999999999999,
+    "retrieval_recall_at_k": 1.0,
+    "tool_call_expectation_match": 0.5675675675675675,
+    "unsupported_claim_count": 0
+  },
+  "prompt_model": {
+    "model_id": "deterministic_rag_eval",
+    "model_version": "0.1.0",
+    "prompt_id": "rag_answer",
+    "prompt_sha256": "sha256:c97bf98bcea01ce7f29d325ad2ad8c28bc97890068edb4d95bec60b6ac0a216f",
+    "prompt_version": "0.1.0"
+  },
+  "retrieval_only": true,
+  "top_k": 6
+}

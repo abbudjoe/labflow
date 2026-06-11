@@ -1,0 +1,86 @@
+{
+  "name": "labflow-ai-studio",
+  "displayName": "LabFlow AI Studio",
+  "description": "VS Code extension skeleton for LabFlow workflow development.",
+  "version": "0.1.0",
+  "private": true,
+  "publisher": "labflow",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:labflow-workflow",
+    "onCommand:labflow.validateWorkflow",
+    "onCommand:labflow.askAiAboutDiagnostic",
+    "onCommand:labflow.explainWorkflow",
+    "onCommand:labflow.generateJanusDryRun",
+    "onCommand:labflow.runEvalSuite",
+    "onCommand:labflow.showAuditEvents"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "labflow-workflow",
+        "aliases": [
+          "LabFlow Workflow"
+        ],
+        "extensions": [
+          ".labflow.yaml",
+          ".labflow.yml",
+          ".workflow.yaml",
+          ".workflow.yml"
+        ]
+      }
+    ],
+    "configuration": {
+      "title": "LabFlow AI Studio",
+      "properties": {
+        "labflow.apiUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8000",
+          "description": "Local LabFlow API base URL."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "labflow.validateWorkflow",
+        "title": "LabFlow: Validate Workflow"
+      },
+      {
+        "command": "labflow.askAiAboutDiagnostic",
+        "title": "LabFlow: Ask AI About Diagnostic"
+      },
+      {
+        "command": "labflow.explainWorkflow",
+        "title": "LabFlow: Explain Workflow"
+      },
+      {
+        "command": "labflow.generateJanusDryRun",
+        "title": "LabFlow: Generate JANUS Worklist Dry Run"
+      },
+      {
+        "command": "labflow.runEvalSuite",
+        "title": "LabFlow: Run Eval Suite"
+      },
+      {
+        "command": "labflow.showAuditEvents",
+        "title": "LabFlow: Show Audit Events"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "lint": "npm run compile",
+    "test": "npm run compile && node test/smoke.js && node test/diagnosticMapping.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.100.0",
+    "typescript": "^5.8.0"
+  }
+}
