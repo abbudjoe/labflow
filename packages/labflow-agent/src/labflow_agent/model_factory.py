@@ -112,6 +112,11 @@ def _openrouter_config(values: Mapping[str, str], *, api_key: str, model: str) -
         fallback_models=_openrouter_fallback_models(values),
         enable_metadata=_openrouter_bool(values, "OPENROUTER_ENABLE_METADATA", default=False),
         response_format=_openrouter_response_format(values),
+        case_deadline_seconds=_openrouter_optional_float(
+            values,
+            "OPENROUTER_CASE_DEADLINE_SECONDS",
+        ),
+        reasoning_effort=_openrouter_optional_string(values, "OPENROUTER_REASONING_EFFORT"),
     )
 
 
@@ -147,6 +152,27 @@ def _openrouter_float(
     if parsed < minimum:
         raise ModelConfigurationError(f"{name} must be at least {minimum:g}.")
     return parsed
+
+
+def _openrouter_optional_float(values: Mapping[str, str], name: str) -> float | None:
+    raw_value = values.get(name)
+    if raw_value is None or not raw_value.strip():
+        return None
+    try:
+        parsed = float(raw_value)
+    except ValueError as exc:
+        raise ModelConfigurationError(f"{name} must be a number.") from exc
+    if parsed <= 0:
+        raise ModelConfigurationError(f"{name} must be greater than 0.")
+    return parsed
+
+
+def _openrouter_optional_string(values: Mapping[str, str], name: str) -> str | None:
+    raw_value = values.get(name)
+    if raw_value is None:
+        return None
+    parsed = raw_value.strip()
+    return parsed or None
 
 
 def _openrouter_bool(values: Mapping[str, str], name: str, *, default: bool) -> bool:

@@ -7,6 +7,9 @@ import yaml
 
 from labflow_agent import AgentToolRuntime, ToolCallMode, ToolCallPlan
 
+QC_CSV = "examples/qc/synthetic_ngs_qc_results.csv"
+LINEAGE_CSV = "examples/qc/synthetic_lab_lineage_manifest.csv"
+
 
 def _write_normalization_csv(path: Path, *, missing_concentration: bool = False) -> None:
     row = {
@@ -89,6 +92,30 @@ def _janus_plan(
         arguments=arguments,
         mode=mode,
         reason="Exercise Stage 10 JANUS guardrails.",
+    )
+
+
+def _lineage_plan(
+    *,
+    mode: ToolCallMode,
+    dry_run: bool,
+    approval_token: str | None = None,
+    dry_run_audit_event_id: str | None = None,
+) -> ToolCallPlan:
+    arguments = {
+        "qc_csv": QC_CSV,
+        "lineage_csv": LINEAGE_CSV,
+        "dry_run": dry_run,
+        "approval_token": approval_token,
+        "output_dir": None,
+    }
+    if dry_run_audit_event_id is not None:
+        arguments["dry_run_audit_event_id"] = dry_run_audit_event_id
+    return ToolCallPlan(
+        tool_name="generate_lab_to_analysis_lineage",
+        arguments=arguments,
+        mode=mode,
+        reason="Exercise Stage 19 lineage report guardrails.",
     )
 
 
@@ -242,6 +269,43 @@ def test_commit_creates_audit_event_and_artifact_records(tmp_path: Path) -> None
     assert {
         record.commit_audit_event_id for record in runtime.artifact_records
     } == {committed.audit_event_id}
+
+
+def test_lineage_report_is_dry_run_artifact_tool_with_audit() -> None:
+    runtime = AgentToolRuntime()
+
+    dry_run = runtime.execute_tool_call(
+        _lineage_plan(mode=ToolCallMode.DRY_RUN, dry_run=True)
+    )
+    blocked_direct_commit = runtime.execute_tool_call(
+        _lineage_plan(mode=ToolCallMode.COMMIT, dry_run=False)
+    )
+    approval_token = runtime.approve_commit(
+        action="generate_lab_to_analysis_lineage",
+        dry_run_audit_event_id=str(dry_run.audit_event_id),
+        actor_id="operator",
+    )
+    blocked_approved_commit = runtime.execute_tool_call(
+        _lineage_plan(
+            mode=ToolCallMode.COMMIT,
+            dry_run=False,
+            approval_token=approval_token,
+            dry_run_audit_event_id=str(dry_run.audit_event_id),
+        )
+    )
+
+    assert dry_run.result["status"] == "ok"
+    assert dry_run.result["audit_event"]["mode"] == "dry_run"
+    assert {
+        artifact["artifact_type"] for artifact in dry_run.result["artifacts"]
+    } >= {"downstream_qc_summary", "lab_to_analysis_lineage_markdown"}
+    for blocked in (blocked_direct_commit, blocked_approved_commit):
+        assert blocked.result["status"] == "blocked"
+        assert {error["code"] for error in blocked.result["errors"]} == {
+            "POLICY_VIOLATION"
+        }
+        assert "dry-run-only" in blocked.result["errors"][0]["message"]
+    assert runtime.artifact_records == ()
 
 
 def test_commit_records_audited_dry_run_artifacts_if_source_file_changes(tmp_path: Path) -> None:

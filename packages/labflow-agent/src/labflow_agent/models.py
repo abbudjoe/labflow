@@ -19,6 +19,7 @@ class AgentTask(StrEnum):
     EXPLAIN_DIAGNOSTIC = "explain_diagnostic"
     VALIDATE_BATCH = "validate_batch"
     RECOMMEND_SAFE_NEXT_ACTION = "recommend_safe_next_action"
+    EXPLAIN_QC_FAILURE = "explain_qc_failure"
     UNSUPPORTED = "unsupported"
 
 
@@ -102,6 +103,9 @@ class AgentRequest(BaseModel):
     workflow_yaml: str | None = None
     batch_id: str | None = None
     diagnostic_code: str | None = None
+    qc_csv: str | None = None
+    lineage_csv: str | None = None
+    sample_id: str | None = None
 
 
 class ModelMetadata(BaseModel):
@@ -160,6 +164,7 @@ class AgentTrace(BaseModel):
     model_execution: ModelExecutionMetadata | None = None
     answer_composer_execution: ModelExecutionMetadata | None = None
     answer_composer_fallback: bool = False
+    answer_composer_final_answer_source: str = Field(default="deterministic_baseline", min_length=1)
     retrieved_chunk_ids: tuple[str, ...] = ()
     tool_calls: tuple[str, ...] = ()
     latency_ms: float = Field(ge=0)

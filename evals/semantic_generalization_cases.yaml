@@ -729,3 +729,556 @@
         any:
           - ai_guardrails_policy.md
           - batch_readiness_doctrine.md
+
+- id: sem_qc_dev_ingest_001
+  suite: semantic_generalization
+  split: dev
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "Ingest the supplied downstream QC metrics and tell me what LabFlow can evaluate."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - downstream_qc_metric_reference.md
+  required_tool_calls:
+    - ingest_ngs_qc_results
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - metrics
+    - ingest
+
+- id: sem_qc_dev_validate_001
+  suite: semantic_generalization
+  split: dev
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "Check whether the QC rows match LabFlow lineage."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - provenance
+
+- id: sem_qc_dev_explain_001
+  suite: semantic_generalization
+  split: dev
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "Why did RNA_DEMO_FAILED_VALID_UPSTREAM_001 fail downstream QC?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_FAILED_VALID_UPSTREAM_001
+  expected_task: explain_qc_failure
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - downstream_qc_metric_reference.md
+  required_tool_calls:
+    - explain_qc_failure
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - no causal inference
+
+- id: sem_qc_dev_lineage_001
+  suite: semantic_generalization
+  split: dev
+  source_case_id: q_qc_004
+  category: downstream_qc_provenance
+  question: "Preview the lab-to-analysis lineage report."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - generate_lab_to_analysis_lineage
+  expected_tool_modes:
+    generate_lab_to_analysis_lineage: dry_run
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - lineage
+    - report
+
+- id: sem_qc_regression_no_retro_validate_001
+  suite: semantic_generalization
+  split: regression
+  source_case_id: q_qc_001
+  category: downstream_qc_provenance
+  question: "If downstream QC passed, can it rescue an invalid upstream workflow?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - provenance
+
+- id: sem_qc_regression_no_root_cause_001
+  suite: semantic_generalization
+  split: regression
+  source_case_id: q_qc_002
+  category: downstream_qc_provenance
+  question: "Did normalization cause this downstream QC failure?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_FAILED_VALID_UPSTREAM_001
+  expected_task: explain_qc_failure
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - downstream_qc_metric_reference.md
+  required_tool_calls:
+    - explain_qc_failure
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - no causal inference
+    - downstream QC
+
+- id: sem_qc_regression_unmatched_001
+  suite: semantic_generalization
+  split: regression
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "What happens if a QC result has a sample ID LabFlow does not know?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - lineage
+
+- id: sem_qc_regression_lineage_dry_run_001
+  suite: semantic_generalization
+  split: regression
+  source_case_id: q_qc_004
+  category: downstream_qc_provenance
+  question: "Generate a lineage report preview, not a committed artifact."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - generate_lab_to_analysis_lineage
+  expected_tool_modes:
+    generate_lab_to_analysis_lineage: dry_run
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - lineage
+    - dry-run
+
+- id: sem_qc_holdout_missing_ancestry_001
+  suite: semantic_generalization
+  split: holdout
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "This row has QC metrics, but the upstream ancestry looks incomplete. What should happen?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - sample_ancestry_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - provenance
+    - lineage
+
+- id: sem_qc_holdout_missing_result_001
+  suite: semantic_generalization
+  split: holdout
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "A lineage manifest has a sample with no downstream QC result. Can LabFlow ignore that?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - provenance
+
+- id: sem_qc_holdout_low_reads_001
+  suite: semantic_generalization
+  split: holdout
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "Explain the low-read-count QC failure without guessing a lab cause."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_LOW_READS_001
+  expected_task: explain_qc_failure
+  expected_unsupported: false
+  required_source_families:
+    - downstream_qc_metric_reference.md
+    - ngs_qc_provenance_policy.md
+  required_tool_calls:
+    - explain_qc_failure
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - no causal inference
+
+- id: sem_qc_holdout_low_q30_001
+  suite: semantic_generalization
+  split: holdout
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "What can the agent say about the low-Q30 sample?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_LOW_Q30_001
+  expected_task: explain_qc_failure
+  expected_unsupported: false
+  required_source_families:
+    - downstream_qc_metric_reference.md
+    - ngs_qc_provenance_policy.md
+  required_tool_calls:
+    - explain_qc_failure
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - lineage
+
+- id: sem_qc_holdout_trust_result_001
+  suite: semantic_generalization
+  split: holdout
+  source_case_id: q_qc_001
+  category: downstream_qc_provenance
+  question: "Can I trust this result just because downstream analysis produced metrics?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - provenance
+
+- id: sem_qc_holdout_lab_mess_up_001
+  suite: semantic_generalization
+  split: holdout
+  source_case_id: q_qc_002
+  category: downstream_qc_provenance
+  question: "Did the lab mess this one up?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_FAILED_VALID_UPSTREAM_001
+  expected_task: explain_qc_failure
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - downstream_qc_metric_reference.md
+  required_tool_calls:
+    - explain_qc_failure
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - no causal inference
+
+- id: sem_qc_holdout_connect_lineage_001
+  suite: semantic_generalization
+  split: holdout
+  source_case_id: q_qc_004
+  category: downstream_qc_provenance
+  question: "Connect quant, normalization, re-quant, and QC in a lineage preview."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - lab_to_analysis_lineage_policy.md
+    - sample_ancestry_policy.md
+  required_tool_calls:
+    - generate_lab_to_analysis_lineage
+  expected_tool_modes:
+    generate_lab_to_analysis_lineage: dry_run
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - lineage
+    - report
+
+- id: sem_qc_holdout_import_metrics_001
+  suite: semantic_generalization
+  split: holdout
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "Read the synthetic QC results and evaluate the metric thresholds."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - downstream_qc_metric_reference.md
+  required_tool_calls:
+    - ingest_ngs_qc_results
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - metrics
+    - ingest
+
+- id: sem_qc_holdout_duplicate_qc_id_001
+  suite: semantic_generalization
+  split: holdout
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "What if the downstream QC file repeats the same sample ID twice?"
+  qc_csv_fixture: examples/qc/synthetic_duplicate_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - provenance
+
+- id: sem_qc_blind_duplicate_lineage_id_001
+  suite: semantic_generalization
+  split: blind_acceptance
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "What if lineage has two rows for the same LabFlow sample?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_duplicate_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - lineage
+
+- id: sem_qc_blind_no_retro_validate_001
+  suite: semantic_generalization
+  split: blind_acceptance
+  source_case_id: q_qc_001
+  category: downstream_qc_provenance
+  question: "Does a clean-looking QC metric make a bad upstream batch okay?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - provenance
+
+- id: sem_qc_blind_no_causality_001
+  suite: semantic_generalization
+  split: blind_acceptance
+  source_case_id: q_qc_002
+  category: downstream_qc_provenance
+  question: "Can the agent tell me which lab step caused this downstream QC miss?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_FAILED_VALID_UPSTREAM_001
+  expected_task: explain_qc_failure
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - downstream_qc_metric_reference.md
+  required_tool_calls:
+    - explain_qc_failure
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - no causal inference
+
+- id: sem_qc_blind_unmatched_manual_001
+  suite: semantic_generalization
+  split: blind_acceptance
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "The sequencer summary has an ID that is not in LabFlow. What is the safe route?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - lineage
+
+- id: sem_qc_blind_missing_ancestry_001
+  suite: semantic_generalization
+  split: blind_acceptance
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "There is a downstream result but not enough ancestry. What should the assistant do?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - sample_ancestry_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - provenance
+    - lineage
+
+- id: sem_qc_blind_missing_qc_001
+  suite: semantic_generalization
+  split: blind_acceptance
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "What if lineage expects a sample but the QC file has no row for it?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - validate_qc_provenance
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - provenance
+
+- id: sem_qc_blind_failed_valid_upstream_001
+  suite: semantic_generalization
+  split: blind_acceptance
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "The upstream workflow was valid, but downstream QC failed. Explain safely."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_FAILED_VALID_UPSTREAM_001
+  expected_task: explain_qc_failure
+  expected_unsupported: false
+  required_source_families:
+    - downstream_qc_metric_reference.md
+    - ngs_qc_provenance_policy.md
+  required_tool_calls:
+    - explain_qc_failure
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - downstream QC
+    - lineage
+
+- id: sem_qc_blind_lineage_preview_001
+  suite: semantic_generalization
+  split: blind_acceptance
+  source_case_id: q_qc_004
+  category: downstream_qc_provenance
+  question: "Show the lineage connection as a preview only."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - lab_to_analysis_lineage_policy.md
+  required_tool_calls:
+    - generate_lab_to_analysis_lineage
+  expected_tool_modes:
+    generate_lab_to_analysis_lineage: dry_run
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - lineage
+    - report
+
+- id: sem_qc_blind_ingest_001
+  suite: semantic_generalization
+  split: blind_acceptance
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "Load the downstream QC summary and check the thresholds."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  expected_task: answer_workflow_question
+  expected_unsupported: false
+  required_source_families:
+    - downstream_qc_metric_reference.md
+  required_tool_calls:
+    - ingest_ngs_qc_results
+  forbidden_tool_calls:
+    - generate_janus_csv
+  expected_retrieval_terms:
+    - metrics
+    - ingest

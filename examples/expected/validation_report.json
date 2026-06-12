@@ -4,24 +4,28 @@
     "high_concentration_split_required": true,
     "in_place_normalization_selected": true,
     "janus_generation_blocked_until_errors_resolved": true,
+    "lineage_report_generated": true,
     "missing_blank": true,
-    "missing_concentration": true
+    "missing_concentration": true,
+    "qc_failure_explanation_no_root_cause": true,
+    "qc_provenance_flags_manual_review": true,
+    "qc_results_ingested": true
   },
   "demo_id": "stage16_rna_norm_requant",
   "eval": {
     "eval_run_id": "demo_eval_stage16",
     "metrics": {
-      "case_count": 37,
-      "citation_precision_proxy": 0.3198198198198198,
+      "case_count": 45,
+      "citation_precision_proxy": 0.3296296296296296,
       "disallowed_answer_violations": 0,
       "failed_count": 0,
-      "latency_ms_avg": 0.42471955089855035,
-      "latency_ms_p50": 0.4211660707369447,
-      "latency_ms_p95": 0.5153329111635685,
-      "passed_count": 37,
-      "required_answer_contains_match": 0.09999999999999999,
+      "latency_ms_avg": 0.8623990385482708,
+      "latency_ms_p50": 0.7886249804869294,
+      "latency_ms_p95": 1.1048329761251807,
+      "passed_count": 45,
+      "required_answer_contains_match": 0.09703703703703703,
       "retrieval_recall_at_k": 1.0,
-      "tool_call_expectation_match": 0.5675675675675675,
+      "tool_call_expectation_match": 0.5333333333333333,
       "unsupported_claim_count": 0
     },
     "report_path": "/Users/joseph/labflow/examples/expected/eval_report.json"
@@ -34,6 +38,14 @@
     ],
     "invalid_status": "blocked",
     "preview_path": "/Users/joseph/labflow/examples/expected/janus_rna_preview.csv"
+  },
+  "qc": {
+    "agent_response_path": "/Users/joseph/labflow/examples/expected/qc_failure_agent_response.json",
+    "ingest_status": "ok",
+    "lineage_report_path": "/Users/joseph/labflow/examples/expected/lab_to_analysis_lineage_report.md",
+    "lineage_status": "ok",
+    "summary_path": "/Users/joseph/labflow/examples/expected/qc_summary_report.json",
+    "validation_status": "invalid"
   },
   "synthetic": true,
   "varioskan": {

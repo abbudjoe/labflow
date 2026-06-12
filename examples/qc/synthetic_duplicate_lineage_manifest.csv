@@ -1,0 +1,3 @@
+sample_id,lab_batch_id,quant_batch_id,normalization_batch_id,requant_batch_id,upstream_workflow_valid,has_ancestry
+RNA_DEMO_DUPLICATE_LINEAGE_001,RNA_BATCH_FIXED_001,RNA_QUANT_001,RNA_NORM_001,RNA_REQUANT_001,true,true
+RNA_DEMO_DUPLICATE_LINEAGE_001,RNA_BATCH_FIXED_002,RNA_QUANT_002,RNA_NORM_002,RNA_REQUANT_002,true,true

@@ -26,6 +26,16 @@ from labflow_core.norm.planner import (
 from labflow_core.norm.requant import RnaRequantPolicy, RnaWorkflowResult, process_rna_workflow
 from labflow_core.norm.split import SplitConfig
 from labflow_core.norm.targets import NormalizationTarget
+from labflow_core.qc import (
+    build_qc_summary_report,
+    evaluate_qc_results,
+    lineage_report_markdown,
+    parse_ngs_qc_csv,
+    read_lineage_manifest,
+    validate_qc_provenance_records,
+)
+from labflow_core.qc.models import QcProvenanceRecord, QcProvenanceReport
+from labflow_core.qc.processor import thresholds_from_config
 from labflow_core.quant.processors import (
     QuantificationConfig,
     QuantificationResult,
@@ -304,6 +314,190 @@ def generate_janus_csv(
     )
 
 
+def ingest_ngs_qc_results(
+    qc_csv: str,
+    thresholds: dict[str, Any] | None = None,
+) -> JsonDict:
+    payload = {"qc_csv": qc_csv, "thresholds": thresholds or {}}
+    tool_name = "ingest_ngs_qc_results"
+    try:
+        parsed_thresholds = thresholds_from_config(thresholds)
+        rows = parse_ngs_qc_csv(Path(qc_csv))
+        evaluations = evaluate_qc_results(rows, parsed_thresholds)
+    except Exception as exc:  # noqa: BLE001 - tools must return structured errors.
+        return _exception_result(tool_name, payload, exc)
+    warnings = _qc_code_warnings(
+        [
+            code.value
+            for evaluation in evaluations
+            for code in evaluation.exception_codes
+        ]
+    )
+    return _result(
+        tool_name=tool_name,
+        status=ToolStatus.OK,
+        warnings=warnings,
+        artifacts=[
+            ToolArtifact(
+                artifact_id=_artifact_id("ngs_qc_evaluations", payload),
+                artifact_type="ngs_qc_evaluations",
+                name="ngs_qc_evaluations.json",
+                data=[evaluation.to_json_dict() for evaluation in evaluations],
+            )
+        ],
+        payload=payload,
+    )
+
+
+def validate_qc_provenance(
+    qc_csv: str,
+    lineage_csv: str,
+    thresholds: dict[str, Any] | None = None,
+) -> JsonDict:
+    payload = {"qc_csv": qc_csv, "lineage_csv": lineage_csv, "thresholds": thresholds or {}}
+    tool_name = "validate_qc_provenance"
+    try:
+        report = _load_qc_provenance_report(qc_csv, lineage_csv, thresholds)
+    except Exception as exc:  # noqa: BLE001 - tools must return structured errors.
+        return _exception_result(tool_name, payload, exc)
+    errors = _qc_report_errors(report)
+    status = ToolStatus.VALID if not errors else ToolStatus.INVALID
+    return _result(
+        tool_name=tool_name,
+        status=status,
+        errors=errors,
+        artifacts=_qc_report_artifacts(report, payload),
+        payload=payload,
+    )
+
+
+def explain_qc_failure(
+    qc_csv: str,
+    sample_id: str,
+    lineage_csv: str | None = None,
+    thresholds: dict[str, Any] | None = None,
+) -> JsonDict:
+    payload = {
+        "qc_csv": qc_csv,
+        "sample_id": sample_id,
+        "lineage_csv": lineage_csv,
+        "thresholds": thresholds or {},
+    }
+    tool_name = "explain_qc_failure"
+    try:
+        if lineage_csv is None:
+            parsed_thresholds = thresholds_from_config(thresholds)
+            qc_rows = parse_ngs_qc_csv(Path(qc_csv))
+            report = validate_qc_provenance_records(qc_rows, (), parsed_thresholds)
+        else:
+            report = _load_qc_provenance_report(qc_csv, lineage_csv, thresholds)
+    except Exception as exc:  # noqa: BLE001 - tools must return structured errors.
+        return _exception_result(tool_name, payload, exc)
+
+    record = next((item for item in report.records if item.sample_id == sample_id), None)
+    if record is None:
+        return _result(
+            tool_name=tool_name,
+            status=ToolStatus.INVALID,
+            errors=[
+                ToolError(
+                    code=ExceptionCode.MISSING_QC_RESULT.value,
+                    message=f"No downstream QC result or lineage record was found for {sample_id}.",
+                    path="sample_id",
+                    suggested_action="Verify the sample ID and review the QC/lineage manifests.",
+                )
+            ],
+            payload=payload,
+        )
+    return _result(
+        tool_name=tool_name,
+        status=ToolStatus.OK if not record.manual_review_required else ToolStatus.INVALID,
+        errors=_qc_record_errors(record) if record.manual_review_required else [],
+        artifacts=[
+            ToolArtifact(
+                artifact_id=_artifact_id("qc_failure_explanation", payload),
+                artifact_type="qc_failure_explanation",
+                name=f"{sample_id}.qc_explanation.json",
+                data={
+                    "sample_id": record.sample_id,
+                    "read_count": record.qc_result.read_count if record.qc_result else None,
+                    "q30_percent": record.qc_result.q30_percent if record.qc_result else None,
+                    "thresholds": report.thresholds.model_dump(mode="json"),
+                    "qc_status": record.qc_status.value,
+                    "provenance_status": record.provenance_status.value,
+                    "exception_codes": [code.value for code in record.exception_codes],
+                    "safe_interpretation": record.safe_interpretation,
+                    "root_cause_boundary": (
+                        "LabFlow reports observed downstream QC metrics and lineage gaps only; "
+                        "it does not infer a lab root cause or causal lab failure from QC alone."
+                    ),
+                },
+            )
+        ],
+        payload=payload,
+    )
+
+
+def generate_lab_to_analysis_lineage(
+    qc_csv: str,
+    lineage_csv: str,
+    dry_run: bool,
+    thresholds: dict[str, Any] | None = None,
+    approval_token: str | None = None,
+    output_dir: str | None = None,
+) -> JsonDict:
+    payload = {
+        "qc_csv": qc_csv,
+        "lineage_csv": lineage_csv,
+        "dry_run": dry_run,
+        "thresholds": thresholds or {},
+        "approval_token_present": approval_token is not None,
+        "output_dir": output_dir,
+    }
+    tool_name = "generate_lab_to_analysis_lineage"
+    try:
+        report = _load_qc_provenance_report(qc_csv, lineage_csv, thresholds)
+    except Exception as exc:  # noqa: BLE001 - tools must return structured errors.
+        return _exception_result(tool_name, payload, exc)
+    if not dry_run:
+        return _result(
+            tool_name=tool_name,
+            status=ToolStatus.BLOCKED,
+            errors=[
+                ToolError(
+                    code="COMMIT_MODE_NOT_AVAILABLE",
+                    message=(
+                        "Commit-mode lineage report generation requires durable artifact "
+                        "approval storage outside this optional Stage 19 extension."
+                    ),
+                    path="dry_run",
+                    suggested_action="Run with dry_run=true to preview the lineage report.",
+                )
+            ],
+            payload=payload,
+            mode="commit",
+            approval_token=approval_token,
+        )
+    return _result(
+        tool_name=tool_name,
+        status=ToolStatus.OK,
+        warnings=_qc_report_errors(report),
+        artifacts=[
+            *_qc_report_artifacts(report, payload),
+            ToolArtifact(
+                artifact_id=_artifact_id("lab_to_analysis_lineage_markdown", payload),
+                artifact_type="lab_to_analysis_lineage_markdown",
+                name="lab_to_analysis_lineage_report.md",
+                content_type="text/markdown",
+                data=lineage_report_markdown(report),
+            ),
+        ],
+        payload=payload,
+        mode="dry_run",
+        approval_token=approval_token,
+    )
+
+
 def compare_throughput(config_path: str) -> JsonDict:
     payload = {"config_path": config_path}
     tool_name = "compare_throughput"
@@ -557,6 +751,58 @@ def _janus_preview_artifacts(
     ]
 
 
+def _load_qc_provenance_report(
+    qc_csv: str,
+    lineage_csv: str,
+    thresholds: dict[str, Any] | None,
+) -> QcProvenanceReport:
+    parsed_thresholds = thresholds_from_config(thresholds)
+    qc_rows = parse_ngs_qc_csv(Path(qc_csv))
+    lineage_rows = read_lineage_manifest(Path(lineage_csv))
+    return validate_qc_provenance_records(qc_rows, lineage_rows, parsed_thresholds)
+
+
+def _qc_report_artifacts(report: QcProvenanceReport, payload: JsonDict) -> list[ToolArtifact]:
+    return [
+        ToolArtifact(
+            artifact_id=_artifact_id("downstream_qc_summary", payload),
+            artifact_type="downstream_qc_summary",
+            name="downstream_qc_summary.json",
+            data=build_qc_summary_report(report),
+        )
+    ]
+
+
+def _qc_report_errors(report: QcProvenanceReport) -> list[ToolError]:
+    errors: list[ToolError] = []
+    for record in report.records:
+        errors.extend(_qc_record_errors(record))
+    return errors
+
+
+def _qc_record_errors(record: QcProvenanceRecord) -> list[ToolError]:
+    return [
+        ToolError(
+            code=code.value,
+            message=f"{record.sample_id}: {record.safe_interpretation}",
+            path=f"samples.{record.sample_id}",
+            suggested_action="Review QC metrics and LabFlow lineage before analysis use.",
+        )
+        for code in record.exception_codes
+    ]
+
+
+def _qc_code_warnings(codes: list[str]) -> list[ToolError]:
+    return [
+        ToolError(
+            code=code,
+            message=f"Downstream QC review flag observed: {code}.",
+            suggested_action="Run validate_qc_provenance with lineage before interpreting QC status.",
+        )
+        for code in dict.fromkeys(codes)
+    ]
+
+
 def _exception_result(tool_name: str, payload: JsonDict, exc: Exception) -> JsonDict:
     return _result(
         tool_name=tool_name,
@@ -670,5 +916,35 @@ _EXCEPTION_EXPLANATIONS: dict[str, JsonDict] = {
         "meaning": "Robot worklist generation was requested for an invalid batch.",
         "blocks_robot_transfer": True,
         "suggested_action": "Resolve deterministic validation errors and rerun dry-run.",
+    },
+    ExceptionCode.UNMATCHED_QC_SAMPLE_ID.value: {
+        "code": ExceptionCode.UNMATCHED_QC_SAMPLE_ID.value,
+        "meaning": "A downstream QC row does not match a known LabFlow sample ID.",
+        "blocks_robot_transfer": False,
+        "suggested_action": "Review sample identity and lineage before using the QC result.",
+    },
+    ExceptionCode.MISSING_QC_RESULT.value: {
+        "code": ExceptionCode.MISSING_QC_RESULT.value,
+        "meaning": "An expected downstream QC result is absent or missing required metrics.",
+        "blocks_robot_transfer": False,
+        "suggested_action": "Repeat or review downstream QC summary generation.",
+    },
+    ExceptionCode.QC_RESULT_FAILED.value: {
+        "code": ExceptionCode.QC_RESULT_FAILED.value,
+        "meaning": "Downstream QC summary metrics failed configured synthetic thresholds.",
+        "blocks_robot_transfer": False,
+        "suggested_action": "Review downstream QC metrics and do not infer lab root cause from QC alone.",
+    },
+    ExceptionCode.QC_PROVENANCE_GAP.value: {
+        "code": ExceptionCode.QC_PROVENANCE_GAP.value,
+        "meaning": "QC data cannot be fully linked to quantification, normalization, and re-quant lineage.",
+        "blocks_robot_transfer": False,
+        "suggested_action": "Resolve lineage records before using downstream QC in analysis summaries.",
+    },
+    ExceptionCode.DOWNSTREAM_QC_REVIEW_REQUIRED.value: {
+        "code": ExceptionCode.DOWNSTREAM_QC_REVIEW_REQUIRED.value,
+        "meaning": "Downstream QC or provenance evidence requires manual review.",
+        "blocks_robot_transfer": False,
+        "suggested_action": "Review metrics, sample identity, and lineage before analysis use.",
     },
 }

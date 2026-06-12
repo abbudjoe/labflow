@@ -168,6 +168,10 @@ def test_tool_registry_lists_required_tools() -> None:
         "generate_janus_csv",
         "compare_throughput",
         "explain_exception_code",
+        "ingest_ngs_qc_results",
+        "validate_qc_provenance",
+        "explain_qc_failure",
+        "generate_lab_to_analysis_lineage",
     } <= names
 
 

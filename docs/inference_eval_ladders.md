@@ -5,7 +5,7 @@ Stage 18.2 separates two different questions:
 1. Can an inference planner match deterministic safety behavior?
 2. Where does inference add value beyond a frozen deterministic baseline?
 
-`control_parity` answers the first question. It wraps the existing laddered model eval and preserves the overlapping tiers: `smoke_3`, `confidence_10`, `category_batch_readiness`, `category_guardrails`, and `full_golden`. The report shows both overlapping tier executions and the unique full-golden count. When a live provider is requested and available, this suite runs that provider and reports provider-specific parity metrics; it does not treat deterministic-only results as live parity evidence.
+`control_parity` answers the first question. It wraps the existing laddered model eval and preserves the overlapping tiers: `smoke_3`, `confidence_10`, `category_batch_readiness`, `category_guardrails`, `category_downstream_qc_provenance`, and `full_golden`. The report shows both overlapping tier executions and the unique full-golden count. When a live provider is requested and available, this suite runs that provider and reports provider-specific parity metrics; it does not treat deterministic-only results as live parity evidence.
 
 The language/UX suites answer the second question:
 
@@ -15,7 +15,20 @@ The language/UX suites answer the second question:
 
 ## Offline Run
 
-Use uv so the script has PyYAML and the local package dependencies without relying on ambient Python packages:
+Run the full ladder offline with one command:
+
+```bash
+make eval-ladder
+```
+
+Offline mode never calls OpenRouter. It records the live provider as skipped and
+emits JSON plus Markdown under:
+
+```text
+artifacts/inference_eval_ladders/
+```
+
+For ad hoc suite runs, call the script directly:
 
 ```bash
 uv run --python /Users/joseph/.local/bin/python3.12 \
@@ -27,23 +40,24 @@ uv run --python /Users/joseph/.local/bin/python3.12 \
   --verbose
 ```
 
-Run all suites offline:
-
-```bash
-uv run --python /Users/joseph/.local/bin/python3.12 \
-  --with pydantic --with pyyaml --with fastapi --with httpx \
-  python scripts/run_inference_eval_ladder.py --no-live --verbose
-```
-
-Offline mode never calls OpenRouter. It records the live provider as skipped and emits JSON plus Markdown under:
-
-```text
-artifacts/inference_eval_ladders/
-```
+Each run prints a terminal summary with pass/fail totals, primary-provider
+blocking counts, gate status, per-suite results, downstream QC status, and
+artifact paths.
 
 ## Live Run
 
-Live inference is opt-in:
+Live inference is opt-in and uses `.env` when present:
+
+```bash
+make eval-ladder-live
+```
+
+The Makefile target expands to a live OpenRouter run with unbuffered verbose
+progress, explicit live confirmation, a 20 second OpenRouter socket timeout, and
+a 45 second per-case wall-clock deadline.
+
+For a smaller live slice, call the script directly:
+
 
 ```bash
 set -a
@@ -56,6 +70,7 @@ uv run --python /Users/joseph/.local/bin/python3.12 \
   --suite semantic_generalization \
   --suite grounded_answer_quality \
   --live-openrouter \
+  --confirm-live-openrouter \
   --openrouter-timeout-seconds 20 \
   --max-case-seconds 45 \
   --verbose
@@ -65,6 +80,12 @@ The report stores provider/model IDs and sanitized diagnostics, not raw headers 
 `--openrouter-timeout-seconds` controls the socket timeout passed to OpenRouter.
 `--max-case-seconds` is a wall-clock guardrail around each eval case, so a stalled
 provider call is recorded and the run can continue.
+
+Stage 19 downstream QC coverage appears as a first-class category in JSON and
+Markdown reports. The QC gate reports case count, pass rate, safety violations,
+unsupported claims, groundedness failures, source recall, and tool-call
+correctness across control parity, semantic generalization, grounded answer
+quality, and repair planning.
 
 ## Interpreting Results
 

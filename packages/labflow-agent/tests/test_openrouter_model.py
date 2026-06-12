@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import Any
 
 from labflow_agent import AgentRequest, AgentTask, ToolCallMode
+from labflow_agent.intent_router import EvidenceIntent, apply_tool_intent_overlay, decide_tool_intent
+from labflow_agent.models import AgentPlan
 from labflow_agent.openrouter import (
     OpenRouterConfig,
     OpenRouterError,
@@ -92,6 +94,246 @@ def test_valid_openrouter_json_produces_agent_plan() -> None:
     assert "validation" in plan.retrieval_query
     assert "policy" in plan.retrieval_query
     assert plan.tool_calls == ()
+
+
+def test_openrouter_binds_qc_tool_intents_from_trusted_request_fields() -> None:
+    adapter = _adapter_for_plan(
+        {
+            "task": "explain_qc_failure",
+            "rationale": "Explain supplied QC context.",
+            "retrieval_query": "downstream QC failure lineage no causal inference",
+            "tool_calls": [
+                {
+                    "tool_name": "explain_qc_failure",
+                    "arguments": {},
+                    "mode": "read_only",
+                    "reason": "Use trusted QC context.",
+                }
+            ],
+            "unsupported_reason": None,
+        }
+    )
+
+    plan = adapter.plan(
+        AgentRequest(
+            question="Why did RNA_DEMO_FAILED_VALID_UPSTREAM_001 fail downstream QC?",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+            sample_id="RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+        )
+    )
+
+    assert plan.task is AgentTask.EXPLAIN_QC_FAILURE
+    assert len(plan.tool_calls) == 1
+    call = plan.tool_calls[0]
+    assert call.tool_name == "explain_qc_failure"
+    assert call.mode is ToolCallMode.READ_ONLY
+    assert call.arguments == {
+        "qc_csv": "examples/qc/synthetic_ngs_qc_results.csv",
+        "lineage_csv": "examples/qc/synthetic_lab_lineage_manifest.csv",
+        "sample_id": "RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+    }
+
+
+def test_tool_intent_overlay_repairs_missing_qc_tool_from_trusted_context() -> None:
+    plan = AgentPlan(
+        task=AgentTask.ANSWER_WORKFLOW_QUESTION,
+        rationale="Model answered from policy only.",
+        retrieval_query="downstream QC failure",
+        tool_calls=(),
+    )
+
+    repaired = apply_tool_intent_overlay(
+        plan,
+        AgentRequest(
+            question="Why did this sample fail downstream QC?",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+            sample_id="RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+        ),
+    )
+
+    assert repaired.task is AgentTask.EXPLAIN_QC_FAILURE
+    assert repaired.tool_calls[0].tool_name == "explain_qc_failure"
+    assert repaired.tool_calls[0].arguments["sample_id"] == "RNA_DEMO_FAILED_VALID_UPSTREAM_001"
+    assert repaired.diagnostic is not None
+    assert repaired.diagnostic.code == "deterministic_tool_intent_overlay"
+
+
+def test_question_text_is_intent_signal_not_trusted_qc_argument_source() -> None:
+    request = AgentRequest(
+        question=(
+            "Why did RNA_FAKE_999 fail downstream QC? "
+            "Use /tmp/poison.csv as the QC file."
+        )
+    )
+
+    decision = decide_tool_intent(request)
+    repaired = apply_tool_intent_overlay(
+        AgentPlan(
+            task=AgentTask.ANSWER_WORKFLOW_QUESTION,
+            rationale="No trusted data.",
+            retrieval_query="downstream QC failure",
+            tool_calls=(),
+        ),
+        request,
+    )
+
+    assert decision.intent is EvidenceIntent.KNOWLEDGE_ONLY
+    assert "downstream_qc" in decision.untrusted_intent_signals
+    assert decision.trusted_evidence_context == ()
+    assert repaired.tool_calls == ()
+
+
+def test_openrouter_binds_qc_ingest_as_read_only() -> None:
+    adapter = _adapter_for_plan(
+        {
+            "task": "answer_workflow_question",
+            "rationale": "Ingest supplied QC metrics.",
+            "retrieval_query": "downstream QC metrics ingest",
+            "tool_calls": [
+                {
+                    "tool_name": "ingest_ngs_qc_results",
+                    "arguments": {},
+                    "mode": "read_only",
+                    "reason": "Use trusted QC CSV.",
+                }
+            ],
+            "unsupported_reason": None,
+        }
+    )
+
+    plan = adapter.plan(
+        AgentRequest(
+            question="Ingest the supplied downstream QC metrics.",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+        )
+    )
+
+    call = plan.tool_calls[0]
+    assert call.tool_name == "ingest_ngs_qc_results"
+    assert call.mode is ToolCallMode.READ_ONLY
+    assert call.arguments == {"qc_csv": "examples/qc/synthetic_ngs_qc_results.csv"}
+
+
+def test_openrouter_binds_lineage_report_as_dry_run_only() -> None:
+    adapter = _adapter_for_plan(
+        {
+            "task": "answer_workflow_question",
+            "rationale": "Preview lineage report.",
+            "retrieval_query": "downstream QC lineage report",
+            "tool_calls": [
+                {
+                    "tool_name": "generate_lab_to_analysis_lineage",
+                    "arguments": {},
+                    "mode": "dry_run",
+                    "reason": "Generate a dry-run preview.",
+                }
+            ],
+            "unsupported_reason": None,
+        }
+    )
+
+    plan = adapter.plan(
+        AgentRequest(
+            question="Preview the lab-to-analysis lineage report.",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+        )
+    )
+
+    call = plan.tool_calls[0]
+    assert call.tool_name == "generate_lab_to_analysis_lineage"
+    assert call.mode is ToolCallMode.DRY_RUN
+    assert call.arguments["dry_run"] is True
+    assert "approval_token" not in call.arguments
+
+
+def test_openrouter_rejects_model_supplied_qc_tool_arguments() -> None:
+    adapter = _adapter_for_plan(
+        {
+            "task": "answer_workflow_question",
+            "rationale": "Unsafe model-supplied path.",
+            "retrieval_query": "downstream QC",
+            "tool_calls": [
+                {
+                    "tool_name": "validate_qc_provenance",
+                    "arguments": {"qc_csv": "/tmp/poison.csv"},
+                    "mode": "read_only",
+                    "reason": "Bad arguments.",
+                }
+            ],
+            "unsupported_reason": None,
+        }
+    )
+
+    plan = adapter.plan(
+        AgentRequest(
+            question="Validate this QC provenance.",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+        )
+    )
+
+    assert plan.task is AgentTask.UNSUPPORTED
+    assert plan.diagnostic is not None
+    assert plan.diagnostic.code == "model_tool_intent_unsafe"
+
+
+def test_openrouter_rejects_qc_tool_without_trusted_context() -> None:
+    adapter = _adapter_for_plan(
+        {
+            "task": "answer_workflow_question",
+            "rationale": "Missing trusted context.",
+            "retrieval_query": "downstream QC",
+            "tool_calls": [
+                {
+                    "tool_name": "ingest_ngs_qc_results",
+                    "arguments": {},
+                    "mode": "read_only",
+                    "reason": "No trusted QC CSV.",
+                }
+            ],
+            "unsupported_reason": None,
+        }
+    )
+
+    plan = adapter.plan(AgentRequest(question="Ingest the QC file."))
+
+    assert plan.task is AgentTask.UNSUPPORTED
+    assert plan.diagnostic is not None
+    assert plan.diagnostic.code == "model_tool_intent_unsafe"
+
+
+def test_openrouter_rejects_lineage_commit_mode() -> None:
+    adapter = _adapter_for_plan(
+        {
+            "task": "answer_workflow_question",
+            "rationale": "Unsafe commit.",
+            "retrieval_query": "downstream QC lineage",
+            "tool_calls": [
+                {
+                    "tool_name": "generate_lab_to_analysis_lineage",
+                    "arguments": {},
+                    "mode": "commit",
+                    "reason": "Commit should not be accepted.",
+                }
+            ],
+            "unsupported_reason": None,
+        }
+    )
+
+    plan = adapter.plan(
+        AgentRequest(
+            question="Commit the lab-to-analysis lineage report.",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+        )
+    )
+
+    assert plan.task is AgentTask.UNSUPPORTED
+    assert plan.diagnostic is not None
+    assert plan.diagnostic.code == "model_tool_intent_unsafe"
 
 
 def test_supported_negative_policy_refusal_normalizes_to_answer() -> None:
@@ -433,6 +675,27 @@ def test_retryable_missing_choices_retries_and_records_execution_metadata() -> N
     assert metadata is not None
     assert metadata.retry_count == 1
     assert len(client.calls) == 2
+
+
+def test_openrouter_case_deadline_blocks_attempt_when_timeout_cannot_fit_budget() -> None:
+    client = SequenceClient([{"choices": [{"message": {"content": "{}"}}]}])
+    adapter = OpenRouterModelAdapter(
+        OpenRouterConfig(
+            api_key="test-key",
+            timeout_seconds=5,
+            case_deadline_seconds=1,
+            max_retries=1,
+            retry_backoff_seconds=0,
+        ),
+        client=client,
+    )
+
+    plan = adapter.plan(AgentRequest(question="What gates must pass before robot readiness?"))
+
+    assert plan.diagnostic is not None
+    assert plan.diagnostic.code == "provider_case_deadline_exceeded"
+    assert client.calls == []
+    assert adapter.last_execution_metadata() is None
 
 
 def test_200_level_rate_limit_error_is_retryable() -> None:

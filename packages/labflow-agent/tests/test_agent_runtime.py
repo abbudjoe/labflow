@@ -7,16 +7,19 @@ import pytest
 from labflow_agent import (
     AgentPlan,
     AgentRequest,
+    AgentResponse,
     AgentTask,
     AgentToolRuntime,
     GroundedAnswerContext,
     GroundedAnswerDraft,
+    GroundedAnswerDraftValidator,
     LabFlowAgentRuntime,
     ModelMetadata,
     PlanDiagnostic,
     ToolCallMode,
     ToolCallPlan,
 )
+from labflow_agent.answer_model import GroundedAnswerDraftValidation
 
 
 class FailingAnswerModel:
@@ -29,6 +32,64 @@ class FailingAnswerModel:
     def draft(self, context: GroundedAnswerContext) -> GroundedAnswerDraft:
         del context
         raise RuntimeError("provider payload should not be exposed")
+
+
+class RepairingAnswerModel:
+    metadata = ModelMetadata(
+        model_id="repairing-answer-model",
+        version="test",
+        provider="test-answer",
+    )
+
+    def draft(self, context: GroundedAnswerContext) -> GroundedAnswerDraft:
+        del context
+        return GroundedAnswerDraft(
+            answer="Too thin.",
+            cited_source_ids=(),
+            cited_tool_call_ids=(),
+            next_safe_action="Review validation.",
+        )
+
+    def repair(
+        self,
+        context: GroundedAnswerContext,
+        *,
+        rejected_draft: GroundedAnswerDraft,
+        validation_reasons: tuple[str, ...],
+    ) -> GroundedAnswerDraft:
+        del context, rejected_draft, validation_reasons
+        return GroundedAnswerDraft(
+            answer="Repaired answer from fixed evidence.",
+            cited_source_ids=(),
+            cited_tool_call_ids=(),
+            next_safe_action="Review repaired evidence.",
+        )
+
+
+class TwoStepAcceptingValidator(GroundedAnswerDraftValidator):
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def apply(
+        self,
+        context: GroundedAnswerContext,
+        draft: GroundedAnswerDraft,
+    ) -> tuple[AgentResponse, GroundedAnswerDraftValidation]:
+        self.calls += 1
+        if self.calls == 1:
+            return context.baseline_response, GroundedAnswerDraftValidation(
+                accepted=False,
+                reasons=("draft_missing_claim_citations",),
+            )
+        return (
+            context.baseline_response.model_copy(
+                update={
+                    "answer": draft.answer,
+                    "next_safe_action": draft.next_safe_action,
+                }
+            ),
+            GroundedAnswerDraftValidation(accepted=True),
+        )
 
 
 class DiagnosticSourceFamilyModel:
@@ -51,6 +112,30 @@ class DiagnosticSourceFamilyModel:
                         "ai_guardrails_policy.md,batch_readiness_doctrine.md"
                     )
                 },
+            ),
+        )
+
+
+class UnsafeToolIntentModel:
+    metadata = ModelMetadata(
+        model_id="unsafe-tool-intent-model",
+        version="test",
+        provider="test",
+    )
+
+    def plan(self, request: AgentRequest) -> AgentPlan:
+        del request
+        return AgentPlan(
+            task=AgentTask.ANSWER_WORKFLOW_QUESTION,
+            rationale="Unsafe model-proposed tool should be stripped by overlay.",
+            retrieval_query="JANUS CSV generation",
+            tool_calls=(
+                ToolCallPlan(
+                    tool_name="generate_janus_csv",
+                    arguments={"dry_run": False, "output_dir": "/tmp/unsafe"},
+                    mode=ToolCallMode.COMMIT,
+                    reason="Unsafe proposed commit.",
+                ),
             ),
         )
 
@@ -195,6 +280,58 @@ def test_runtime_records_sanitized_answer_composer_fallback_diagnostic() -> None
     assert response.trace.answer_composer_diagnostic is not None
     assert response.trace.answer_composer_diagnostic.code == "answer_composer_error"
     assert "provider payload" not in response.trace.answer_composer_diagnostic.message
+
+
+def test_runtime_repairs_answer_composer_draft_once_before_fallback() -> None:
+    validator = TwoStepAcceptingValidator()
+    runtime = LabFlowAgentRuntime(
+        answer_model=RepairingAnswerModel(),
+        draft_validator=validator,
+    )
+
+    response = runtime.ask("What gates must pass before a batch is robot-ready?")
+
+    assert response.answer == "Repaired answer from fixed evidence."
+    assert response.trace is not None
+    assert response.trace.answer_composer_fallback is False
+    assert response.trace.answer_composer_final_answer_source == "live_draft_repaired"
+    assert response.trace.answer_composer_diagnostic is not None
+    assert response.trace.answer_composer_diagnostic.code == "answer_composer_draft_repaired"
+    assert validator.calls == 2
+
+
+def test_runtime_routes_qc_source_families_before_trace_supplementation() -> None:
+    runtime = LabFlowAgentRuntime(answer_model=None)
+
+    response = runtime.ask(
+        "Why did RNA_DEMO_FAILED_VALID_UPSTREAM_001 fail downstream QC?",
+        qc_csv=Path("examples/qc/synthetic_ngs_qc_results.csv").read_text(),
+        lineage_csv=Path("examples/qc/synthetic_lab_lineage_manifest.csv").read_text(),
+        sample_id="RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+    )
+
+    assert response.trace is not None
+    assert response.trace.model_diagnostic is not None
+    details = response.trace.model_diagnostic.details
+    required = str(details.get("required_source_families"))
+    assert "ngs_qc_provenance_policy.md" in required
+    assert "downstream_qc_metric_reference.md" in required
+    assert "lab_to_analysis_lineage_policy.md" in required
+    assert "ngs_qc_provenance_policy.md" in response.plan.retrieval_query
+    assert "initial_missing_source_families" in details
+
+
+def test_runtime_overlay_rejects_unknown_model_tools_before_execution() -> None:
+    runtime = LabFlowAgentRuntime(model=UnsafeToolIntentModel(), answer_model=None)
+
+    response = runtime.ask("Can you generate the JANUS CSV now?")
+
+    assert response.tool_calls == ()
+    assert response.trace is not None
+    assert response.trace.tool_calls == ()
+    assert response.trace.model_diagnostic is not None
+    assert response.trace.model_diagnostic.code == "deterministic_tool_intent_overlay"
+    assert response.trace.model_diagnostic.details["rejected_tools"] == "generate_janus_csv"
 
 
 def test_tool_runtime_blocks_non_dry_run_artifact_generation() -> None:

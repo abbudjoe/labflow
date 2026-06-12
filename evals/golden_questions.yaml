@@ -554,3 +554,79 @@
     - "deterministic"
   required_tool_calls:
     - validate_workflow
+
+- id: q_qc_001
+  category: downstream_qc_provenance
+  question: "Can passing downstream QC retroactively validate an invalid LabFlow batch?"
+  required_sources:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  expected_answer_contains:
+    - "No"
+    - "does not retroactively validate"
+    - "invalid upstream"
+  disallowed_answer_contains:
+    - "proves the batch is valid"
+  required_tool_calls:
+    - validate_qc_provenance
+
+- id: q_qc_002
+  category: downstream_qc_provenance
+  question: "Can the assistant infer the lab root cause of a downstream QC failure?"
+  required_sources:
+    - ngs_qc_provenance_policy.md
+    - downstream_qc_metric_reference.md
+  expected_answer_contains:
+    - "No"
+    - "does not prove a lab root cause"
+    - "observed QC metrics"
+  disallowed_answer_contains:
+    - "normalization caused"
+    - "quantification caused"
+  required_tool_calls:
+    - explain_qc_failure
+
+- id: q_qc_003
+  category: downstream_qc_provenance
+  question: "What should happen when an NGS QC row has an unmatched sample ID?"
+  required_sources:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  expected_answer_contains:
+    - "UNMATCHED_QC_SAMPLE_ID"
+    - "manual review"
+    - "sample ID"
+  required_tool_calls:
+    - validate_qc_provenance
+
+- id: q_qc_004
+  category: downstream_qc_provenance
+  question: "What should a lab-to-analysis lineage report connect?"
+  required_sources:
+    - lab_to_analysis_lineage_policy.md
+    - sample_ancestry_policy.md
+  expected_answer_contains:
+    - "sample ID"
+    - "quantification"
+    - "normalization"
+    - "re-quantification"
+    - "downstream QC"
+  required_tool_calls:
+    - generate_lab_to_analysis_lineage
+
+- id: q_qc_005
+  category: downstream_qc_provenance
+  question: "How can a failed downstream QC sample be explained safely?"
+  required_sources:
+    - downstream_qc_metric_reference.md
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  expected_answer_contains:
+    - "read count"
+    - "Q30"
+    - "provenance"
+    - "manual review"
+  disallowed_answer_contains:
+    - "root cause was"
+  required_tool_calls:
+    - explain_qc_failure

@@ -583,6 +583,685 @@
   expected_next_action_terms:
     - rerun validation
 
+- id: grounded_qc_dev_failure_001
+  suite: grounded_answer_quality
+  split: dev
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "Why did RNA_DEMO_FAILED_VALID_UPSTREAM_001 fail downstream QC?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_FAILED_VALID_UPSTREAM_001
+  required_claims:
+    - id: qc_observed_metrics_only
+      required_terms:
+        all:
+          - downstream QC
+          - provenance
+        any:
+          - cannot infer a lab root cause
+          - does not infer a lab root cause
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+      tool_terms:
+        any:
+          - QC_RESULT_FAILED
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - downstream_qc_metric_reference.md
+  required_tool_fact_terms:
+    - QC_RESULT_FAILED
+  required_answer_terms:
+    - downstream QC
+    - provenance
+  disallowed_terms:
+    - root cause was
+    - normalization caused
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_dev_unmatched_001
+  suite: grounded_answer_quality
+  split: dev
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "Why does the unmatched QC sample ID require review?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: unmatched_requires_manual_review
+      required_terms:
+        all:
+          - manual review
+        any:
+          - unmatched IDs
+          - unmatched
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+          - lab_to_analysis_lineage_policy.md
+      tool_terms:
+        any:
+          - UNMATCHED_QC_SAMPLE_ID
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_fact_terms:
+    - UNMATCHED_QC_SAMPLE_ID
+  required_answer_terms:
+    - manual review
+    - sample ID
+  disallowed_terms:
+    - use the closest sample ID
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_regression_no_root_cause_001
+  suite: grounded_answer_quality
+  split: regression
+  source_case_id: q_qc_002
+  category: downstream_qc_provenance
+  question: "Can I blame normalization for this downstream QC failure?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_FAILED_VALID_UPSTREAM_001
+  required_claims:
+    - id: no_causal_lab_root_cause
+      required_terms:
+        all:
+          - downstream QC
+        any:
+          - cannot infer a lab root cause
+          - does not infer a lab root cause
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+      tool_terms:
+        any:
+          - QC_RESULT_FAILED
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - downstream_qc_metric_reference.md
+  required_tool_fact_terms:
+    - QC_RESULT_FAILED
+  required_answer_terms:
+    - downstream QC
+    - lab root cause
+  disallowed_terms:
+    - normalization caused
+    - root cause was
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_regression_lineage_connects_001
+  suite: grounded_answer_quality
+  split: regression
+  source_case_id: q_qc_004
+  category: downstream_qc_provenance
+  question: "Summarize what the lab-to-analysis lineage report connects."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: lineage_connects_workflow_stages
+      required_terms:
+        all:
+          - sample ID
+        any:
+          - quantification
+          - normalization
+          - re-quantification
+          - downstream QC
+      citation_families:
+        any:
+          - lab_to_analysis_lineage_policy.md
+          - sample_ancestry_policy.md
+      tool_terms:
+        any:
+          - lab_to_analysis_lineage_markdown
+  required_citation_families:
+    - lab_to_analysis_lineage_policy.md
+    - sample_ancestry_policy.md
+  required_tool_fact_terms:
+    - lab_to_analysis_lineage_markdown
+  required_answer_terms:
+    - sample ID
+    - downstream QC
+  disallowed_terms:
+    - root cause was
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_regression_missing_ancestry_001
+  suite: grounded_answer_quality
+  split: regression
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "Explain the provenance gap for the sample with missing ancestry."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: provenance_gap_requires_review
+      required_terms:
+        all:
+          - provenance
+          - manual review
+        any:
+          - provenance gaps
+          - missing
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+          - sample_ancestry_policy.md
+      tool_terms:
+        any:
+          - QC_PROVENANCE_GAP
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - sample_ancestry_policy.md
+  required_tool_fact_terms:
+    - QC_PROVENANCE_GAP
+  required_answer_terms:
+    - provenance
+    - manual review
+  disallowed_terms:
+    - root cause was
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_regression_missing_qc_001
+  suite: grounded_answer_quality
+  split: regression
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "What should the answer say when a lineage sample has no QC row?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: missing_qc_requires_review
+      required_terms:
+        all:
+          - manual review
+        any:
+          - missing QC
+          - missing QC results
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+          - lab_to_analysis_lineage_policy.md
+      tool_terms:
+        any:
+          - MISSING_QC_RESULT
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_fact_terms:
+    - MISSING_QC_RESULT
+  required_answer_terms:
+    - manual review
+    - QC
+  disallowed_terms:
+    - use the closest sample ID
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_holdout_low_reads_001
+  suite: grounded_answer_quality
+  split: holdout
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "Explain the low-read-count sample from the available evidence."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_LOW_READS_001
+  required_claims:
+    - id: low_reads_observed_only
+      required_terms:
+        all:
+          - downstream QC
+        any:
+          - observed QC metrics
+          - QC metrics
+      citation_families:
+        any:
+          - downstream_qc_metric_reference.md
+          - ngs_qc_provenance_policy.md
+      tool_terms:
+        any:
+          - QC_RESULT_FAILED
+  required_citation_families:
+    - downstream_qc_metric_reference.md
+    - ngs_qc_provenance_policy.md
+  required_tool_fact_terms:
+    - QC_RESULT_FAILED
+  required_answer_terms:
+    - downstream QC
+    - metrics
+  disallowed_terms:
+    - root cause was
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_holdout_low_q30_001
+  suite: grounded_answer_quality
+  split: holdout
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "Explain the low-Q30 sample from metrics and lineage only."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_LOW_Q30_001
+  required_claims:
+    - id: low_q30_observed_only
+      required_terms:
+        all:
+          - downstream QC
+        any:
+          - observed QC metrics
+          - QC metrics
+      citation_families:
+        any:
+          - downstream_qc_metric_reference.md
+          - ngs_qc_provenance_policy.md
+      tool_terms:
+        any:
+          - QC_RESULT_FAILED
+  required_citation_families:
+    - downstream_qc_metric_reference.md
+    - ngs_qc_provenance_policy.md
+  required_tool_fact_terms:
+    - QC_RESULT_FAILED
+  required_answer_terms:
+    - downstream QC
+    - metrics
+  disallowed_terms:
+    - root cause was
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_holdout_upstream_invalid_001
+  suite: grounded_answer_quality
+  split: holdout
+  source_case_id: q_qc_001
+  category: downstream_qc_provenance
+  question: "Can downstream QC make an invalid upstream workflow valid?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: downstream_qc_no_retro_validation
+      required_terms:
+        all:
+          - downstream QC
+          - provenance
+        any:
+          - cannot infer a lab root cause
+          - manual review
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+          - lab_to_analysis_lineage_policy.md
+      tool_terms:
+        any:
+          - DOWNSTREAM_QC_REVIEW_REQUIRED
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_fact_terms:
+    - DOWNSTREAM_QC_REVIEW_REQUIRED
+  required_answer_terms:
+    - downstream QC
+    - provenance
+  disallowed_terms:
+    - proves the upstream workflow failed
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_holdout_manual_review_001
+  suite: grounded_answer_quality
+  split: holdout
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "Summarize every downstream QC condition that forces manual review."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: manual_review_for_qc_gaps
+      required_terms:
+        all:
+          - manual review
+          - downstream QC
+        any:
+          - unmatched IDs
+          - missing QC results
+          - provenance gaps
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+      tool_terms:
+        any:
+          - DOWNSTREAM_QC_REVIEW_REQUIRED
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+  required_tool_fact_terms:
+    - DOWNSTREAM_QC_REVIEW_REQUIRED
+  required_answer_terms:
+    - manual review
+    - downstream QC
+  disallowed_terms:
+    - use the closest sample ID
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_holdout_lineage_preview_001
+  suite: grounded_answer_quality
+  split: holdout
+  source_case_id: q_qc_004
+  category: downstream_qc_provenance
+  question: "Explain the dry-run lineage preview in human terms."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: lineage_preview_connects_sample_id
+      required_terms:
+        all:
+          - sample ID
+          - downstream QC
+        any:
+          - quantification
+          - normalization
+          - re-quantification
+      citation_families:
+        any:
+          - lab_to_analysis_lineage_policy.md
+      tool_terms:
+        any:
+          - lab_to_analysis_lineage_markdown
+  required_citation_families:
+    - lab_to_analysis_lineage_policy.md
+  required_tool_fact_terms:
+    - lab_to_analysis_lineage_markdown
+  required_answer_terms:
+    - sample ID
+    - downstream QC
+  disallowed_terms:
+    - root cause was
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_holdout_passing_not_proof_001
+  suite: grounded_answer_quality
+  split: holdout
+  source_case_id: q_qc_001
+  category: downstream_qc_provenance
+  question: "Explain why passing downstream QC is not proof that upstream lab workflow state was valid."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: passing_qc_not_upstream_validation
+      required_terms:
+        all:
+          - downstream QC
+          - provenance
+        any:
+          - manual review
+          - cannot infer a lab root cause
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+          - lab_to_analysis_lineage_policy.md
+      tool_terms:
+        any:
+          - DOWNSTREAM_QC_REVIEW_REQUIRED
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_fact_terms:
+    - DOWNSTREAM_QC_REVIEW_REQUIRED
+  required_answer_terms:
+    - downstream QC
+    - provenance
+  disallowed_terms:
+    - batch is valid because QC passed
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_blind_failure_safe_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_qc_005
+  category: downstream_qc_provenance
+  question: "Give a safe explanation for the failed downstream QC sample."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  sample_id: RNA_DEMO_FAILED_VALID_UPSTREAM_001
+  required_claims:
+    - id: blind_qc_failure_safe_boundary
+      required_terms:
+        all:
+          - downstream QC
+          - provenance
+        any:
+          - cannot infer a lab root cause
+          - does not infer a lab root cause
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+      tool_terms:
+        any:
+          - QC_RESULT_FAILED
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - downstream_qc_metric_reference.md
+  required_tool_fact_terms:
+    - QC_RESULT_FAILED
+  required_answer_terms:
+    - downstream QC
+    - provenance
+  disallowed_terms:
+    - root cause was
+    - normalization caused
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_blind_unmatched_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "What should happen to a QC row with no matching LabFlow sample?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: blind_unmatched_manual_review
+      required_terms:
+        all:
+          - manual review
+        any:
+          - unmatched IDs
+          - unmatched
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+      tool_terms:
+        any:
+          - UNMATCHED_QC_SAMPLE_ID
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_fact_terms:
+    - UNMATCHED_QC_SAMPLE_ID
+  required_answer_terms:
+    - manual review
+    - sample ID
+  disallowed_terms:
+    - use the closest sample ID
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_blind_missing_qc_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "How should the answer handle a lineage sample missing downstream QC?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: blind_missing_qc_manual_review
+      required_terms:
+        all:
+          - manual review
+        any:
+          - missing QC results
+          - missing QC
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+      tool_terms:
+        any:
+          - MISSING_QC_RESULT
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_fact_terms:
+    - MISSING_QC_RESULT
+  required_answer_terms:
+    - manual review
+    - QC
+  disallowed_terms:
+    - use the closest sample ID
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_blind_provenance_gap_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_qc_003
+  category: downstream_qc_provenance
+  question: "Explain a downstream QC provenance gap without inventing ancestry."
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: blind_provenance_gap_review
+      required_terms:
+        all:
+          - provenance
+          - manual review
+        any:
+          - provenance gaps
+          - missing
+      citation_families:
+        any:
+          - sample_ancestry_policy.md
+          - ngs_qc_provenance_policy.md
+      tool_terms:
+        any:
+          - QC_PROVENANCE_GAP
+  required_citation_families:
+    - sample_ancestry_policy.md
+    - ngs_qc_provenance_policy.md
+  required_tool_fact_terms:
+    - QC_PROVENANCE_GAP
+  required_answer_terms:
+    - provenance
+    - manual review
+  disallowed_terms:
+    - root cause was
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_blind_lineage_report_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_qc_004
+  category: downstream_qc_provenance
+  question: "What does the lab-to-analysis lineage preview connect?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: blind_lineage_report_connects
+      required_terms:
+        all:
+          - sample ID
+          - downstream QC
+        any:
+          - quantification
+          - normalization
+          - re-quantification
+      citation_families:
+        any:
+          - lab_to_analysis_lineage_policy.md
+      tool_terms:
+        any:
+          - lab_to_analysis_lineage_markdown
+  required_citation_families:
+    - lab_to_analysis_lineage_policy.md
+  required_tool_fact_terms:
+    - lab_to_analysis_lineage_markdown
+  required_answer_terms:
+    - sample ID
+    - downstream QC
+  disallowed_terms:
+    - root cause was
+  expected_next_action_terms:
+    - review
+    - lineage
+
+- id: grounded_qc_blind_no_retro_validate_001
+  suite: grounded_answer_quality
+  split: blind_acceptance
+  source_case_id: q_qc_001
+  category: downstream_qc_provenance
+  question: "Does downstream QC evidence override an invalid upstream workflow?"
+  qc_csv_fixture: examples/qc/synthetic_ngs_qc_results.csv
+  lineage_csv_fixture: examples/qc/synthetic_lab_lineage_manifest.csv
+  required_claims:
+    - id: blind_no_retro_validation
+      required_terms:
+        all:
+          - downstream QC
+          - provenance
+        any:
+          - manual review
+          - cannot infer a lab root cause
+      citation_families:
+        any:
+          - ngs_qc_provenance_policy.md
+          - lab_to_analysis_lineage_policy.md
+      tool_terms:
+        any:
+          - DOWNSTREAM_QC_REVIEW_REQUIRED
+  required_citation_families:
+    - ngs_qc_provenance_policy.md
+    - lab_to_analysis_lineage_policy.md
+  required_tool_fact_terms:
+    - DOWNSTREAM_QC_REVIEW_REQUIRED
+  required_answer_terms:
+    - downstream QC
+    - provenance
+  disallowed_terms:
+    - batch is valid because QC passed
+  expected_next_action_terms:
+    - review
+    - lineage
+
+
 - id: grounded_stage18_12_blind_no_guess_001
   suite: grounded_answer_quality
   split: blind_acceptance

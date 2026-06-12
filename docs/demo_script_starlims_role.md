@@ -10,6 +10,10 @@ Show how an AI-assisted LIMS workflow studio can help a developer understand
 why a synthetic NGS batch is not robot-ready without letting the model invent
 lab facts or bypass deterministic validation.
 
+The optional closing segment shows a downstream QC provenance handoff. It links
+synthetic QC summary rows back to LabFlow lineage, then explains one failed QC
+sample without inferring a lab root cause.
+
 ## Setup
 
 From the repo root:
@@ -73,7 +77,19 @@ uv run --python python3.12 --with fastapi --with pydantic --with pyyaml --with h
     examples/expected/audit_report.md
     ```
 
-13. Close with:
+13. Show the downstream QC provenance artifacts:
+
+    ```text
+    examples/expected/qc_summary_report.json
+    examples/expected/lab_to_analysis_lineage_report.md
+    examples/expected/qc_failure_agent_response.json
+    ```
+
+    Point out that failed QC metrics require review, unmatched sample IDs are
+    flagged, and the explanation cites QC/lineage policy without assigning a
+    lab root cause.
+
+14. Close with:
 
     ```text
     docs/eval_summary.md
@@ -93,7 +109,7 @@ python3 scripts/run_demo.py --output-dir /tmp/labflow-portfolio-demo
 Expected summary:
 
 ```text
-invalid_errors=<nonzero> fixed_janus=ok eval_passed=<passed>/<cases>
+invalid_errors=<nonzero> fixed_janus=ok qc_lineage=ok eval_passed=<passed>/<cases>
 ```
 
 Run the interactive RAG demo:

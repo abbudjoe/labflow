@@ -14,6 +14,10 @@ from typing import Any, NotRequired, Protocol, TypedDict
 from pydantic import ValidationError
 
 from labflow_agent.answer_model import domain_concepts_for_text
+from labflow_agent.intent_router import (
+    apply_tool_intent_overlay,
+    bind_trusted_tool_call,
+)
 from labflow_agent.models import (
     AgentPlan,
     AgentRequest,
@@ -31,7 +35,16 @@ DEFAULT_OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 DEFAULT_OPENROUTER_MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free"
 OPENROUTER_ADAPTER_VERSION = "openrouter-adapter-0.1.0"
 
-_ALLOWED_MODEL_TOOL_INTENTS = frozenset({"validate_batch", "explain_exception_code"})
+_ALLOWED_MODEL_TOOL_INTENTS = frozenset(
+    {
+        "validate_batch",
+        "explain_exception_code",
+        "ingest_ngs_qc_results",
+        "validate_qc_provenance",
+        "explain_qc_failure",
+        "generate_lab_to_analysis_lineage",
+    }
+)
 _SENSITIVE_RE = re.compile(r"(sk-or-[A-Za-z0-9_-]+|Bearer\s+[A-Za-z0-9._-]+)", re.IGNORECASE)
 _RETRYABLE_HTTP_STATUSES = frozenset({408, 429, 500, 502, 503, 504})
 _RETRYABLE_CODES = frozenset(
@@ -100,6 +113,24 @@ _RETRIEVAL_ALLOWED_TERMS = frozenset(
         "requant",
         "re-quant",
         "downstream",
+        "qc",
+        "q30",
+        "read",
+        "reads",
+        "lineage",
+        "provenance",
+        "analysis",
+        "unmatched",
+        "root",
+        "cause",
+        "manual",
+        "review",
+        "metrics",
+        "ingest",
+        "import",
+        "parse",
+        "load",
+        "report",
     }
 )
 _RETRIEVAL_MAX_TOKENS = 12
@@ -371,6 +402,8 @@ class OpenRouterConfig:
     fallback_models: tuple[str, ...] = ()
     enable_metadata: bool = False
     response_format: str = "json_object"
+    case_deadline_seconds: float | None = None
+    reasoning_effort: str | None = None
 
 
 @dataclass(frozen=True)
@@ -403,6 +436,8 @@ class UrlLibOpenRouterClient:
             "messages": messages,
             "temperature": 0,
         }
+        if self._config.reasoning_effort:
+            payload["reasoning_effort"] = self._config.reasoning_effort
         if response_format is not None:
             payload["response_format"] = response_format
         request = urllib.request.Request(
@@ -583,14 +618,21 @@ def _messages_for_request(request: AgentRequest) -> list[JsonDict]:
         "You are planning for LabFlow AI Studio. Return only one JSON object. "
         "LabFlow is synthetic and non-clinical. Deterministic validators own lab truth. "
         "Do not invent sample IDs, concentrations, wells, standards, blanks, workflow YAML, "
-        "batch IDs, file paths, or JANUS artifacts. You may suggest only these tool intents: "
-        "validate_batch and explain_exception_code. Use read_only mode. "
+        "batch IDs, file paths, QC paths, lineage paths, or JANUS artifacts. "
+        "You may suggest only these tool intents: validate_batch, explain_exception_code, "
+        "ingest_ngs_qc_results, validate_qc_provenance, explain_qc_failure, and "
+        "generate_lab_to_analysis_lineage. Use read_only mode except "
+        "generate_lab_to_analysis_lineage, which must use dry_run mode. "
         "Route corpus-policy questions about default standards, blank counts, guardrails, "
         "JANUS dry-run prerequisites, split workflow doctrine, units, ancestry, throughput, "
         "or DSL rules to answer_workflow_question with no tool_calls unless trusted "
         "workflow_yaml or a diagnostic_code is supplied in the user payload. "
         "Only choose validate_batch when has_workflow_yaml is true. "
         "Only choose explain_diagnostic when has_diagnostic_code is true. "
+        "Only choose ingest_ngs_qc_results when has_qc_csv is true. "
+        "Only choose validate_qc_provenance when has_qc_csv and has_lineage_csv are true. "
+        "Only choose explain_qc_failure when has_qc_csv and has_sample_id are true. "
+        "Only choose generate_lab_to_analysis_lineage when has_qc_csv and has_lineage_csv are true. "
         "For questions asking what the assistant should do before a tool action, answer from "
         "policy; do not emit a tool call unless the required trusted request data is present. "
         "Questions asking whether the assistant can invent, infer, assume, fill in, or fix "
@@ -602,7 +644,7 @@ def _messages_for_request(request: AgentRequest) -> list[JsonDict]:
         '{"task":"answer_workflow_question","rationale":"short reason",'
         '"retrieval_query":"search query","tool_calls":[],"unsupported_reason":null}. '
         "Allowed task values are answer_workflow_question, explain_diagnostic, validate_batch, "
-        "recommend_safe_next_action, and unsupported. "
+        "explain_qc_failure, recommend_safe_next_action, and unsupported. "
         "Tool calls, when present, must use this shape with empty arguments only: "
         '{"tool_name":"explain_exception_code","arguments":{},'
         '"mode":"read_only","reason":"short reason"}.'
@@ -612,6 +654,10 @@ def _messages_for_request(request: AgentRequest) -> list[JsonDict]:
         "has_workflow_yaml": request.workflow_yaml is not None,
         "has_batch_id": request.batch_id is not None,
         "has_diagnostic_code": request.diagnostic_code is not None,
+        "has_qc_csv": request.qc_csv is not None,
+        "has_lineage_csv": request.lineage_csv is not None,
+        "has_sample_id": request.sample_id is not None,
+        "sample_id": request.sample_id,
     }
     return [
         {"role": "system", "content": system},
@@ -632,8 +678,10 @@ def complete_chat_content(
     models = (config.model, *config.fallback_models)
     max_attempts = config.max_retries + 1
     last_error: OpenRouterError | None = None
+    started_at = time.monotonic()
     for model_index, requested_model in enumerate(models):
         for attempt_number in range(1, max_attempts + 1):
+            _raise_if_case_budget_exhausted(config, started_at, attempts)
             try:
                 response = _call_client(
                     client,
@@ -679,7 +727,7 @@ def complete_chat_content(
                 if not exc.retryable:
                     raise exc
                 if attempt_number < max_attempts:
-                    _sleep_before_retry(config, exc, attempt_number)
+                    _sleep_before_retry(config, exc, attempt_number, started_at=started_at)
                     continue
                 if model_index + 1 < len(models):
                     continue
@@ -969,15 +1017,47 @@ def _response_format(config: OpenRouterConfig, schema: JsonDict | None) -> JsonD
     return {"type": "json_object"}
 
 
-def _sleep_before_retry(config: OpenRouterConfig, error: OpenRouterError, attempt_number: int) -> None:
+def _sleep_before_retry(
+    config: OpenRouterConfig,
+    error: OpenRouterError,
+    attempt_number: int,
+    *,
+    started_at: float,
+) -> None:
     retry_after = error.details.get("retry_after_seconds")
     if isinstance(retry_after, (int, float)):
         delay = float(retry_after)
     else:
         delay = config.retry_backoff_seconds * (config.retry_backoff_multiplier ** (attempt_number - 1))
     delay = max(0.0, min(delay, config.retry_max_backoff_seconds))
+    _raise_if_case_budget_exhausted(config, started_at, getattr(error, "attempts", ()), delay)
     if delay > 0:
         time.sleep(delay)
+
+
+def _raise_if_case_budget_exhausted(
+    config: OpenRouterConfig,
+    started_at: float,
+    attempts: tuple[ProviderAttempt, ...] | list[ProviderAttempt],
+    next_delay_seconds: float = 0.0,
+) -> None:
+    if config.case_deadline_seconds is None:
+        return
+    elapsed = time.monotonic() - started_at
+    remaining = config.case_deadline_seconds - elapsed
+    required_budget = max(0.0, next_delay_seconds) + max(0.0, config.timeout_seconds)
+    if remaining >= required_budget:
+        return
+    raise OpenRouterError(
+        "provider_case_deadline_exceeded",
+        "OpenRouter retry budget was exhausted before the next provider attempt.",
+        details={
+            "attempt_count": len(attempts),
+            "remaining_case_budget_seconds": round(max(0.0, remaining), 3),
+            "required_budget_seconds": round(required_budget, 3),
+        },
+        retryable=False,
+    )
 
 
 def _retry_after_seconds(headers: dict[str, str]) -> float | None:
@@ -1071,7 +1151,10 @@ def _normalize_model_plan(model_plan: AgentPlan, request: AgentRequest) -> Agent
             diagnostic=_unsafe_tool_intent_diagnostic(),
         )
 
-    return model_plan.model_copy(update={"tool_calls": tuple(bound_calls)})
+    return apply_tool_intent_overlay(
+        model_plan.model_copy(update={"tool_calls": tuple(bound_calls)}),
+        request,
+    )
 
 
 def _unsupported_is_supported_policy_question(question: str) -> bool:
@@ -1293,34 +1376,15 @@ def _WELL_LIKE(term: str) -> bool:
 def _bind_tool_intent(call: ToolCallPlan, request: AgentRequest) -> ToolCallPlan | None:
     if not _tool_intent_has_safe_shape(call):
         return None
-
-    if call.tool_name == "validate_batch":
-        if request.workflow_yaml is None:
-            return None
-        return ToolCallPlan(
-            tool_name="validate_batch",
-            arguments={"batch_id": request.batch_id, "workflow_yaml": request.workflow_yaml},
-            reason=call.reason,
-        )
-
-    if call.tool_name == "explain_exception_code":
-        if request.diagnostic_code is None:
-            return None
-        return ToolCallPlan(
-            tool_name="explain_exception_code",
-            arguments={"exception_code": request.diagnostic_code},
-            reason=call.reason,
-        )
-
-    return None
+    return bind_trusted_tool_call(call, request)
 
 
 def _tool_intent_has_safe_shape(call: ToolCallPlan) -> bool:
-    return (
-        call.tool_name in _ALLOWED_MODEL_TOOL_INTENTS
-        and call.mode is ToolCallMode.READ_ONLY
-        and not call.arguments
-    )
+    if call.tool_name not in _ALLOWED_MODEL_TOOL_INTENTS or call.arguments:
+        return False
+    if call.tool_name == "generate_lab_to_analysis_lineage":
+        return call.mode is ToolCallMode.DRY_RUN
+    return call.mode is ToolCallMode.READ_ONLY
 
 
 def _unsupported_plan(

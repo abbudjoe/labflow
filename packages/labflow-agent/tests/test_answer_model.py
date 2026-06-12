@@ -73,6 +73,99 @@ def _context() -> tuple[GroundedAnswerDraftValidator, GroundedAnswerContext]:
     return GroundedAnswerDraftValidator(), context
 
 
+def _qc_context() -> tuple[GroundedAnswerDraftValidator, GroundedAnswerContext]:
+    citations = (
+        Citation(
+            chunk_id="ngs_qc_provenance_policy.md#chunk-001",
+            document_id="ngs_qc_provenance_policy.md",
+            source_path="knowledge/ngs_qc_provenance_policy.md",
+            title="NGS QC Provenance Policy",
+            section_path=("Core Rules",),
+            tags=("qc",),
+        ),
+        Citation(
+            chunk_id="lab_to_analysis_lineage_policy.md#chunk-001",
+            document_id="lab_to_analysis_lineage_policy.md",
+            source_path="knowledge/lab_to_analysis_lineage_policy.md",
+            title="Lab-To-Analysis Lineage Policy",
+            section_path=("Interpretation Rules",),
+            tags=("lineage",),
+        ),
+    )
+    rag_answer = RagAnswer(
+        answer=(
+            "Downstream QC failures can be explained from observed QC metrics "
+            "and lineage, but they do not prove a lab root cause."
+        ),
+        citations=citations,
+        retrieved_chunk_ids=tuple(citation.chunk_id for citation in citations),
+        unsupported=False,
+    )
+    plan = AgentPlan(
+        task=AgentTask.EXPLAIN_QC_FAILURE,
+        rationale="Explain downstream QC failure from deterministic tool output.",
+        retrieval_query="downstream QC provenance lineage no causal inference",
+    )
+    tool_call = ExecutedToolCall(
+        tool_name="explain_qc_failure",
+        arguments={"sample_id": "RNA_DEMO_FAILED_VALID_UPSTREAM_001"},
+        mode=ToolCallMode.READ_ONLY,
+        result={
+            "ok": False,
+            "status": "invalid",
+            "errors": [
+                {
+                    "code": "QC_RESULT_FAILED",
+                    "message": (
+                        "RNA_DEMO_FAILED_VALID_UPSTREAM_001: Downstream QC metrics failed "
+                        "configured thresholds; LabFlow cannot infer a lab root cause."
+                    ),
+                }
+            ],
+            "warnings": [
+                {
+                    "code": "DOWNSTREAM_QC_REVIEW_REQUIRED",
+                    "message": "Manual review is required before interpreting downstream QC failure.",
+                }
+            ],
+            "artifacts": [
+                {
+                    "artifact_type": "qc_failure_explanation",
+                    "data": {
+                        "sample_id": "RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+                        "read_count": 600000,
+                        "q30_percent": 70.0,
+                        "thresholds": {"min_read_count": 1000000, "min_q30_percent": 80.0},
+                        "safe_interpretation": (
+                            "Downstream QC metrics failed configured thresholds; "
+                            "LabFlow cannot infer a lab root cause from QC metrics alone."
+                        ),
+                    },
+                }
+            ],
+        },
+        audit_event_id="audit_qc_123",
+    )
+    baseline = AnswerComposer().compose(plan=plan, rag_answer=rag_answer, tool_calls=(tool_call,))
+    context = build_grounded_answer_context(
+        question="Why did RNA_DEMO_FAILED_VALID_UPSTREAM_001 fail downstream QC?",
+        plan=plan,
+        rag_answer=rag_answer,
+        source_chunks=baseline.sources,
+        source_text_by_id={
+            citations[0].chunk_id: (
+                "Failing downstream QC requires review, but it does not prove a lab root cause."
+            ),
+            citations[1].chunk_id: (
+                "Lineage reports connect sample IDs to quantification, normalization, re-quantification, and downstream QC."
+            ),
+        },
+        tool_calls=(tool_call,),
+        baseline_response=baseline,
+    )
+    return GroundedAnswerDraftValidator(), context
+
+
 def _claim_citations(context: GroundedAnswerContext) -> tuple[ClaimCitation, ...]:
     assert context.obligations is not None
     return tuple(
@@ -210,6 +303,38 @@ def test_negative_robot_ready_claim_is_accepted_for_invalid_context() -> None:
     assert response.answer == draft.answer
     assert response.task is context.baseline_response.task
     assert response.tool_calls == context.baseline_response.tool_calls
+
+
+def test_qc_evidence_packet_extracts_metric_status_and_boundary_terms() -> None:
+    _, context = _qc_context()
+
+    assert context.qc_evidence.present is True
+    assert "RNA_DEMO_FAILED_VALID_UPSTREAM_001" in context.qc_evidence.sample_ids
+    assert "QC_RESULT_FAILED" in context.qc_evidence.status_codes
+    assert "DOWNSTREAM_QC_REVIEW_REQUIRED" in context.qc_evidence.status_codes
+    assert "read_count" in context.qc_evidence.metric_terms
+    assert "q30_percent" in context.qc_evidence.metric_terms
+    assert context.qc_evidence.root_cause_boundary is True
+
+
+def test_qc_draft_missing_tool_metric_facts_falls_back() -> None:
+    validator, context = _qc_context()
+    draft = GroundedAnswerDraft(
+        answer=(
+            "Downstream QC can be explained from observed QC metrics and provenance, "
+            "but LabFlow cannot infer a lab root cause from downstream QC alone."
+        ),
+        cited_source_ids=tuple(source.chunk_id for source in context.source_chunks),
+        cited_tool_call_ids=tuple(evidence.evidence_id for evidence in context.tool_evidence),
+        claim_citations=_claim_citations(context),
+        next_safe_action="Review QC metrics and lineage without inferring root cause.",
+    )
+
+    response, validation = validator.apply(context, draft)
+
+    assert validation.accepted is False
+    assert any(reason.startswith("draft_missing_tool_fact:") for reason in validation.reasons)
+    assert response.answer == context.baseline_response.answer
 
 
 def test_missing_claim_citations_falls_back() -> None:
@@ -402,6 +527,57 @@ def test_safe_negative_infer_statement_is_accepted() -> None:
 
     assert validation.accepted is True
     assert "draft_claims_missing_lab_fact_inference" not in validation.reasons
+    assert response.answer == draft.answer
+
+
+def test_qc_causal_root_cause_overclaim_falls_back() -> None:
+    validator, context = _qc_context()
+    draft = GroundedAnswerDraft(
+        answer=(
+            "Downstream QC can be explained from observed QC metrics and provenance, "
+            "but the root cause was failed upstream normalization."
+        ),
+        cited_source_ids=(
+            "ngs_qc_provenance_policy.md#chunk-001",
+            "lab_to_analysis_lineage_policy.md#chunk-001",
+        ),
+        cited_tool_call_ids=("tool:0:explain_qc_failure",),
+        claim_citations=_claim_citations(context),
+        next_safe_action="Review QC metrics and LabFlow lineage without inferring a lab root cause.",
+        blocked_reason="explain_qc_failure returned status invalid.",
+    )
+
+    response, validation = validator.apply(context, draft)
+
+    assert validation.accepted is False
+    assert "draft_claims_downstream_qc_causal_overclaim" in validation.reasons
+    assert response.answer == context.baseline_response.answer
+
+
+def test_qc_negative_root_cause_boundary_is_accepted() -> None:
+    validator, context = _qc_context()
+    draft = GroundedAnswerDraft(
+        answer=(
+            "RNA_DEMO_FAILED_VALID_UPSTREAM_001 has QC_RESULT_FAILED with read_count "
+            "600000 and q30_percent 70.0, so downstream QC can be explained from "
+            "observed QC metrics and provenance. DOWNSTREAM_QC_REVIEW_REQUIRED applies, "
+            "and lineage connects quantification, normalization, re-quantification, "
+            "and downstream QC by sample ID. This does not prove a lab root cause."
+        ),
+        cited_source_ids=(
+            "ngs_qc_provenance_policy.md#chunk-001",
+            "lab_to_analysis_lineage_policy.md#chunk-001",
+        ),
+        cited_tool_call_ids=("tool:0:explain_qc_failure",),
+        claim_citations=_claim_citations(context),
+        next_safe_action="Review QC metrics and LabFlow lineage without inferring a lab root cause.",
+        blocked_reason="explain_qc_failure returned status invalid.",
+    )
+
+    response, validation = validator.apply(context, draft)
+
+    assert validation.accepted is True
+    assert "draft_claims_downstream_qc_causal_overclaim" not in validation.reasons
     assert response.answer == draft.answer
 
 

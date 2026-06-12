@@ -1,0 +1,214 @@
+{
+  "answer": "I checked deterministic downstream QC/provenance tool output before explaining this sample. Downstream QC metrics failed configured thresholds; LabFlow cannot infer a lab root cause from QC metrics alone. LabFlow reports observed downstream QC metrics and lineage gaps only; it does not infer a lab root cause or causal lab failure from QC alone. Deterministic validation reported: QC_RESULT_FAILED: RNA_DEMO_FAILED_VALID_UPSTREAM_001: Downstream QC metrics failed configured thresholds; LabFlow cannot infer a lab root cause from QC metrics alone.; DOWNSTREAM_QC_REVIEW_REQUIRED: RNA_DEMO_FAILED_VALID_UPSTREAM_001: Downstream QC metrics failed configured thresholds; LabFlow cannot infer a lab root cause from QC metrics alone.. The LabFlow knowledge corpus supports this from cited sources: - The lineage report links records by sample ID and batch IDs. - Downstream QC is a summary-metric review surface, not a FASTQ parser,   aligner, variant caller, or differential expression workflow. Sources: Lab-To-Analysis Lineage Policy (lab_to_analysis_lineage_policy.md, Interpretation Rules); NGS QC Provenance Policy (ngs_qc_provenance_policy.md, Core Rules).",
+  "blocked_reason": "explain_qc_failure returned status invalid.",
+  "next_safe_action": "Review QC metrics and LabFlow lineage; do not infer lab root cause from QC alone.",
+  "plan": {
+    "diagnostic": null,
+    "rationale": "Concrete downstream QC context was supplied and must be explained with deterministic QC tools.",
+    "retrieval_query": "Why did RNA_DEMO_FAILED_VALID_UPSTREAM_001 fail downstream QC? downstream QC provenance lineage no causal inference ngs_qc_provenance_policy lab_to_analysis_lineage_policy",
+    "task": "explain_qc_failure",
+    "tool_calls": [
+      {
+        "arguments": {
+          "lineage_csv": "/Users/joseph/labflow/examples/qc/synthetic_lab_lineage_manifest.csv",
+          "qc_csv": "/Users/joseph/labflow/examples/qc/synthetic_ngs_qc_results.csv",
+          "sample_id": "RNA_DEMO_FAILED_VALID_UPSTREAM_001"
+        },
+        "mode": "read_only",
+        "reason": "Explain the observed QC failure from metrics and lineage without inferring root cause.",
+        "tool_name": "explain_qc_failure"
+      }
+    ],
+    "unsupported_reason": null
+  },
+  "sources": [
+    {
+      "chunk_id": "lab_to_analysis_lineage_policy.md#chunk-005",
+      "document_id": "lab_to_analysis_lineage_policy.md",
+      "section_path": [
+        "Interpretation Rules"
+      ],
+      "source_path": "knowledge/lab_to_analysis_lineage_policy.md",
+      "title": "Lab-To-Analysis Lineage Policy"
+    },
+    {
+      "chunk_id": "ngs_qc_provenance_policy.md#chunk-004",
+      "document_id": "ngs_qc_provenance_policy.md",
+      "section_path": [
+        "Core Rules"
+      ],
+      "source_path": "knowledge/ngs_qc_provenance_policy.md",
+      "title": "NGS QC Provenance Policy"
+    },
+    {
+      "chunk_id": "sample_ancestry_policy.md#chunk-009",
+      "document_id": "sample_ancestry_policy.md",
+      "section_path": [
+        "RAG Answer Guidance"
+      ],
+      "source_path": "knowledge/sample_ancestry_policy.md",
+      "title": "Sample Ancestry Policy"
+    },
+    {
+      "chunk_id": "downstream_qc_metric_reference.md#chunk-007",
+      "document_id": "downstream_qc_metric_reference.md",
+      "section_path": [
+        "RAG Answer Guidance"
+      ],
+      "source_path": "knowledge/downstream_qc_metric_reference.md",
+      "title": "Downstream QC Metric Reference"
+    },
+    {
+      "chunk_id": "rna_norm_requant_sop.md#chunk-007",
+      "document_id": "rna_norm_requant_sop.md",
+      "section_path": [
+        "Expected Outputs"
+      ],
+      "source_path": "knowledge/rna_norm_requant_sop.md",
+      "title": "RNA Normalization and Re-Quantification SOP"
+    },
+    {
+      "chunk_id": "controlled_sop_dna_quantification.md#chunk-007",
+      "document_id": "controlled_sop_dna_quantification.md",
+      "section_path": [
+        "Responsibilities"
+      ],
+      "source_path": "knowledge/controlled_sop_dna_quantification.md",
+      "title": "LF-SOP-001 DNA Quantification by Fluorescence"
+    },
+    {
+      "chunk_id": "ai_guardrails_policy.md#chunk-005",
+      "document_id": "ai_guardrails_policy.md",
+      "section_path": [
+        "Human SOP Alignment"
+      ],
+      "source_path": "knowledge/ai_guardrails_policy.md",
+      "title": "AI Guardrails Policy"
+    },
+    {
+      "chunk_id": "janus_csv_worklist_spec.md#chunk-008",
+      "document_id": "janus_csv_worklist_spec.md",
+      "section_path": [
+        "Human SOP Alignment"
+      ],
+      "source_path": "knowledge/janus_csv_worklist_spec.md",
+      "title": "JANUS CSV Worklist Specification"
+    }
+  ],
+  "task": "explain_qc_failure",
+  "tool_calls": [
+    {
+      "arguments": {
+        "lineage_csv": "/Users/joseph/labflow/examples/qc/synthetic_lab_lineage_manifest.csv",
+        "qc_csv": "/Users/joseph/labflow/examples/qc/synthetic_ngs_qc_results.csv",
+        "sample_id": "RNA_DEMO_FAILED_VALID_UPSTREAM_001"
+      },
+      "audit_event_id": "audit_agent_8a8063fd80a54daf8deec830d84bae98_e5aec757fbb2",
+      "mode": "read_only",
+      "result": {
+        "artifacts": [
+          {
+            "artifact_id": "artifact_983909eba767726e",
+            "artifact_type": "qc_failure_explanation",
+            "content_type": "application/json",
+            "data": {
+              "exception_codes": [
+                "QC_RESULT_FAILED",
+                "DOWNSTREAM_QC_REVIEW_REQUIRED"
+              ],
+              "provenance_status": "DOWNSTREAM_QC_REVIEW_REQUIRED",
+              "qc_status": "FAIL",
+              "root_cause_boundary": "LabFlow reports observed downstream QC metrics and lineage gaps only; it does not infer a lab root cause or causal lab failure from QC alone.",
+              "safe_interpretation": "Downstream QC metrics failed configured thresholds; LabFlow cannot infer a lab root cause from QC metrics alone.",
+              "sample_id": "RNA_DEMO_FAILED_VALID_UPSTREAM_001"
+            },
+            "name": "RNA_DEMO_FAILED_VALID_UPSTREAM_001.qc_explanation.json"
+          }
+        ],
+        "audit_event": {
+          "action": "explain_qc_failure",
+          "actor_id": "labflow-agent",
+          "actor_type": "agent",
+          "approval_token_id": null,
+          "artifact_ids": [
+            "artifact_983909eba767726e"
+          ],
+          "audit_event_id": "audit_agent_8a8063fd80a54daf8deec830d84bae98_e5aec757fbb2",
+          "core_audit_event_id": "audit_f97a69e4c89240cf9f776e8019bf675f_527417f8c2df",
+          "dry_run_audit_event_id": null,
+          "exception_codes": [
+            "QC_RESULT_FAILED",
+            "DOWNSTREAM_QC_REVIEW_REQUIRED"
+          ],
+          "input_hash": "sha256:094eb309f4294b37a13bef3bce0c99dd0a22dc56d4d8a17f56df3edc65073b1f",
+          "mode": "read_only",
+          "result_status": "invalid",
+          "timestamp": "2026-06-11T20:29:33.266144Z",
+          "tool_name": "explain_qc_failure",
+          "workflow_id": null
+        },
+        "audit_event_id": "audit_agent_8a8063fd80a54daf8deec830d84bae98_e5aec757fbb2",
+        "core_audit_event_id": "audit_f97a69e4c89240cf9f776e8019bf675f_527417f8c2df",
+        "errors": [
+          {
+            "code": "QC_RESULT_FAILED",
+            "message": "RNA_DEMO_FAILED_VALID_UPSTREAM_001: Downstream QC metrics failed configured thresholds; LabFlow cannot infer a lab root cause from QC metrics alone.",
+            "path": "samples.RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+            "suggested_action": "Review QC metrics and LabFlow lineage before analysis use."
+          },
+          {
+            "code": "DOWNSTREAM_QC_REVIEW_REQUIRED",
+            "message": "RNA_DEMO_FAILED_VALID_UPSTREAM_001: Downstream QC metrics failed configured thresholds; LabFlow cannot infer a lab root cause from QC metrics alone.",
+            "path": "samples.RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+            "suggested_action": "Review QC metrics and LabFlow lineage before analysis use."
+          }
+        ],
+        "observability": {
+          "latency_ms": 0.3368749748915434,
+          "outcome_status": "invalid",
+          "tool_name": "explain_qc_failure",
+          "trace_id": "trace_tool_f2161e400ea84cb2bf266d394fec0d88"
+        },
+        "ok": false,
+        "status": "invalid",
+        "tool_name": "explain_qc_failure",
+        "warnings": []
+      },
+      "tool_name": "explain_qc_failure"
+    }
+  ],
+  "trace": {
+    "answer_composer_diagnostic": null,
+    "answer_composer_execution": null,
+    "answer_composer_fallback": false,
+    "cost_usd": null,
+    "input_tokens": null,
+    "latency_ms": 4.054000019095838,
+    "model_diagnostic": null,
+    "model_execution": null,
+    "model_id": "deterministic_fake_planner",
+    "model_provider": "labflow-local",
+    "model_version": "0.1.0",
+    "outcome_status": "blocked",
+    "output_tokens": null,
+    "prompt_id": "agent_planner",
+    "prompt_sha256": "sha256:fbf68cc39357fd3d98c67d16cd33d1cc7521cf989a964272064954f8988211a3",
+    "prompt_version": "0.1.0",
+    "request_id": "request_04d51ffc7cec4385b32c233de8fbc2f8",
+    "retrieved_chunk_ids": [
+      "lab_to_analysis_lineage_policy.md#chunk-005",
+      "ngs_qc_provenance_policy.md#chunk-004",
+      "sample_ancestry_policy.md#chunk-009",
+      "downstream_qc_metric_reference.md#chunk-007",
+      "rna_norm_requant_sop.md#chunk-007",
+      "controlled_sop_dna_quantification.md#chunk-007",
+      "ai_guardrails_policy.md#chunk-005",
+      "janus_csv_worklist_spec.md#chunk-008"
+    ],
+    "tool_calls": [
+      "explain_qc_failure"
+    ],
+    "trace_id": "trace_agent_ba21f505ed7c492caf430798af864079"
+  },
+  "unsupported": false
+}

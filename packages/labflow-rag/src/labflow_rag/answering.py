@@ -108,4 +108,10 @@ def _recommend_tools(query: str) -> tuple[str, ...]:
         tools.append("validate_workflow")
     if {"throughput", "batching"} & terms:
         tools.append("compare_throughput")
+    if {"qc", "ngs", "analysis", "lineage", "provenance"} & terms:
+        tools.append("validate_qc_provenance")
+    if {"failure", "failed"} & terms and {"qc", "ngs"} & terms:
+        tools.append("explain_qc_failure")
+    if {"lineage", "analysis"} & terms:
+        tools.append("generate_lab_to_analysis_lineage")
     return tuple(dict.fromkeys(tools))

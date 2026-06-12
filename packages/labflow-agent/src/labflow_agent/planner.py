@@ -2,7 +2,13 @@
 
 from __future__ import annotations
 
-from labflow_agent.models import AgentPlan, AgentRequest, AgentTask, ModelMetadata, ToolCallPlan
+from labflow_agent.models import (
+    AgentPlan,
+    AgentRequest,
+    AgentTask,
+    ModelMetadata,
+)
+from labflow_agent.intent_router import base_plan_for_request
 
 UNSUPPORTED_TERMS = frozenset(
     {
@@ -38,36 +44,9 @@ class DeterministicFakeModel:
                 unsupported_reason="The request is not supported by the LabFlow corpus.",
             )
 
-        if request.diagnostic_code is not None:
-            return AgentPlan(
-                task=AgentTask.EXPLAIN_DIAGNOSTIC,
-                rationale="A diagnostic code was supplied and can be explained deterministically.",
-                retrieval_query=f"{question} {request.diagnostic_code}",
-                tool_calls=(
-                    ToolCallPlan(
-                        tool_name="explain_exception_code",
-                        arguments={"exception_code": request.diagnostic_code},
-                        reason="Explain the concrete diagnostic code using deterministic core metadata.",
-                    ),
-                ),
-            )
-
-        if request.workflow_yaml is not None:
-            return AgentPlan(
-                task=AgentTask.VALIDATE_BATCH,
-                rationale="Concrete workflow YAML was supplied, so deterministic validation is required.",
-                retrieval_query=question,
-                tool_calls=(
-                    ToolCallPlan(
-                        tool_name="validate_batch",
-                        arguments={
-                            "batch_id": request.batch_id,
-                            "workflow_yaml": request.workflow_yaml,
-                        },
-                        reason="Validate supplied workflow data before making any claim about it.",
-                    ),
-                ),
-            )
+        trusted_context_plan = base_plan_for_request(request)
+        if trusted_context_plan is not None:
+            return trusted_context_plan
 
         if _asks_for_next_action(terms):
             return AgentPlan(
@@ -84,9 +63,7 @@ class DeterministicFakeModel:
 
 
 def _asks_for_next_action(terms: set[str]) -> bool:
-    return "next" in terms or "recommend" in terms or "should" in terms
-
-
+    return "next" in terms or "recommend" in terms
 def _terms(text: str) -> set[str]:
     normalized = text.casefold().replace("-", " ").replace("_", " ")
     return {term.strip("?:.,;!()[]{}\"'") for term in normalized.split() if term.strip()}

@@ -38,7 +38,8 @@ class ToolPolicyError(ValueError):
 class ToolPolicy:
     """Classify and validate tool calls against the Stage 10 guardrail contract."""
 
-    _DRY_RUN_ARTIFACT_TOOLS = frozenset({"generate_janus_csv"})
+    _COMMITTABLE_DRY_RUN_ARTIFACT_TOOLS = frozenset({"generate_janus_csv"})
+    _DRY_RUN_ONLY_ARTIFACT_TOOLS = frozenset({"generate_lab_to_analysis_lineage"})
 
     def __init__(self, tool_definitions: dict[str, dict[str, Any]]) -> None:
         self._tool_definitions = tool_definitions
@@ -59,13 +60,20 @@ class ToolPolicy:
                 mode=planned.mode,
             )
 
-        if planned.tool_name in self._DRY_RUN_ARTIFACT_TOOLS:
-            return self._classify_artifact_tool(planned)
+        if planned.tool_name in self._COMMITTABLE_DRY_RUN_ARTIFACT_TOOLS:
+            return self._classify_artifact_tool(planned, committable=True)
+        if planned.tool_name in self._DRY_RUN_ONLY_ARTIFACT_TOOLS:
+            return self._classify_artifact_tool(planned, committable=False)
 
         msg = f"Non-read-only tool {planned.tool_name} is not allowlisted by policy."
         raise ToolPolicyError(msg)
 
-    def _classify_artifact_tool(self, planned: ToolCallPlan) -> PolicyDecision:
+    def _classify_artifact_tool(
+        self,
+        planned: ToolCallPlan,
+        *,
+        committable: bool,
+    ) -> PolicyDecision:
         if planned.mode is ToolCallMode.DRY_RUN:
             if planned.arguments.get("dry_run") is not True:
                 msg = f"Tool {planned.tool_name} must be called with dry_run=true in dry_run mode."
@@ -80,6 +88,9 @@ class ToolPolicy:
             )
 
         if planned.mode is ToolCallMode.COMMIT:
+            if not committable:
+                msg = f"Tool {planned.tool_name} is dry-run-only and cannot be committed."
+                raise ToolPolicyError(msg)
             if planned.arguments.get("dry_run") is not False:
                 msg = f"Tool {planned.tool_name} must be called with dry_run=false in commit mode."
                 raise ToolPolicyError(msg)

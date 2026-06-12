@@ -112,7 +112,7 @@ With credentials, a small live smoke can be run explicitly:
 ```text
 LABFLOW_OPENROUTER_MODEL=nvidia/nemotron-3-ultra-550b-a55b:free \
 OPENROUTER_API_KEY=... \
-python scripts/run_model_eval_comparison.py --live-openrouter --limit 3 --verbose --openrouter-timeout-seconds 20 --max-case-seconds 45
+python scripts/run_model_eval_comparison.py --live-openrouter --confirm-live-openrouter --limit 3 --verbose --openrouter-timeout-seconds 20 --max-case-seconds 45
 ```
 
 Live model behavior is not a deterministic gate. Treat it as exploratory evidence, not as a replacement for local tests or deterministic evals.
@@ -135,6 +135,7 @@ Default tiers are:
 - `confidence_10`
 - `category_batch_readiness`
 - `category_guardrails`
+- `category_downstream_qc_provenance`
 - `full_golden`
 
 Run selected tiers with repeated `--tier` flags:
@@ -143,4 +144,4 @@ Run selected tiers with repeated `--tier` flags:
 python scripts/run_model_eval_ladder.py --tier smoke_3 --tier category_batch_readiness --verbose
 ```
 
-Add `--live-openrouter` only for explicit live inference smoke runs.
+Add `--live-openrouter --confirm-live-openrouter` only for explicit live inference smoke runs.

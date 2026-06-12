@@ -56,6 +56,17 @@ It includes:
 - an in-place normalization sample with no destination container;
 - a JANUS-style dry-run preview.
 
+The optional downstream QC provenance segment uses:
+
+```text
+examples/qc/synthetic_ngs_qc_results.csv
+examples/qc/synthetic_lab_lineage_manifest.csv
+```
+
+It includes passing QC, low read count, low Q30, an unmatched sample ID, missing
+upstream ancestry, a missing QC result, an invalid upstream workflow, and a
+failed downstream QC sample with valid upstream lineage.
+
 ## Expected Artifacts
 
 The main generated files are:
@@ -66,6 +77,9 @@ examples/expected/janus_rna_preview.csv
 examples/expected/eval_report.json
 examples/expected/exception_report.csv
 examples/expected/audit_report.md
+examples/expected/qc_summary_report.json
+examples/expected/lab_to_analysis_lineage_report.md
+examples/expected/qc_failure_agent_response.json
 ```
 
 `validation_report.json` is the fastest human review entry point. Its `demo_cases` object should show `true` for:
@@ -75,11 +89,23 @@ examples/expected/audit_report.md
 - `high_concentration_split_required`;
 - `in_place_normalization_selected`;
 - `janus_generation_blocked_until_errors_resolved`;
-- `fixed_workflow_generates_janus_preview`.
+- `fixed_workflow_generates_janus_preview`;
+- `qc_results_ingested`;
+- `qc_provenance_flags_manual_review`;
+- `lineage_report_generated`;
+- `qc_failure_explanation_no_root_cause`.
 
 `janus_rna_preview.csv` is generated only from the fixed workflow path. It is a dry-run preview, not a robot-ready production artifact.
 
 `eval_report.json` is a retrieval-focused demo eval report over `evals/golden_questions.yaml` and `knowledge/`. It verifies that required sources are retrievable for the demo corpus without introducing live model inference.
+
+`lab_to_analysis_lineage_report.md` is a dry-run provenance artifact that
+connects quantification, normalization, re-quantification, and downstream QC by
+sample ID. It is not a production analysis handoff or clinical report.
+
+`qc_failure_agent_response.json` captures the local agent explanation for one
+failed downstream QC sample. The answer is grounded in QC and lineage policy and
+does not infer a lab root cause.
 
 ## Optional VS Code Review
 
@@ -111,3 +137,5 @@ The invalid workflow is separately checked through deterministic validation and 
 - Invalid batches do not produce JANUS previews.
 - Audit events are written for tool calls.
 - RAG evals run locally over checked-in knowledge files.
+- Downstream QC is summary/provenance only; it does not validate invalid
+  upstream workflows or infer causal lab failures.

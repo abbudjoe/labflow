@@ -26,6 +26,7 @@ DEFAULT_TIERS = (
     "confidence_10",
     "category_batch_readiness",
     "category_guardrails",
+    "category_downstream_qc_provenance",
     "full_golden",
 )
 
@@ -47,6 +48,11 @@ def main() -> int:
     parser.add_argument("--skip-full", action="store_true")
     parser.add_argument("--live-openrouter", action="store_true")
     parser.add_argument(
+        "--confirm-live-openrouter",
+        action="store_true",
+        help="Confirm explicit current-turn approval for live OpenRouter provider calls.",
+    )
+    parser.add_argument(
         "--openrouter-timeout-seconds",
         type=float,
         default=float(
@@ -63,6 +69,11 @@ def main() -> int:
     )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
+    if args.live_openrouter and not args.confirm_live_openrouter:
+        raise ValueError(
+            "--live-openrouter requires --confirm-live-openrouter to document explicit "
+            "current-turn approval for live provider calls."
+        )
 
     all_cases = load_golden_cases(_repo_path(args.cases))
     selected_tiers = _select_tiers(

@@ -1,0 +1,182 @@
+{
+  "pipeline_scope": "summary_metrics_only",
+  "records": [
+    {
+      "analysis_id": "ANALYSIS_001",
+      "exception_codes": [
+        "QC_RESULT_FAILED",
+        "DOWNSTREAM_QC_REVIEW_REQUIRED"
+      ],
+      "lab_batch_id": "RNA_BATCH_FIXED_001",
+      "manual_review_required": true,
+      "normalization_batch_id": "RNA_NORM_001",
+      "provenance_status": "DOWNSTREAM_QC_REVIEW_REQUIRED",
+      "q30_percent": 70.0,
+      "qc_batch_id": "QC_BATCH_001",
+      "qc_status": "FAIL",
+      "quant_batch_id": "RNA_QUANT_001",
+      "read_count": 600000,
+      "requant_batch_id": "RNA_REQUANT_001",
+      "safe_interpretation": "Downstream QC metrics failed configured thresholds; LabFlow cannot infer a lab root cause from QC metrics alone.",
+      "sample_id": "RNA_DEMO_FAILED_VALID_UPSTREAM_001"
+    },
+    {
+      "analysis_id": "ANALYSIS_001",
+      "exception_codes": [
+        "QC_RESULT_FAILED",
+        "DOWNSTREAM_QC_REVIEW_REQUIRED"
+      ],
+      "lab_batch_id": "RNA_BATCH_FIXED_001",
+      "manual_review_required": true,
+      "normalization_batch_id": "RNA_NORM_001",
+      "provenance_status": "DOWNSTREAM_QC_REVIEW_REQUIRED",
+      "q30_percent": 72.5,
+      "qc_batch_id": "QC_BATCH_001",
+      "qc_status": "FAIL",
+      "quant_batch_id": "RNA_QUANT_001",
+      "read_count": 1800000,
+      "requant_batch_id": "RNA_REQUANT_001",
+      "safe_interpretation": "Downstream QC metrics failed configured thresholds; LabFlow cannot infer a lab root cause from QC metrics alone.",
+      "sample_id": "RNA_DEMO_LOW_Q30_001"
+    },
+    {
+      "analysis_id": "ANALYSIS_001",
+      "exception_codes": [
+        "QC_RESULT_FAILED",
+        "DOWNSTREAM_QC_REVIEW_REQUIRED"
+      ],
+      "lab_batch_id": "RNA_BATCH_FIXED_001",
+      "manual_review_required": true,
+      "normalization_batch_id": "RNA_NORM_001",
+      "provenance_status": "DOWNSTREAM_QC_REVIEW_REQUIRED",
+      "q30_percent": 92.4,
+      "qc_batch_id": "QC_BATCH_001",
+      "qc_status": "FAIL",
+      "quant_batch_id": "RNA_QUANT_001",
+      "read_count": 450000,
+      "requant_batch_id": "RNA_REQUANT_001",
+      "safe_interpretation": "Downstream QC metrics failed configured thresholds; LabFlow cannot infer a lab root cause from QC metrics alone.",
+      "sample_id": "RNA_DEMO_LOW_READS_001"
+    },
+    {
+      "analysis_id": "ANALYSIS_001",
+      "exception_codes": [
+        "QC_PROVENANCE_GAP",
+        "DOWNSTREAM_QC_REVIEW_REQUIRED"
+      ],
+      "lab_batch_id": "RNA_BATCH_FIXED_001",
+      "manual_review_required": true,
+      "normalization_batch_id": null,
+      "provenance_status": "QC_PROVENANCE_GAP",
+      "q30_percent": 88.1,
+      "qc_batch_id": "QC_BATCH_001",
+      "qc_status": "PASS",
+      "quant_batch_id": "RNA_QUANT_001",
+      "read_count": 2100000,
+      "requant_batch_id": "RNA_REQUANT_001",
+      "safe_interpretation": "QC result is linked by sample ID but upstream quantification, normalization, or re-quantification ancestry is incomplete.",
+      "sample_id": "RNA_DEMO_MISSING_ANCESTRY_001"
+    },
+    {
+      "analysis_id": null,
+      "exception_codes": [
+        "MISSING_QC_RESULT",
+        "DOWNSTREAM_QC_REVIEW_REQUIRED"
+      ],
+      "lab_batch_id": "RNA_BATCH_FIXED_001",
+      "manual_review_required": true,
+      "normalization_batch_id": "RNA_NORM_001",
+      "provenance_status": "DOWNSTREAM_QC_REVIEW_REQUIRED",
+      "q30_percent": null,
+      "qc_batch_id": null,
+      "qc_status": "MISSING",
+      "quant_batch_id": "RNA_QUANT_001",
+      "read_count": null,
+      "requant_batch_id": "RNA_REQUANT_001",
+      "safe_interpretation": "Expected downstream QC result is missing; manual review is required before using this sample in analysis summaries.",
+      "sample_id": "RNA_DEMO_MISSING_QC_001"
+    },
+    {
+      "analysis_id": "ANALYSIS_001",
+      "exception_codes": [],
+      "lab_batch_id": "RNA_BATCH_FIXED_001",
+      "manual_review_required": false,
+      "normalization_batch_id": "RNA_NORM_001",
+      "provenance_status": "LINKED",
+      "q30_percent": 91.2,
+      "qc_batch_id": "QC_BATCH_001",
+      "qc_status": "PASS",
+      "quant_batch_id": "RNA_QUANT_001",
+      "read_count": 2500000,
+      "requant_batch_id": "RNA_REQUANT_001",
+      "safe_interpretation": "QC metrics pass configured synthetic thresholds and sample lineage is linked; this does not imply clinical, production, or causal lab conclusions.",
+      "sample_id": "RNA_DEMO_STD_001"
+    },
+    {
+      "analysis_id": "ANALYSIS_001",
+      "exception_codes": [
+        "QC_PROVENANCE_GAP",
+        "DOWNSTREAM_QC_REVIEW_REQUIRED"
+      ],
+      "lab_batch_id": "RNA_BATCH_BAD_001",
+      "manual_review_required": true,
+      "normalization_batch_id": "RNA_NORM_BAD_001",
+      "provenance_status": "QC_PROVENANCE_GAP",
+      "q30_percent": 90.0,
+      "qc_batch_id": "QC_BATCH_001",
+      "qc_status": "PASS",
+      "quant_batch_id": "RNA_QUANT_BAD_001",
+      "read_count": 2400000,
+      "requant_batch_id": "RNA_REQUANT_BAD_001",
+      "safe_interpretation": "Downstream QC cannot retroactively validate an invalid upstream lab workflow.",
+      "sample_id": "RNA_DEMO_UPSTREAM_INVALID_001"
+    },
+    {
+      "analysis_id": "ANALYSIS_001",
+      "exception_codes": [
+        "UNMATCHED_QC_SAMPLE_ID",
+        "DOWNSTREAM_QC_REVIEW_REQUIRED"
+      ],
+      "lab_batch_id": null,
+      "manual_review_required": true,
+      "normalization_batch_id": null,
+      "provenance_status": "UNMATCHED_QC_SAMPLE_ID",
+      "q30_percent": 89.0,
+      "qc_batch_id": "QC_BATCH_001",
+      "qc_status": "PASS",
+      "quant_batch_id": null,
+      "read_count": 2200000,
+      "requant_batch_id": null,
+      "safe_interpretation": "QC result cannot be linked to a known LabFlow sample ID; manual review is required.",
+      "sample_id": "RNA_QC_UNKNOWN_001"
+    }
+  ],
+  "safe_interpretation": "Downstream QC results summarize synthetic analysis metrics and lineage links. They do not infer lab root cause and do not validate invalid upstream batches.",
+  "summary": {
+    "exception_code_counts": {
+      "DOWNSTREAM_QC_REVIEW_REQUIRED": 7,
+      "MISSING_QC_RESULT": 1,
+      "QC_PROVENANCE_GAP": 2,
+      "QC_RESULT_FAILED": 3,
+      "UNMATCHED_QC_SAMPLE_ID": 1
+    },
+    "manual_review_count": 7,
+    "provenance_status_counts": {
+      "DOWNSTREAM_QC_REVIEW_REQUIRED": 4,
+      "LINKED": 1,
+      "QC_PROVENANCE_GAP": 2,
+      "UNMATCHED_QC_SAMPLE_ID": 1
+    },
+    "qc_status_counts": {
+      "FAIL": 3,
+      "MISSING": 1,
+      "PASS": 4
+    },
+    "record_count": 8
+  },
+  "synthetic": true,
+  "thresholds": {
+    "min_q30_percent": 80.0,
+    "min_read_count": 1000000
+  }
+}

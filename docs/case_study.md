@@ -6,6 +6,12 @@ Laboratory automation work is often framed as robot programming, but the harder 
 
 LabFlow AI Studio uses synthetic NGS quantification and normalization workflows to demonstrate how an AI-assisted developer platform can help with that coordination layer without replacing deterministic validation.
 
+The optional downstream QC extension adds one more realistic handoff boundary:
+synthetic sequencing/QC summary metrics are linked back to LabFlow sample
+ancestry, quantification, normalization, and re-quantification records. It is a
+provenance and summary module only, not a FASTQ, alignment, variant-calling, or
+clinical QC pipeline.
+
 ## Product Goal
 
 The goal is a portfolio-ready system that shows:
@@ -16,6 +22,7 @@ The goal is a portfolio-ready system that shows:
 - guarded tool-using agents;
 - VS Code workflow developer tooling;
 - local API boundaries;
+- downstream QC provenance without causal overclaiming;
 - production-shaped AWS architecture.
 
 For the role-focused review path, see `docs/role_alignment_starlims.md`,
@@ -37,6 +44,7 @@ The deterministic engine lives in `packages/labflow-core`. It models:
 - split workflow when transfer volume is below 1 uL;
 - in-place normalization when source volume is constrained;
 - RNA re-quant downstream concentration;
+- downstream QC summary parsing, threshold checks, and lineage status;
 - JANUS-style dry-run CSV previews.
 
 This layer is intentionally independent of LLMs. If the agent disappeared, validation and artifact gating would still work.
@@ -61,8 +69,13 @@ The eval harness measures whether the retrieval and answer stack can find and ci
 - molarity exclusion;
 - guardrails;
 - throughput.
+- downstream QC provenance and lab-to-analysis lineage.
 
-Stage 16 adds a retrieval-only demo eval report in `examples/expected/eval_report.json`. That report proves corpus coverage for the demo. Earlier eval code also supports answer-term checks, disallowed-answer checks, tool-call expectations, latency, and prompt/model metadata.
+Stage 16 adds a retrieval-only demo eval report in
+`examples/expected/eval_report.json`; Stage 19 adds downstream QC provenance
+goldens. That report proves corpus coverage for the demo. Earlier eval code
+also supports answer-term checks, disallowed-answer checks, tool-call
+expectations, latency, and prompt/model metadata.
 
 ## Guardrails
 
@@ -75,14 +88,22 @@ The core safety doctrine is deterministic before generative:
 - state-changing actions require dry-run first;
 - commit-style actions require approval infrastructure;
 - tool calls create audit events.
+- downstream QC can require review, but cannot prove a lab root cause by itself.
 
-The Stage 16 demo makes this concrete. The invalid RNA workflow reports missing blank and missing concentration errors, and JANUS generation is blocked until the workflow is fixed.
+The demo makes this concrete. The invalid RNA workflow reports missing blank and
+missing concentration errors, and JANUS generation is blocked until the workflow
+is fixed. The downstream QC step then flags failed metrics, unmatched sample
+IDs, missing QC rows, and provenance gaps without using those observations to
+retroactively validate or blame the upstream lab workflow.
 
 ## Developer Platform
 
 The VS Code extension is the developer-facing surface. It provides diagnostics and commands for LabFlow workflow YAML files. The local FastAPI app exposes the same underlying capabilities so CLI, API, and editor workflows use the same deterministic system.
 
-The demo script in `scripts/run_demo.py` ties the pieces together by validating workflows, parsing synthetic Varioskan TSVs, generating expected artifacts, writing audit logs, and running retrieval evals.
+The demo script in `scripts/run_demo.py` ties the pieces together by validating
+workflows, parsing synthetic Varioskan TSVs, generating expected artifacts,
+ingesting synthetic QC summaries, writing lineage/audit artifacts, and running
+retrieval evals.
 
 ## AWS-Shaped Architecture
 
@@ -114,6 +135,7 @@ LabFlow AI Studio now demonstrates a coherent AI/LIMS workflow platform shape:
 - evals and prompt/model tracking;
 - guarded tool use;
 - local API/editor integration;
+- downstream QC provenance with explicit interpretation boundaries;
 - synthetic demo artifacts;
 - clear production-shaped infrastructure boundaries.
 

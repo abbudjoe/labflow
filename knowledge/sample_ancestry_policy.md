@@ -10,7 +10,7 @@ This document is synthetic and non-production. It is not a clinical, diagnostic,
 
 ## Retrieval Tags
 
-`ancestry`, `sample_id`, `parent_child`, `split_workflow`, `requant`, `audit`, `manual_review`
+`ancestry`, `sample_id`, `parent_child`, `split_workflow`, `requant`, `audit`, `manual_review`, `lineage`, `lab_to_analysis`, `quantification`, `normalization`, `downstream_qc`, `provenance`
 
 ## Core Rules
 
@@ -64,6 +64,12 @@ Human SOP records commonly preserve sample identity, derived-sample links, revie
 ## RAG Answer Guidance
 
 Use this policy when answering how split children are tracked, why duplicate wells block execution, or why a re-quant row must match an expected normalized sample. For artifact questions, cite the JANUS spec as well.
+
+Use this policy with `lab_to_analysis_lineage_policy.md` when explaining a
+lineage report that connects sample ID, quantification, normalization,
+re-quantification, downstream QC, and analysis identifiers. The ancestry policy
+owns sample identity continuity; the lineage policy owns the downstream report
+shape.
 
 ## Cross-References
 

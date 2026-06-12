@@ -14,7 +14,8 @@ source of truth.
 The project uses synthetic NGS quantification, normalization, and RNA
 re-quantification workflows because they make the hard AI/LIMS problems visible:
 sample identity, well locations, missing concentrations, standards, blanks,
-readiness gates, robot-facing artifacts, audit events, and exception handling.
+readiness gates, downstream QC handoffs, robot-facing artifacts, audit events,
+and exception handling.
 
 ## Evidence Map
 
@@ -27,6 +28,7 @@ readiness gates, robot-facing artifacts, audit events, and exception handling.
 | Production AI reliability | provider diagnostics, fallback paths, production-gate summaries, prompt/model metadata |
 | Guardrails and approval workflows | `packages/labflow-agent/src/labflow_agent/policies.py`, `approvals.py`, `tool_runtime.py` |
 | Tool-using agents | controlled `validate_batch`, `generate_janus_csv`, workflow validation, audit-backed tool execution |
+| Downstream provenance | `labflow_core.qc`, QC provenance tools, lineage report demo artifacts |
 | Controlled execution paths | read-only by default, dry-run before state change, approval before commit, invalid batches block artifacts |
 | VS Code DSL developer tooling | `apps/vscode-extension`, diagnostics, hovers, API-backed commands |
 | Backend API boundaries | `apps/api`, FastAPI routes for workflows, RAG, agent, tools, evals, audit, and artifacts |
@@ -84,6 +86,9 @@ Open the invalid RNA normalization/re-quant workflow, show deterministic
 diagnostics, ask why it is not robot-ready, inspect cited sources and
 `validate_batch` output, propose only a dry-run patch, require approval before
 commit, rerun validation, generate a JANUS-style dry-run preview, and inspect
-audit evidence.
+audit evidence. Then show the optional downstream QC provenance step: ingest
+synthetic QC summary metrics, generate a dry-run lab-to-analysis lineage report,
+and ask the agent to explain a failed QC sample without inventing a lab root
+cause.
 
 See `docs/demo_script_starlims_role.md`.

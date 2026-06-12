@@ -76,6 +76,42 @@ _TOOL_DEFINITIONS: dict[str, ToolDefinition] = {
         read_only=True,
         parameters={"config_path": "string"},
     ),
+    "ingest_ngs_qc_results": ToolDefinition(
+        name="ingest_ngs_qc_results",
+        description="Parse synthetic downstream NGS QC summary metrics and evaluate thresholds.",
+        read_only=True,
+        parameters={"qc_csv": "string", "thresholds": "object|null"},
+    ),
+    "validate_qc_provenance": ToolDefinition(
+        name="validate_qc_provenance",
+        description="Link synthetic downstream QC rows to LabFlow sample lineage.",
+        read_only=True,
+        parameters={"qc_csv": "string", "lineage_csv": "string", "thresholds": "object|null"},
+    ),
+    "explain_qc_failure": ToolDefinition(
+        name="explain_qc_failure",
+        description="Explain a downstream QC failure from available metrics and lineage only.",
+        read_only=True,
+        parameters={
+            "qc_csv": "string",
+            "sample_id": "string",
+            "lineage_csv": "string|null",
+            "thresholds": "object|null",
+        },
+    ),
+    "generate_lab_to_analysis_lineage": ToolDefinition(
+        name="generate_lab_to_analysis_lineage",
+        description="Generate a dry-run lab-to-analysis lineage report from synthetic QC metrics.",
+        read_only=False,
+        parameters={
+            "qc_csv": "string",
+            "lineage_csv": "string",
+            "dry_run": "boolean",
+            "thresholds": "object|null",
+            "approval_token": "string|null",
+            "output_dir": "string|null",
+        },
+    ),
     "explain_exception_code": ToolDefinition(
         name="explain_exception_code",
         description="Return deterministic meaning and next action for a LabFlow exception code.",
@@ -93,6 +129,10 @@ _TOOL_FUNCTIONS: dict[str, ToolCallable] = {
     "process_rna_requant": core_tools.process_rna_requant,
     "generate_janus_csv": core_tools.generate_janus_csv,
     "compare_throughput": core_tools.compare_throughput,
+    "ingest_ngs_qc_results": core_tools.ingest_ngs_qc_results,
+    "validate_qc_provenance": core_tools.validate_qc_provenance,
+    "explain_qc_failure": core_tools.explain_qc_failure,
+    "generate_lab_to_analysis_lineage": core_tools.generate_lab_to_analysis_lineage,
     "explain_exception_code": core_tools.explain_exception_code,
 }
 

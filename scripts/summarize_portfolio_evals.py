@@ -154,6 +154,7 @@ def _render_markdown(
             "- The portfolio RAG surface includes `/rag/debug` for retrieval inspection: query normalization, top chunks, source-family counts, stale-source flags, and source-conflict notices.",
             "- `knowledge/legacy_missing_concentration_sop.md` is a synthetic retired fixture used to demonstrate stale SOP handling and policy-vs-SOP precedence without using proprietary lab material.",
             "- Conflict handling is intentionally conservative: when retrieved sources disagree on a policy-critical rule, the answer surfaces the conflict with citations instead of silently picking the convenient source.",
+            "- Stage 19 adds downstream QC provenance retrieval cases for synthetic summary metrics, lab-to-analysis lineage, unmatched sample IDs, and no-causal-inference boundaries.",
             "",
             "## Interpretation",
             "",

@@ -24,6 +24,11 @@ TARGET_RETRIEVAL_CLEANUP_CASE_IDS = frozenset(
         "q_sop_alignment_001",
         "q_sop_alignment_002",
         "q_sop_alignment_003",
+        "q_qc_001",
+        "q_qc_002",
+        "q_qc_003",
+        "q_qc_004",
+        "q_qc_005",
     }
 )
 

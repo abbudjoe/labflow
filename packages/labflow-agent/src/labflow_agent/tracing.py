@@ -47,6 +47,7 @@ def create_agent_trace(
     model_execution: ModelExecutionMetadata | None = None,
     answer_composer_execution: ModelExecutionMetadata | None = None,
     answer_composer_fallback: bool = False,
+    answer_composer_final_answer_source: str = "deterministic_baseline",
 ) -> AgentTrace:
     """Create a serializable trace for an agent response."""
 
@@ -64,6 +65,7 @@ def create_agent_trace(
         model_execution=model_execution,
         answer_composer_execution=answer_composer_execution,
         answer_composer_fallback=answer_composer_fallback,
+        answer_composer_final_answer_source=answer_composer_final_answer_source,
         retrieved_chunk_ids=retrieved_chunk_ids,
         tool_calls=tuple(call.tool_name for call in tool_calls),
         latency_ms=latency_ms,

@@ -14,13 +14,13 @@
       "cited_sources": [
         "batch_readiness_doctrine.md",
         "exception_handling_manual.md",
+        "ai_guardrails_policy.md",
         "dna_quant_picogreen_sop.md",
-        "janus_csv_worklist_spec.md",
-        "throughput_optimization_case.md",
-        "rna_norm_requant_sop.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "janus_csv_worklist_spec.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.5502919666469097,
+      "latency_ms": 1.042208052240312,
       "missing_answer_terms": [
         "MISSING_CONCENTRATION",
         "not robot-ready",
@@ -47,20 +47,20 @@
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "batch_readiness_doctrine.md#chunk-006",
+        "batch_readiness_doctrine.md#chunk-007",
         "exception_handling_manual.md#chunk-010",
-        "dna_quant_picogreen_sop.md#chunk-006",
-        "janus_csv_worklist_spec.md#chunk-010",
-        "throughput_optimization_case.md#chunk-007",
-        "rna_norm_requant_sop.md#chunk-005"
+        "ai_guardrails_policy.md#chunk-004",
+        "dna_quant_picogreen_sop.md#chunk-007",
+        "controlled_sop_normalization_worklist_review.md#chunk-011",
+        "janus_csv_worklist_spec.md#chunk-011"
       ],
       "retrieved_sources": [
         "batch_readiness_doctrine.md",
         "exception_handling_manual.md",
+        "ai_guardrails_policy.md",
         "dna_quant_picogreen_sop.md",
-        "janus_csv_worklist_spec.md",
-        "throughput_optimization_case.md",
-        "rna_norm_requant_sop.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "janus_csv_worklist_spec.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -73,13 +73,13 @@
       "cited_sources": [
         "batch_readiness_doctrine.md",
         "ai_guardrails_policy.md",
-        "sample_ancestry_policy.md",
+        "ngs_qc_provenance_policy.md",
         "throughput_optimization_case.md",
-        "janus_csv_worklist_spec.md",
-        "exception_handling_manual.md"
+        "sample_ancestry_policy.md",
+        "janus_csv_worklist_spec.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.3774580545723438,
+      "latency_ms": 0.9369580075144768,
       "missing_answer_terms": [
         "sample IDs",
         "source locations",
@@ -102,19 +102,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "batch_readiness_doctrine.md#chunk-004",
-        "ai_guardrails_policy.md#chunk-006",
-        "sample_ancestry_policy.md#chunk-004",
+        "ai_guardrails_policy.md#chunk-007",
+        "ngs_qc_provenance_policy.md#chunk-004",
         "throughput_optimization_case.md#chunk-005",
-        "janus_csv_worklist_spec.md#chunk-007",
-        "exception_handling_manual.md#chunk-004"
+        "sample_ancestry_policy.md#chunk-004",
+        "janus_csv_worklist_spec.md#chunk-007"
       ],
       "retrieved_sources": [
         "batch_readiness_doctrine.md",
         "ai_guardrails_policy.md",
-        "sample_ancestry_policy.md",
+        "ngs_qc_provenance_policy.md",
         "throughput_optimization_case.md",
-        "janus_csv_worklist_spec.md",
-        "exception_handling_manual.md"
+        "sample_ancestry_policy.md",
+        "janus_csv_worklist_spec.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -129,11 +129,11 @@
         "batch_readiness_doctrine.md",
         "labflow_dsl_reference.md",
         "rna_norm_requant_sop.md",
-        "throughput_optimization_case.md",
-        "exception_handling_manual.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "sop_alignment_mapping.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.4432499408721924,
+      "latency_ms": 0.819833017885685,
       "missing_answer_terms": [
         "validate_batch",
         "deterministic validation"
@@ -162,16 +162,16 @@
         "batch_readiness_doctrine.md#chunk-004",
         "labflow_dsl_reference.md#chunk-012",
         "rna_norm_requant_sop.md#chunk-004",
-        "throughput_optimization_case.md#chunk-007",
-        "exception_handling_manual.md#chunk-004"
+        "controlled_sop_normalization_worklist_review.md#chunk-012",
+        "sop_alignment_mapping.md#chunk-006"
       ],
       "retrieved_sources": [
         "ai_guardrails_policy.md",
         "batch_readiness_doctrine.md",
         "labflow_dsl_reference.md",
         "rna_norm_requant_sop.md",
-        "throughput_optimization_case.md",
-        "exception_handling_manual.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "sop_alignment_mapping.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -185,12 +185,12 @@
         "sample_ancestry_policy.md",
         "exception_handling_manual.md",
         "batch_readiness_doctrine.md",
+        "ai_guardrails_policy.md",
         "varioskan_tsv_import_spec.md",
-        "janus_csv_worklist_spec.md",
-        "throughput_optimization_case.md"
+        "janus_csv_worklist_spec.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.40187500417232513,
+      "latency_ms": 0.7423330098390579,
       "missing_answer_terms": [
         "DUPLICATE_DESTINATION_LOCATION",
         "destination",
@@ -216,20 +216,20 @@
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "sample_ancestry_policy.md#chunk-006",
+        "sample_ancestry_policy.md#chunk-007",
         "exception_handling_manual.md#chunk-005",
         "batch_readiness_doctrine.md#chunk-004",
+        "ai_guardrails_policy.md#chunk-008",
         "varioskan_tsv_import_spec.md#chunk-006",
-        "janus_csv_worklist_spec.md#chunk-004",
-        "throughput_optimization_case.md#chunk-007"
+        "janus_csv_worklist_spec.md#chunk-004"
       ],
       "retrieved_sources": [
         "sample_ancestry_policy.md",
         "exception_handling_manual.md",
         "batch_readiness_doctrine.md",
+        "ai_guardrails_policy.md",
         "varioskan_tsv_import_spec.md",
-        "janus_csv_worklist_spec.md",
-        "throughput_optimization_case.md"
+        "janus_csv_worklist_spec.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -241,14 +241,14 @@
       "citation_precision_proxy": 0.3333333333333333,
       "cited_sources": [
         "dna_quant_picogreen_sop.md",
+        "controlled_sop_dna_quantification.md",
         "varioskan_tsv_import_spec.md",
         "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md",
-        "exception_handling_manual.md",
-        "rna_norm_requant_sop.md"
+        "lab_to_analysis_lineage_policy.md",
+        "labflow_dsl_reference.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.4177499795332551,
+      "latency_ms": 0.9080839809030294,
       "missing_answer_terms": [
         "A1-H1",
         "eight standards",
@@ -269,19 +269,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "dna_quant_picogreen_sop.md#chunk-004",
+        "controlled_sop_dna_quantification.md#chunk-010",
         "varioskan_tsv_import_spec.md#chunk-007",
         "batch_readiness_doctrine.md#chunk-005",
-        "labflow_dsl_reference.md#chunk-006",
-        "exception_handling_manual.md#chunk-007",
-        "rna_norm_requant_sop.md#chunk-004"
+        "lab_to_analysis_lineage_policy.md#chunk-004",
+        "labflow_dsl_reference.md#chunk-006"
       ],
       "retrieved_sources": [
         "dna_quant_picogreen_sop.md",
+        "controlled_sop_dna_quantification.md",
         "varioskan_tsv_import_spec.md",
         "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md",
-        "exception_handling_manual.md",
-        "rna_norm_requant_sop.md"
+        "lab_to_analysis_lineage_policy.md",
+        "labflow_dsl_reference.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -293,14 +293,14 @@
       "citation_precision_proxy": 0.3333333333333333,
       "cited_sources": [
         "dna_quant_picogreen_sop.md",
+        "controlled_sop_dna_quantification.md",
         "batch_readiness_doctrine.md",
         "labflow_dsl_reference.md",
         "varioskan_tsv_import_spec.md",
-        "ai_guardrails_policy.md",
-        "throughput_optimization_case.md"
+        "sop_alignment_mapping.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.4037079634144902,
+      "latency_ms": 0.7589160231873393,
       "missing_answer_terms": [
         "one blank",
         "95 samples",
@@ -321,19 +321,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "dna_quant_picogreen_sop.md#chunk-004",
+        "controlled_sop_dna_quantification.md#chunk-010",
         "batch_readiness_doctrine.md#chunk-005",
         "labflow_dsl_reference.md#chunk-006",
         "varioskan_tsv_import_spec.md#chunk-005",
-        "ai_guardrails_policy.md#chunk-004",
-        "throughput_optimization_case.md#chunk-007"
+        "sop_alignment_mapping.md#chunk-006"
       ],
       "retrieved_sources": [
         "dna_quant_picogreen_sop.md",
+        "controlled_sop_dna_quantification.md",
         "batch_readiness_doctrine.md",
         "labflow_dsl_reference.md",
         "varioskan_tsv_import_spec.md",
-        "ai_guardrails_policy.md",
-        "throughput_optimization_case.md"
+        "sop_alignment_mapping.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -346,13 +346,13 @@
       "cited_sources": [
         "dna_quant_picogreen_sop.md",
         "exception_handling_manual.md",
+        "controlled_sop_dna_quantification.md",
         "varioskan_tsv_import_spec.md",
         "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md",
-        "sample_ancestry_policy.md"
+        "labflow_dsl_reference.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.4290409851819277,
+      "latency_ms": 0.7762500317767262,
       "missing_answer_terms": [
         "MISSING_PLATE_BLANK",
         "blank",
@@ -376,20 +376,20 @@
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "dna_quant_picogreen_sop.md#chunk-007",
+        "dna_quant_picogreen_sop.md#chunk-008",
         "exception_handling_manual.md#chunk-007",
+        "controlled_sop_dna_quantification.md#chunk-012",
         "varioskan_tsv_import_spec.md#chunk-008",
         "batch_readiness_doctrine.md#chunk-005",
-        "labflow_dsl_reference.md#chunk-010",
-        "sample_ancestry_policy.md#chunk-004"
+        "labflow_dsl_reference.md#chunk-010"
       ],
       "retrieved_sources": [
         "dna_quant_picogreen_sop.md",
         "exception_handling_manual.md",
+        "controlled_sop_dna_quantification.md",
         "varioskan_tsv_import_spec.md",
         "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md",
-        "sample_ancestry_policy.md"
+        "labflow_dsl_reference.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -404,11 +404,11 @@
         "varioskan_tsv_import_spec.md",
         "exception_handling_manual.md",
         "dna_normalization_sop.md",
-        "sample_ancestry_policy.md",
-        "rna_norm_requant_sop.md"
+        "controlled_sop_dna_quantification.md",
+        "sample_ancestry_policy.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.5153329111635685,
+      "latency_ms": 0.927042099647224,
       "missing_answer_terms": [
         "raw instrument reading",
         "blank correction",
@@ -431,20 +431,20 @@
       "required_tool_calls": [],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "dna_quant_picogreen_sop.md#chunk-006",
+        "dna_quant_picogreen_sop.md#chunk-007",
         "varioskan_tsv_import_spec.md#chunk-004",
         "exception_handling_manual.md#chunk-006",
-        "dna_normalization_sop.md#chunk-008",
-        "sample_ancestry_policy.md#chunk-005",
-        "rna_norm_requant_sop.md#chunk-006"
+        "dna_normalization_sop.md#chunk-009",
+        "controlled_sop_dna_quantification.md#chunk-013",
+        "sample_ancestry_policy.md#chunk-006"
       ],
       "retrieved_sources": [
         "dna_quant_picogreen_sop.md",
         "varioskan_tsv_import_spec.md",
         "exception_handling_manual.md",
         "dna_normalization_sop.md",
-        "sample_ancestry_policy.md",
-        "rna_norm_requant_sop.md"
+        "controlled_sop_dna_quantification.md",
+        "sample_ancestry_policy.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -457,13 +457,13 @@
       "cited_sources": [
         "dna_normalization_sop.md",
         "exception_handling_manual.md",
+        "controlled_sop_normalization_worklist_review.md",
         "sample_ancestry_policy.md",
         "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md",
-        "rna_norm_requant_sop.md"
+        "labflow_dsl_reference.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.47258392442017794,
+      "latency_ms": 0.8480000542476773,
       "missing_answer_terms": [
         "split workflow",
         "1 uL",
@@ -490,20 +490,20 @@
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "dna_normalization_sop.md#chunk-007",
+        "dna_normalization_sop.md#chunk-008",
         "exception_handling_manual.md#chunk-006",
+        "controlled_sop_normalization_worklist_review.md#chunk-010",
         "sample_ancestry_policy.md#chunk-004",
         "batch_readiness_doctrine.md#chunk-005",
-        "labflow_dsl_reference.md#chunk-010",
-        "rna_norm_requant_sop.md#chunk-007"
+        "labflow_dsl_reference.md#chunk-010"
       ],
       "retrieved_sources": [
         "dna_normalization_sop.md",
         "exception_handling_manual.md",
+        "controlled_sop_normalization_worklist_review.md",
         "sample_ancestry_policy.md",
         "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md",
-        "rna_norm_requant_sop.md"
+        "labflow_dsl_reference.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -515,14 +515,14 @@
       "citation_precision_proxy": 0.3333333333333333,
       "cited_sources": [
         "dna_normalization_sop.md",
-        "exception_handling_manual.md",
         "batch_readiness_doctrine.md",
-        "janus_csv_worklist_spec.md",
-        "dna_quant_picogreen_sop.md",
-        "ai_guardrails_policy.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "exception_handling_manual.md",
+        "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.5247920053079724,
+      "latency_ms": 1.5919170109555125,
       "missing_answer_terms": [
         "below 1 uL",
         "split workflow",
@@ -541,27 +541,27 @@
       ],
       "required_sources": [
         "dna_normalization_sop.md",
-        "ai_guardrails_policy.md"
+        "controlled_sop_normalization_worklist_review.md"
       ],
       "required_tool_calls": [
         "generate_normalization_plan"
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "dna_normalization_sop.md#chunk-007",
-        "exception_handling_manual.md#chunk-006",
+        "dna_normalization_sop.md#chunk-008",
         "batch_readiness_doctrine.md#chunk-005",
-        "janus_csv_worklist_spec.md#chunk-007",
-        "dna_quant_picogreen_sop.md#chunk-004",
-        "ai_guardrails_policy.md#chunk-006"
+        "controlled_sop_normalization_worklist_review.md#chunk-010",
+        "exception_handling_manual.md#chunk-006",
+        "ai_guardrails_policy.md#chunk-004",
+        "janus_csv_worklist_spec.md#chunk-007"
       ],
       "retrieved_sources": [
         "dna_normalization_sop.md",
-        "exception_handling_manual.md",
         "batch_readiness_doctrine.md",
-        "janus_csv_worklist_spec.md",
-        "dna_quant_picogreen_sop.md",
-        "ai_guardrails_policy.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "exception_handling_manual.md",
+        "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -574,13 +574,13 @@
       "cited_sources": [
         "sample_ancestry_policy.md",
         "dna_normalization_sop.md",
-        "exception_handling_manual.md",
         "rna_norm_requant_sop.md",
-        "throughput_optimization_case.md",
-        "dna_quant_picogreen_sop.md"
+        "exception_handling_manual.md",
+        "controlled_sop_normalization_worklist_review.md",
+        "controlled_sop_rna_requant.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.3964999923482537,
+      "latency_ms": 2.064500004053116,
       "missing_answer_terms": [
         "SPLIT_CREATED",
         "child sample",
@@ -601,20 +601,20 @@
       "required_tool_calls": [],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "sample_ancestry_policy.md#chunk-005",
-        "dna_normalization_sop.md#chunk-007",
-        "exception_handling_manual.md#chunk-008",
+        "sample_ancestry_policy.md#chunk-006",
+        "dna_normalization_sop.md#chunk-008",
         "rna_norm_requant_sop.md#chunk-004",
-        "throughput_optimization_case.md#chunk-007",
-        "dna_quant_picogreen_sop.md#chunk-006"
+        "exception_handling_manual.md#chunk-008",
+        "controlled_sop_normalization_worklist_review.md#chunk-011",
+        "controlled_sop_rna_requant.md#chunk-011"
       ],
       "retrieved_sources": [
         "sample_ancestry_policy.md",
         "dna_normalization_sop.md",
-        "exception_handling_manual.md",
         "rna_norm_requant_sop.md",
-        "throughput_optimization_case.md",
-        "dna_quant_picogreen_sop.md"
+        "exception_handling_manual.md",
+        "controlled_sop_normalization_worklist_review.md",
+        "controlled_sop_rna_requant.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -628,12 +628,12 @@
         "dna_normalization_sop.md",
         "exception_handling_manual.md",
         "sample_ancestry_policy.md",
-        "rna_norm_requant_sop.md",
-        "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "controlled_sop_rna_requant.md",
+        "rna_norm_requant_sop.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.34191692247986794,
+      "latency_ms": 1.1048329761251807,
       "missing_answer_terms": [
         "no destination container",
         "only diluent",
@@ -654,20 +654,20 @@
       "required_tool_calls": [],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "dna_normalization_sop.md#chunk-006",
+        "dna_normalization_sop.md#chunk-007",
         "exception_handling_manual.md#chunk-008",
-        "sample_ancestry_policy.md#chunk-006",
-        "rna_norm_requant_sop.md#chunk-001",
-        "batch_readiness_doctrine.md#chunk-001",
-        "labflow_dsl_reference.md#chunk-010"
+        "sample_ancestry_policy.md#chunk-007",
+        "controlled_sop_normalization_worklist_review.md#chunk-006",
+        "controlled_sop_rna_requant.md#chunk-001",
+        "rna_norm_requant_sop.md#chunk-001"
       ],
       "retrieved_sources": [
         "dna_normalization_sop.md",
         "exception_handling_manual.md",
         "sample_ancestry_policy.md",
-        "rna_norm_requant_sop.md",
-        "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "controlled_sop_rna_requant.md",
+        "rna_norm_requant_sop.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -686,7 +686,7 @@
         "janus_csv_worklist_spec.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.39233407005667686,
+      "latency_ms": 0.8032500045374036,
       "missing_answer_terms": [
         "DESTINATION_SUPPLIED_FOR_IN_PLACE",
         "invalid"
@@ -711,8 +711,8 @@
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "dna_normalization_sop.md#chunk-006",
-        "sample_ancestry_policy.md#chunk-006",
+        "dna_normalization_sop.md#chunk-007",
+        "sample_ancestry_policy.md#chunk-007",
         "exception_handling_manual.md#chunk-005",
         "varioskan_tsv_import_spec.md#chunk-006",
         "labflow_dsl_reference.md#chunk-010",
@@ -739,11 +739,11 @@
         "dna_normalization_sop.md",
         "ai_guardrails_policy.md",
         "rna_norm_requant_sop.md",
-        "exception_handling_manual.md",
-        "janus_csv_worklist_spec.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "controlled_sop_rna_requant.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.42283395305275917,
+      "latency_ms": 0.7439169567078352,
       "missing_answer_terms": [
         "NORMALIZED_IN_PLACE",
         "source well",
@@ -764,19 +764,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "sample_ancestry_policy.md#chunk-004",
-        "dna_normalization_sop.md#chunk-006",
-        "ai_guardrails_policy.md#chunk-005",
+        "dna_normalization_sop.md#chunk-007",
+        "ai_guardrails_policy.md#chunk-006",
         "rna_norm_requant_sop.md#chunk-003",
-        "exception_handling_manual.md#chunk-008",
-        "janus_csv_worklist_spec.md#chunk-007"
+        "controlled_sop_normalization_worklist_review.md#chunk-007",
+        "controlled_sop_rna_requant.md#chunk-013"
       ],
       "retrieved_sources": [
         "sample_ancestry_policy.md",
         "dna_normalization_sop.md",
         "ai_guardrails_policy.md",
         "rna_norm_requant_sop.md",
-        "exception_handling_manual.md",
-        "janus_csv_worklist_spec.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "controlled_sop_rna_requant.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -788,14 +788,14 @@
       "citation_precision_proxy": 0.16666666666666666,
       "cited_sources": [
         "rna_norm_requant_sop.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
         "sample_ancestry_policy.md",
-        "dna_quant_picogreen_sop.md",
-        "throughput_optimization_case.md",
-        "batch_readiness_doctrine.md"
+        "downstream_qc_metric_reference.md",
+        "dna_quant_picogreen_sop.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.4094169707968831,
+      "latency_ms": 1.07683299575001,
       "missing_answer_terms": [
         "downstream concentration",
         "measured re-quant"
@@ -816,19 +816,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "rna_norm_requant_sop.md#chunk-004",
+        "controlled_sop_rna_requant.md#chunk-010",
         "exception_handling_manual.md#chunk-008",
         "sample_ancestry_policy.md#chunk-004",
-        "dna_quant_picogreen_sop.md#chunk-004",
-        "throughput_optimization_case.md#chunk-006",
-        "batch_readiness_doctrine.md#chunk-005"
+        "downstream_qc_metric_reference.md#chunk-004",
+        "dna_quant_picogreen_sop.md#chunk-004"
       ],
       "retrieved_sources": [
         "rna_norm_requant_sop.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
         "sample_ancestry_policy.md",
-        "dna_quant_picogreen_sop.md",
-        "throughput_optimization_case.md",
-        "batch_readiness_doctrine.md"
+        "downstream_qc_metric_reference.md",
+        "dna_quant_picogreen_sop.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -840,14 +840,14 @@
       "citation_precision_proxy": 0.3333333333333333,
       "cited_sources": [
         "rna_norm_requant_sop.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
+        "sop_alignment_mapping.md",
         "sample_ancestry_policy.md",
-        "labflow_dsl_reference.md",
-        "dna_quant_picogreen_sop.md",
-        "batch_readiness_doctrine.md"
+        "labflow_dsl_reference.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.43062493205070496,
+      "latency_ms": 0.7623329292982817,
       "missing_answer_terms": [
         "MISSING_REQUANT_RESULT",
         "manual review",
@@ -872,19 +872,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "rna_norm_requant_sop.md#chunk-004",
+        "controlled_sop_rna_requant.md#chunk-010",
         "exception_handling_manual.md#chunk-008",
+        "sop_alignment_mapping.md#chunk-008",
         "sample_ancestry_policy.md#chunk-004",
-        "labflow_dsl_reference.md#chunk-006",
-        "dna_quant_picogreen_sop.md#chunk-007",
-        "batch_readiness_doctrine.md#chunk-005"
+        "labflow_dsl_reference.md#chunk-006"
       ],
       "retrieved_sources": [
         "rna_norm_requant_sop.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
+        "sop_alignment_mapping.md",
         "sample_ancestry_policy.md",
-        "labflow_dsl_reference.md",
-        "dna_quant_picogreen_sop.md",
-        "batch_readiness_doctrine.md"
+        "labflow_dsl_reference.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -893,21 +893,20 @@
       "answer_contains_match": 0.0,
       "case_id": "q_rna_003",
       "category": "rna_requant",
-      "citation_precision_proxy": 0.3333333333333333,
+      "citation_precision_proxy": 0.16666666666666666,
       "cited_sources": [
         "rna_norm_requant_sop.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
+        "sop_alignment_mapping.md",
         "sample_ancestry_policy.md",
-        "batch_readiness_doctrine.md",
-        "throughput_optimization_case.md",
-        "dna_quant_picogreen_sop.md"
+        "ngs_qc_provenance_policy.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.44299999717622995,
+      "latency_ms": 0.7655419176444411,
       "missing_answer_terms": [
         "measured re-quant",
-        "downstream concentration",
-        "REQUANTIFIED"
+        "downstream concentration"
       ],
       "missing_required_citations": [],
       "missing_required_sources": [],
@@ -917,26 +916,186 @@
       "recommended_tool_calls": [],
       "required_answer_matches": [],
       "required_sources": [
-        "rna_norm_requant_sop.md",
-        "sample_ancestry_policy.md"
+        "rna_norm_requant_sop.md"
       ],
       "required_tool_calls": [],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "rna_norm_requant_sop.md#chunk-004",
+        "controlled_sop_rna_requant.md#chunk-010",
         "exception_handling_manual.md#chunk-008",
-        "sample_ancestry_policy.md#chunk-005",
-        "batch_readiness_doctrine.md#chunk-005",
-        "throughput_optimization_case.md#chunk-005",
-        "dna_quant_picogreen_sop.md#chunk-004"
+        "sop_alignment_mapping.md#chunk-008",
+        "sample_ancestry_policy.md#chunk-006",
+        "ngs_qc_provenance_policy.md#chunk-004"
       ],
       "retrieved_sources": [
         "rna_norm_requant_sop.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
+        "sop_alignment_mapping.md",
         "sample_ancestry_policy.md",
-        "batch_readiness_doctrine.md",
-        "throughput_optimization_case.md",
-        "dna_quant_picogreen_sop.md"
+        "ngs_qc_provenance_policy.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_sop_alignment_001",
+      "category": "sop_alignment",
+      "citation_precision_proxy": 0.5,
+      "cited_sources": [
+        "sop_alignment_mapping.md",
+        "ai_guardrails_policy.md",
+        "controlled_sop_dna_quantification.md",
+        "janus_csv_worklist_spec.md",
+        "controlled_sop_rna_requant.md",
+        "controlled_sop_normalization_worklist_review.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.8079579565674067,
+      "missing_answer_terms": [
+        "public",
+        "synthetic",
+        "deterministic",
+        "not clinical"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "How does LabFlow adapt public human SOP patterns without becoming a production lab SOP?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "sop_alignment_mapping.md",
+        "controlled_sop_dna_quantification.md",
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "sop_alignment_mapping.md#chunk-001",
+        "ai_guardrails_policy.md#chunk-005",
+        "controlled_sop_dna_quantification.md#chunk-002",
+        "janus_csv_worklist_spec.md#chunk-008",
+        "controlled_sop_rna_requant.md#chunk-002",
+        "controlled_sop_normalization_worklist_review.md#chunk-003"
+      ],
+      "retrieved_sources": [
+        "sop_alignment_mapping.md",
+        "ai_guardrails_policy.md",
+        "controlled_sop_dna_quantification.md",
+        "janus_csv_worklist_spec.md",
+        "controlled_sop_rna_requant.md",
+        "controlled_sop_normalization_worklist_review.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_sop_alignment_002",
+      "category": "sop_alignment",
+      "citation_precision_proxy": 0.5,
+      "cited_sources": [
+        "ai_guardrails_policy.md",
+        "controlled_sop_rna_requant.md",
+        "sop_alignment_mapping.md",
+        "rna_norm_requant_sop.md",
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.7720000576227903,
+      "missing_answer_terms": [
+        "measured re-quant",
+        "trusted",
+        "must not invent",
+        "numeric concentration"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "Can the assistant answer which trusted concentration source to use without inventing a numeric concentration?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "sop_alignment_mapping.md",
+        "controlled_sop_rna_requant.md",
+        "ai_guardrails_policy.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "ai_guardrails_policy.md#chunk-004",
+        "controlled_sop_rna_requant.md#chunk-010",
+        "sop_alignment_mapping.md#chunk-008",
+        "rna_norm_requant_sop.md#chunk-004",
+        "dna_normalization_sop.md#chunk-009",
+        "exception_handling_manual.md#chunk-006"
+      ],
+      "retrieved_sources": [
+        "ai_guardrails_policy.md",
+        "controlled_sop_rna_requant.md",
+        "sop_alignment_mapping.md",
+        "rna_norm_requant_sop.md",
+        "dna_normalization_sop.md",
+        "exception_handling_manual.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_sop_alignment_003",
+      "category": "sop_alignment",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "sop_alignment_mapping.md",
+        "ai_guardrails_policy.md",
+        "lab_to_analysis_lineage_policy.md",
+        "controlled_sop_dna_quantification.md",
+        "legacy_missing_concentration_sop.md",
+        "controlled_sop_normalization_worklist_review.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.7704580202698708,
+      "missing_answer_terms": [
+        "document control",
+        "acceptance criteria",
+        "nonconformance",
+        "records"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [],
+      "passed": true,
+      "question": "What controlled SOP sections should LabFlow preserve when adapting a real lab SOP?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "sop_alignment_mapping.md",
+        "controlled_sop_normalization_worklist_review.md"
+      ],
+      "required_tool_calls": [],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "sop_alignment_mapping.md#chunk-007",
+        "ai_guardrails_policy.md#chunk-005",
+        "lab_to_analysis_lineage_policy.md#chunk-004",
+        "controlled_sop_dna_quantification.md#chunk-003",
+        "legacy_missing_concentration_sop.md#chunk-001",
+        "controlled_sop_normalization_worklist_review.md#chunk-002"
+      ],
+      "retrieved_sources": [
+        "sop_alignment_mapping.md",
+        "ai_guardrails_policy.md",
+        "lab_to_analysis_lineage_policy.md",
+        "controlled_sop_dna_quantification.md",
+        "legacy_missing_concentration_sop.md",
+        "controlled_sop_normalization_worklist_review.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -947,15 +1106,15 @@
       "category": "rna_requant",
       "citation_precision_proxy": 0.3333333333333333,
       "cited_sources": [
-        "sample_ancestry_policy.md",
         "rna_norm_requant_sop.md",
+        "sample_ancestry_policy.md",
         "exception_handling_manual.md",
-        "labflow_dsl_reference.md",
-        "dna_quant_picogreen_sop.md",
-        "batch_readiness_doctrine.md"
+        "controlled_sop_rna_requant.md",
+        "lab_to_analysis_lineage_policy.md",
+        "labflow_dsl_reference.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.44720794539898634,
+      "latency_ms": 0.810665893368423,
       "missing_answer_terms": [
         "INVALID_REQUANT_RESULT",
         "expected normalized sample",
@@ -979,20 +1138,20 @@
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "sample_ancestry_policy.md#chunk-004",
         "rna_norm_requant_sop.md#chunk-004",
+        "sample_ancestry_policy.md#chunk-004",
         "exception_handling_manual.md#chunk-008",
-        "labflow_dsl_reference.md#chunk-006",
-        "dna_quant_picogreen_sop.md#chunk-005",
-        "batch_readiness_doctrine.md#chunk-005"
+        "controlled_sop_rna_requant.md#chunk-009",
+        "lab_to_analysis_lineage_policy.md#chunk-004",
+        "labflow_dsl_reference.md#chunk-006"
       ],
       "retrieved_sources": [
-        "sample_ancestry_policy.md",
         "rna_norm_requant_sop.md",
+        "sample_ancestry_policy.md",
         "exception_handling_manual.md",
-        "labflow_dsl_reference.md",
-        "dna_quant_picogreen_sop.md",
-        "batch_readiness_doctrine.md"
+        "controlled_sop_rna_requant.md",
+        "lab_to_analysis_lineage_policy.md",
+        "labflow_dsl_reference.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1004,14 +1163,14 @@
       "citation_precision_proxy": 0.16666666666666666,
       "cited_sources": [
         "janus_csv_worklist_spec.md",
+        "controlled_sop_normalization_worklist_review.md",
         "varioskan_tsv_import_spec.md",
-        "batch_readiness_doctrine.md",
-        "dna_normalization_sop.md",
         "ai_guardrails_policy.md",
-        "sample_ancestry_policy.md"
+        "batch_readiness_doctrine.md",
+        "dna_normalization_sop.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.33083290327340364,
+      "latency_ms": 0.6052920361980796,
       "missing_answer_terms": [
         "well",
         "diluent_volume_ul",
@@ -1031,19 +1190,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "janus_csv_worklist_spec.md#chunk-004",
+        "controlled_sop_normalization_worklist_review.md#chunk-013",
         "varioskan_tsv_import_spec.md#chunk-006",
+        "ai_guardrails_policy.md#chunk-007",
         "batch_readiness_doctrine.md#chunk-005",
-        "dna_normalization_sop.md#chunk-006",
-        "ai_guardrails_policy.md#chunk-006",
-        "sample_ancestry_policy.md#chunk-008"
+        "dna_normalization_sop.md#chunk-007"
       ],
       "retrieved_sources": [
         "janus_csv_worklist_spec.md",
+        "controlled_sop_normalization_worklist_review.md",
         "varioskan_tsv_import_spec.md",
-        "batch_readiness_doctrine.md",
-        "dna_normalization_sop.md",
         "ai_guardrails_policy.md",
-        "sample_ancestry_policy.md"
+        "batch_readiness_doctrine.md",
+        "dna_normalization_sop.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1057,12 +1216,12 @@
         "batch_readiness_doctrine.md",
         "janus_csv_worklist_spec.md",
         "ai_guardrails_policy.md",
+        "controlled_sop_normalization_worklist_review.md",
         "dna_quant_picogreen_sop.md",
-        "throughput_optimization_case.md",
-        "dna_normalization_sop.md"
+        "throughput_optimization_case.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.47341606114059687,
+      "latency_ms": 0.7696660468354821,
       "missing_answer_terms": [
         "invalid samples",
         "must not appear",
@@ -1090,18 +1249,18 @@
       "retrieved_chunk_ids": [
         "batch_readiness_doctrine.md#chunk-005",
         "janus_csv_worklist_spec.md#chunk-007",
-        "ai_guardrails_policy.md#chunk-006",
-        "dna_quant_picogreen_sop.md#chunk-006",
-        "throughput_optimization_case.md#chunk-007",
-        "dna_normalization_sop.md#chunk-005"
+        "ai_guardrails_policy.md#chunk-007",
+        "controlled_sop_normalization_worklist_review.md#chunk-007",
+        "dna_quant_picogreen_sop.md#chunk-007",
+        "throughput_optimization_case.md#chunk-007"
       ],
       "retrieved_sources": [
         "batch_readiness_doctrine.md",
         "janus_csv_worklist_spec.md",
         "ai_guardrails_policy.md",
+        "controlled_sop_normalization_worklist_review.md",
         "dna_quant_picogreen_sop.md",
-        "throughput_optimization_case.md",
-        "dna_normalization_sop.md"
+        "throughput_optimization_case.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1112,15 +1271,15 @@
       "category": "janus_gating",
       "citation_precision_proxy": 0.3333333333333333,
       "cited_sources": [
-        "janus_csv_worklist_spec.md",
         "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md",
         "exception_handling_manual.md",
         "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md",
-        "dna_normalization_sop.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "labflow_dsl_reference.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.3943750634789467,
+      "latency_ms": 0.6796660600230098,
       "missing_answer_terms": [
         "durable approval",
         "artifact store",
@@ -1145,20 +1304,20 @@
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
+        "ai_guardrails_policy.md#chunk-009",
         "janus_csv_worklist_spec.md#chunk-007",
-        "ai_guardrails_policy.md#chunk-008",
         "exception_handling_manual.md#chunk-009",
         "batch_readiness_doctrine.md#chunk-005",
-        "labflow_dsl_reference.md#chunk-010",
-        "dna_normalization_sop.md#chunk-003"
+        "controlled_sop_normalization_worklist_review.md#chunk-013",
+        "labflow_dsl_reference.md#chunk-010"
       ],
       "retrieved_sources": [
-        "janus_csv_worklist_spec.md",
         "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md",
         "exception_handling_manual.md",
         "batch_readiness_doctrine.md",
-        "labflow_dsl_reference.md",
-        "dna_normalization_sop.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "labflow_dsl_reference.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1169,15 +1328,15 @@
       "category": "janus_gating",
       "citation_precision_proxy": 0.5,
       "cited_sources": [
-        "janus_csv_worklist_spec.md",
         "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md",
         "batch_readiness_doctrine.md",
+        "controlled_sop_normalization_worklist_review.md",
         "exception_handling_manual.md",
-        "labflow_dsl_reference.md",
-        "throughput_optimization_case.md"
+        "sop_alignment_mapping.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.45691709965467453,
+      "latency_ms": 0.8177089039236307,
       "missing_answer_terms": [
         "deterministic validation",
         "dry_run=true",
@@ -1204,20 +1363,20 @@
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
+        "ai_guardrails_policy.md#chunk-006",
         "janus_csv_worklist_spec.md#chunk-007",
-        "ai_guardrails_policy.md#chunk-005",
-        "batch_readiness_doctrine.md#chunk-006",
+        "batch_readiness_doctrine.md#chunk-007",
+        "controlled_sop_normalization_worklist_review.md#chunk-014",
         "exception_handling_manual.md#chunk-009",
-        "labflow_dsl_reference.md#chunk-004",
-        "throughput_optimization_case.md#chunk-007"
+        "sop_alignment_mapping.md#chunk-009"
       ],
       "retrieved_sources": [
-        "janus_csv_worklist_spec.md",
         "ai_guardrails_policy.md",
+        "janus_csv_worklist_spec.md",
         "batch_readiness_doctrine.md",
+        "controlled_sop_normalization_worklist_review.md",
         "exception_handling_manual.md",
-        "labflow_dsl_reference.md",
-        "throughput_optimization_case.md"
+        "sop_alignment_mapping.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1230,13 +1389,13 @@
       "cited_sources": [
         "sample_ancestry_policy.md",
         "labflow_dsl_reference.md",
-        "varioskan_tsv_import_spec.md",
-        "dna_normalization_sop.md",
         "batch_readiness_doctrine.md",
-        "exception_handling_manual.md"
+        "exception_handling_manual.md",
+        "varioskan_tsv_import_spec.md",
+        "dna_normalization_sop.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.40679192170500755,
+      "latency_ms": 0.7472499273717403,
       "missing_answer_terms": [
         "parent",
         "child",
@@ -1256,20 +1415,20 @@
       "required_tool_calls": [],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "sample_ancestry_policy.md#chunk-004",
+        "sample_ancestry_policy.md#chunk-005",
         "labflow_dsl_reference.md#chunk-006",
-        "varioskan_tsv_import_spec.md#chunk-004",
-        "dna_normalization_sop.md#chunk-007",
         "batch_readiness_doctrine.md#chunk-005",
-        "exception_handling_manual.md#chunk-005"
+        "exception_handling_manual.md#chunk-005",
+        "varioskan_tsv_import_spec.md#chunk-004",
+        "dna_normalization_sop.md#chunk-008"
       ],
       "retrieved_sources": [
         "sample_ancestry_policy.md",
         "labflow_dsl_reference.md",
-        "varioskan_tsv_import_spec.md",
-        "dna_normalization_sop.md",
         "batch_readiness_doctrine.md",
-        "exception_handling_manual.md"
+        "exception_handling_manual.md",
+        "varioskan_tsv_import_spec.md",
+        "dna_normalization_sop.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1280,15 +1439,15 @@
       "category": "sample_ancestry",
       "citation_precision_proxy": 0.3333333333333333,
       "cited_sources": [
-        "sample_ancestry_policy.md",
         "rna_norm_requant_sop.md",
+        "sample_ancestry_policy.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
-        "dna_quant_picogreen_sop.md",
-        "dna_normalization_sop.md",
-        "batch_readiness_doctrine.md"
+        "sop_alignment_mapping.md",
+        "ngs_qc_provenance_policy.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.43295789510011673,
+      "latency_ms": 0.78504194971174,
       "missing_answer_terms": [
         "REQUANTIFIED",
         "downstream concentration",
@@ -1308,20 +1467,20 @@
       "required_tool_calls": [],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "sample_ancestry_policy.md#chunk-005",
-        "rna_norm_requant_sop.md#chunk-006",
+        "rna_norm_requant_sop.md#chunk-004",
+        "sample_ancestry_policy.md#chunk-006",
+        "controlled_sop_rna_requant.md#chunk-010",
         "exception_handling_manual.md#chunk-008",
-        "dna_quant_picogreen_sop.md#chunk-004",
-        "dna_normalization_sop.md#chunk-007",
-        "batch_readiness_doctrine.md#chunk-005"
+        "sop_alignment_mapping.md#chunk-008",
+        "ngs_qc_provenance_policy.md#chunk-004"
       ],
       "retrieved_sources": [
-        "sample_ancestry_policy.md",
         "rna_norm_requant_sop.md",
+        "sample_ancestry_policy.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
-        "dna_quant_picogreen_sop.md",
-        "dna_normalization_sop.md",
-        "batch_readiness_doctrine.md"
+        "sop_alignment_mapping.md",
+        "ngs_qc_provenance_policy.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1334,13 +1493,13 @@
       "cited_sources": [
         "sample_ancestry_policy.md",
         "ai_guardrails_policy.md",
+        "lab_to_analysis_lineage_policy.md",
         "janus_csv_worklist_spec.md",
         "dna_normalization_sop.md",
-        "batch_readiness_doctrine.md",
-        "rna_norm_requant_sop.md"
+        "batch_readiness_doctrine.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.4211660707369447,
+      "latency_ms": 0.7597500225529075,
       "missing_answer_terms": [
         "must not invent",
         "audit"
@@ -1362,19 +1521,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "sample_ancestry_policy.md#chunk-004",
-        "ai_guardrails_policy.md#chunk-008",
+        "ai_guardrails_policy.md#chunk-009",
+        "lab_to_analysis_lineage_policy.md#chunk-005",
         "janus_csv_worklist_spec.md#chunk-007",
-        "dna_normalization_sop.md#chunk-007",
-        "batch_readiness_doctrine.md#chunk-009",
-        "rna_norm_requant_sop.md#chunk-004"
+        "dna_normalization_sop.md#chunk-008",
+        "batch_readiness_doctrine.md#chunk-010"
       ],
       "retrieved_sources": [
         "sample_ancestry_policy.md",
         "ai_guardrails_policy.md",
+        "lab_to_analysis_lineage_policy.md",
         "janus_csv_worklist_spec.md",
         "dna_normalization_sop.md",
-        "batch_readiness_doctrine.md",
-        "rna_norm_requant_sop.md"
+        "batch_readiness_doctrine.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1388,12 +1547,12 @@
         "labflow_dsl_reference.md",
         "dna_normalization_sop.md",
         "ai_guardrails_policy.md",
-        "rna_norm_requant_sop.md",
-        "sample_ancestry_policy.md",
-        "batch_readiness_doctrine.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "controlled_sop_rna_requant.md",
+        "sample_ancestry_policy.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.42079202830791473,
+      "latency_ms": 0.9315419010818005,
       "missing_answer_terms": [
         "out of scope",
         "unsupported",
@@ -1416,19 +1575,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "labflow_dsl_reference.md#chunk-004",
-        "dna_normalization_sop.md#chunk-009",
-        "ai_guardrails_policy.md#chunk-008",
-        "rna_norm_requant_sop.md#chunk-001",
-        "sample_ancestry_policy.md#chunk-006",
-        "batch_readiness_doctrine.md#chunk-001"
+        "dna_normalization_sop.md#chunk-010",
+        "ai_guardrails_policy.md#chunk-009",
+        "controlled_sop_normalization_worklist_review.md#chunk-010",
+        "controlled_sop_rna_requant.md#chunk-014",
+        "sample_ancestry_policy.md#chunk-007"
       ],
       "retrieved_sources": [
         "labflow_dsl_reference.md",
         "dna_normalization_sop.md",
         "ai_guardrails_policy.md",
-        "rna_norm_requant_sop.md",
-        "sample_ancestry_policy.md",
-        "batch_readiness_doctrine.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "controlled_sop_rna_requant.md",
+        "sample_ancestry_policy.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1440,14 +1599,14 @@
       "citation_precision_proxy": 0.3333333333333333,
       "cited_sources": [
         "labflow_dsl_reference.md",
+        "sop_alignment_mapping.md",
         "ai_guardrails_policy.md",
         "dna_normalization_sop.md",
-        "rna_norm_requant_sop.md",
-        "dna_quant_picogreen_sop.md",
-        "varioskan_tsv_import_spec.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "rna_norm_requant_sop.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.47800003085285425,
+      "latency_ms": 0.8165420731529593,
       "missing_answer_terms": [
         "molarity",
         "unsupported",
@@ -1473,20 +1632,20 @@
       ],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "labflow_dsl_reference.md#chunk-004",
-        "ai_guardrails_policy.md#chunk-007",
+        "labflow_dsl_reference.md#chunk-008",
+        "sop_alignment_mapping.md#chunk-006",
+        "ai_guardrails_policy.md#chunk-008",
         "dna_normalization_sop.md#chunk-004",
-        "rna_norm_requant_sop.md#chunk-004",
-        "dna_quant_picogreen_sop.md#chunk-001",
-        "varioskan_tsv_import_spec.md#chunk-005"
+        "controlled_sop_normalization_worklist_review.md#chunk-011",
+        "rna_norm_requant_sop.md#chunk-009"
       ],
       "retrieved_sources": [
         "labflow_dsl_reference.md",
+        "sop_alignment_mapping.md",
         "ai_guardrails_policy.md",
         "dna_normalization_sop.md",
-        "rna_norm_requant_sop.md",
-        "dna_quant_picogreen_sop.md",
-        "varioskan_tsv_import_spec.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "rna_norm_requant_sop.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1500,12 +1659,12 @@
         "dna_normalization_sop.md",
         "labflow_dsl_reference.md",
         "rna_norm_requant_sop.md",
-        "batch_readiness_doctrine.md",
-        "exception_handling_manual.md",
-        "janus_csv_worklist_spec.md"
+        "sop_alignment_mapping.md",
+        "sample_ancestry_policy.md",
+        "controlled_sop_normalization_worklist_review.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.3903750330209732,
+      "latency_ms": 0.7886249804869294,
       "missing_answer_terms": [
         "ng/uL",
         "uL",
@@ -1525,20 +1684,20 @@
       "required_tool_calls": [],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "dna_normalization_sop.md#chunk-009",
+        "dna_normalization_sop.md#chunk-010",
         "labflow_dsl_reference.md#chunk-010",
         "rna_norm_requant_sop.md#chunk-001",
-        "batch_readiness_doctrine.md#chunk-001",
-        "exception_handling_manual.md#chunk-001",
-        "janus_csv_worklist_spec.md#chunk-001"
+        "sop_alignment_mapping.md#chunk-001",
+        "sample_ancestry_policy.md#chunk-005",
+        "controlled_sop_normalization_worklist_review.md#chunk-014"
       ],
       "retrieved_sources": [
         "dna_normalization_sop.md",
         "labflow_dsl_reference.md",
         "rna_norm_requant_sop.md",
-        "batch_readiness_doctrine.md",
-        "exception_handling_manual.md",
-        "janus_csv_worklist_spec.md"
+        "sop_alignment_mapping.md",
+        "sample_ancestry_policy.md",
+        "controlled_sop_normalization_worklist_review.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1550,14 +1709,14 @@
       "citation_precision_proxy": 0.3333333333333333,
       "cited_sources": [
         "ai_guardrails_policy.md",
-        "batch_readiness_doctrine.md",
         "exception_handling_manual.md",
-        "dna_quant_picogreen_sop.md",
-        "dna_normalization_sop.md",
-        "rna_norm_requant_sop.md"
+        "legacy_missing_concentration_sop.md",
+        "batch_readiness_doctrine.md",
+        "sop_alignment_mapping.md",
+        "controlled_sop_rna_requant.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.4637079546228051,
+      "latency_ms": 0.9383750148117542,
       "missing_answer_terms": [
         "must not invent",
         "MISSING_CONCENTRATION"
@@ -1579,19 +1738,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "ai_guardrails_policy.md#chunk-004",
-        "batch_readiness_doctrine.md#chunk-006",
         "exception_handling_manual.md#chunk-004",
-        "dna_quant_picogreen_sop.md#chunk-006",
-        "dna_normalization_sop.md#chunk-008",
-        "rna_norm_requant_sop.md#chunk-004"
+        "legacy_missing_concentration_sop.md#chunk-004",
+        "batch_readiness_doctrine.md#chunk-007",
+        "sop_alignment_mapping.md#chunk-008",
+        "controlled_sop_rna_requant.md#chunk-010"
       ],
       "retrieved_sources": [
         "ai_guardrails_policy.md",
-        "batch_readiness_doctrine.md",
         "exception_handling_manual.md",
-        "dna_quant_picogreen_sop.md",
-        "dna_normalization_sop.md",
-        "rna_norm_requant_sop.md"
+        "legacy_missing_concentration_sop.md",
+        "batch_readiness_doctrine.md",
+        "sop_alignment_mapping.md",
+        "controlled_sop_rna_requant.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1603,14 +1762,14 @@
       "citation_precision_proxy": 0.16666666666666666,
       "cited_sources": [
         "ai_guardrails_policy.md",
-        "batch_readiness_doctrine.md",
-        "dna_normalization_sop.md",
+        "sop_alignment_mapping.md",
         "rna_norm_requant_sop.md",
-        "throughput_optimization_case.md",
-        "dna_quant_picogreen_sop.md"
+        "dna_normalization_sop.md",
+        "batch_readiness_doctrine.md",
+        "controlled_sop_dna_quantification.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.39162510074675083,
+      "latency_ms": 0.7305409526452422,
       "missing_answer_terms": [
         "not supported",
         "cite",
@@ -1630,19 +1789,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "ai_guardrails_policy.md#chunk-004",
-        "batch_readiness_doctrine.md#chunk-009",
-        "dna_normalization_sop.md#chunk-009",
-        "rna_norm_requant_sop.md#chunk-008",
-        "throughput_optimization_case.md#chunk-006",
-        "dna_quant_picogreen_sop.md#chunk-008"
+        "sop_alignment_mapping.md#chunk-001",
+        "rna_norm_requant_sop.md#chunk-009",
+        "dna_normalization_sop.md#chunk-010",
+        "batch_readiness_doctrine.md#chunk-010",
+        "controlled_sop_dna_quantification.md#chunk-003"
       ],
       "retrieved_sources": [
         "ai_guardrails_policy.md",
-        "batch_readiness_doctrine.md",
-        "dna_normalization_sop.md",
+        "sop_alignment_mapping.md",
         "rna_norm_requant_sop.md",
-        "throughput_optimization_case.md",
-        "dna_quant_picogreen_sop.md"
+        "dna_normalization_sop.md",
+        "batch_readiness_doctrine.md",
+        "controlled_sop_dna_quantification.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1657,11 +1816,11 @@
         "batch_readiness_doctrine.md",
         "exception_handling_manual.md",
         "ai_guardrails_policy.md",
-        "sample_ancestry_policy.md",
-        "janus_csv_worklist_spec.md"
+        "janus_csv_worklist_spec.md",
+        "dna_quant_picogreen_sop.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.32895791810005903,
+      "latency_ms": 0.5736249731853604,
       "missing_answer_terms": [
         "prior dry-run",
         "approval token",
@@ -1685,17 +1844,17 @@
         "varioskan_tsv_import_spec.md#chunk-008",
         "batch_readiness_doctrine.md#chunk-005",
         "exception_handling_manual.md#chunk-009",
-        "ai_guardrails_policy.md#chunk-005",
-        "sample_ancestry_policy.md#chunk-006",
-        "janus_csv_worklist_spec.md#chunk-004"
+        "ai_guardrails_policy.md#chunk-006",
+        "janus_csv_worklist_spec.md#chunk-004",
+        "dna_quant_picogreen_sop.md#chunk-008"
       ],
       "retrieved_sources": [
         "varioskan_tsv_import_spec.md",
         "batch_readiness_doctrine.md",
         "exception_handling_manual.md",
         "ai_guardrails_policy.md",
-        "sample_ancestry_policy.md",
-        "janus_csv_worklist_spec.md"
+        "janus_csv_worklist_spec.md",
+        "dna_quant_picogreen_sop.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1708,13 +1867,13 @@
       "cited_sources": [
         "ai_guardrails_policy.md",
         "labflow_dsl_reference.md",
-        "batch_readiness_doctrine.md",
-        "exception_handling_manual.md",
-        "throughput_optimization_case.md",
-        "janus_csv_worklist_spec.md"
+        "sop_alignment_mapping.md",
+        "controlled_sop_dna_quantification.md",
+        "controlled_sop_rna_requant.md",
+        "throughput_optimization_case.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.44966593850404024,
+      "latency_ms": 0.8120419224724174,
       "missing_answer_terms": [
         "synthetic",
         "non-production"
@@ -1734,20 +1893,20 @@
       "required_tool_calls": [],
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
-        "ai_guardrails_policy.md#chunk-007",
+        "ai_guardrails_policy.md#chunk-008",
         "labflow_dsl_reference.md#chunk-002",
-        "batch_readiness_doctrine.md#chunk-002",
-        "exception_handling_manual.md#chunk-002",
-        "throughput_optimization_case.md#chunk-006",
-        "janus_csv_worklist_spec.md#chunk-002"
+        "sop_alignment_mapping.md#chunk-001",
+        "controlled_sop_dna_quantification.md#chunk-003",
+        "controlled_sop_rna_requant.md#chunk-003",
+        "throughput_optimization_case.md#chunk-006"
       ],
       "retrieved_sources": [
         "ai_guardrails_policy.md",
         "labflow_dsl_reference.md",
-        "batch_readiness_doctrine.md",
-        "exception_handling_manual.md",
-        "throughput_optimization_case.md",
-        "janus_csv_worklist_spec.md"
+        "sop_alignment_mapping.md",
+        "controlled_sop_dna_quantification.md",
+        "controlled_sop_rna_requant.md",
+        "throughput_optimization_case.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1761,12 +1920,12 @@
         "throughput_optimization_case.md",
         "rna_norm_requant_sop.md",
         "exception_handling_manual.md",
-        "sample_ancestry_policy.md",
-        "labflow_dsl_reference.md",
-        "janus_csv_worklist_spec.md"
+        "controlled_sop_rna_requant.md",
+        "ngs_qc_provenance_policy.md",
+        "sample_ancestry_policy.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.4695829702541232,
+      "latency_ms": 0.7413750281557441,
       "missing_answer_terms": [
         "three containers",
         "reduced robot idle time",
@@ -1793,17 +1952,17 @@
         "throughput_optimization_case.md#chunk-006",
         "rna_norm_requant_sop.md#chunk-004",
         "exception_handling_manual.md#chunk-008",
-        "sample_ancestry_policy.md#chunk-001",
-        "labflow_dsl_reference.md#chunk-003",
-        "janus_csv_worklist_spec.md#chunk-003"
+        "controlled_sop_rna_requant.md#chunk-005",
+        "ngs_qc_provenance_policy.md#chunk-001",
+        "sample_ancestry_policy.md#chunk-001"
       ],
       "retrieved_sources": [
         "throughput_optimization_case.md",
         "rna_norm_requant_sop.md",
         "exception_handling_manual.md",
-        "sample_ancestry_policy.md",
-        "labflow_dsl_reference.md",
-        "janus_csv_worklist_spec.md"
+        "controlled_sop_rna_requant.md",
+        "ngs_qc_provenance_policy.md",
+        "sample_ancestry_policy.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1815,14 +1974,14 @@
       "citation_precision_proxy": 0.16666666666666666,
       "cited_sources": [
         "throughput_optimization_case.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
-        "labflow_dsl_reference.md",
         "rna_norm_requant_sop.md",
-        "batch_readiness_doctrine.md",
-        "varioskan_tsv_import_spec.md"
+        "labflow_dsl_reference.md",
+        "downstream_qc_metric_reference.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.36637496668845415,
+      "latency_ms": 0.7476250175386667,
       "missing_answer_terms": [
         "synthetic",
         "modeling assumption",
@@ -1844,19 +2003,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "throughput_optimization_case.md#chunk-006",
+        "controlled_sop_rna_requant.md#chunk-003",
         "exception_handling_manual.md#chunk-002",
-        "labflow_dsl_reference.md#chunk-002",
         "rna_norm_requant_sop.md#chunk-004",
-        "batch_readiness_doctrine.md#chunk-002",
-        "varioskan_tsv_import_spec.md#chunk-002"
+        "labflow_dsl_reference.md#chunk-002",
+        "downstream_qc_metric_reference.md#chunk-002"
       ],
       "retrieved_sources": [
         "throughput_optimization_case.md",
+        "controlled_sop_rna_requant.md",
         "exception_handling_manual.md",
-        "labflow_dsl_reference.md",
         "rna_norm_requant_sop.md",
-        "batch_readiness_doctrine.md",
-        "varioskan_tsv_import_spec.md"
+        "labflow_dsl_reference.md",
+        "downstream_qc_metric_reference.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1870,12 +2029,12 @@
         "throughput_optimization_case.md",
         "batch_readiness_doctrine.md",
         "ai_guardrails_policy.md",
-        "janus_csv_worklist_spec.md",
-        "labflow_dsl_reference.md",
-        "dna_quant_picogreen_sop.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "sop_alignment_mapping.md",
+        "janus_csv_worklist_spec.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.3822080325335264,
+      "latency_ms": 0.8680419996380806,
       "missing_answer_terms": [
         "readiness gates",
         "invalid samples",
@@ -1898,19 +2057,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "throughput_optimization_case.md#chunk-007",
-        "batch_readiness_doctrine.md#chunk-004",
-        "ai_guardrails_policy.md#chunk-005",
-        "janus_csv_worklist_spec.md#chunk-010",
-        "labflow_dsl_reference.md#chunk-009",
-        "dna_quant_picogreen_sop.md#chunk-008"
+        "batch_readiness_doctrine.md#chunk-006",
+        "ai_guardrails_policy.md#chunk-006",
+        "controlled_sop_normalization_worklist_review.md#chunk-012",
+        "sop_alignment_mapping.md#chunk-006",
+        "janus_csv_worklist_spec.md#chunk-011"
       ],
       "retrieved_sources": [
         "throughput_optimization_case.md",
         "batch_readiness_doctrine.md",
         "ai_guardrails_policy.md",
-        "janus_csv_worklist_spec.md",
-        "labflow_dsl_reference.md",
-        "dna_quant_picogreen_sop.md"
+        "controlled_sop_normalization_worklist_review.md",
+        "sop_alignment_mapping.md",
+        "janus_csv_worklist_spec.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1922,14 +2081,14 @@
       "citation_precision_proxy": 0.16666666666666666,
       "cited_sources": [
         "varioskan_tsv_import_spec.md",
+        "controlled_sop_dna_quantification.md",
+        "sop_alignment_mapping.md",
         "labflow_dsl_reference.md",
         "dna_quant_picogreen_sop.md",
-        "dna_normalization_sop.md",
-        "ai_guardrails_policy.md",
-        "sample_ancestry_policy.md"
+        "controlled_sop_normalization_worklist_review.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.3967919619753957,
+      "latency_ms": 0.7531249430030584,
       "missing_answer_terms": [
         "column names may vary",
         "schema mapping",
@@ -1953,19 +2112,19 @@
       "retrieval_recall_at_k": 1.0,
       "retrieved_chunk_ids": [
         "varioskan_tsv_import_spec.md#chunk-006",
+        "controlled_sop_dna_quantification.md#chunk-014",
+        "sop_alignment_mapping.md#chunk-006",
         "labflow_dsl_reference.md#chunk-009",
         "dna_quant_picogreen_sop.md#chunk-001",
-        "dna_normalization_sop.md#chunk-007",
-        "ai_guardrails_policy.md#chunk-001",
-        "sample_ancestry_policy.md#chunk-001"
+        "controlled_sop_normalization_worklist_review.md#chunk-014"
       ],
       "retrieved_sources": [
         "varioskan_tsv_import_spec.md",
+        "controlled_sop_dna_quantification.md",
+        "sop_alignment_mapping.md",
         "labflow_dsl_reference.md",
         "dna_quant_picogreen_sop.md",
-        "dna_normalization_sop.md",
-        "ai_guardrails_policy.md",
-        "sample_ancestry_policy.md"
+        "controlled_sop_normalization_worklist_review.md"
       ],
       "unsupported_claim_count": 0
     },
@@ -1978,13 +2137,13 @@
       "cited_sources": [
         "labflow_dsl_reference.md",
         "ai_guardrails_policy.md",
+        "sop_alignment_mapping.md",
+        "rna_norm_requant_sop.md",
         "batch_readiness_doctrine.md",
-        "varioskan_tsv_import_spec.md",
-        "exception_handling_manual.md",
-        "sample_ancestry_policy.md"
+        "varioskan_tsv_import_spec.md"
       ],
       "disallowed_answer_violations": [],
-      "latency_ms": 0.44016691390424967,
+      "latency_ms": 0.7766250055283308,
       "missing_answer_terms": [
         "domain validation",
         "validate_workflow",
@@ -2010,18 +2169,304 @@
       "retrieved_chunk_ids": [
         "labflow_dsl_reference.md#chunk-001",
         "ai_guardrails_policy.md#chunk-004",
+        "sop_alignment_mapping.md#chunk-007",
+        "rna_norm_requant_sop.md#chunk-004",
         "batch_readiness_doctrine.md#chunk-005",
-        "varioskan_tsv_import_spec.md#chunk-006",
-        "exception_handling_manual.md#chunk-004",
-        "sample_ancestry_policy.md#chunk-004"
+        "varioskan_tsv_import_spec.md#chunk-006"
       ],
       "retrieved_sources": [
         "labflow_dsl_reference.md",
         "ai_guardrails_policy.md",
+        "sop_alignment_mapping.md",
+        "rna_norm_requant_sop.md",
         "batch_readiness_doctrine.md",
-        "varioskan_tsv_import_spec.md",
+        "varioskan_tsv_import_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.3333333333333333,
+      "case_id": "q_qc_001",
+      "category": "downstream_qc_provenance",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "ngs_qc_provenance_policy.md",
+        "lab_to_analysis_lineage_policy.md",
+        "sample_ancestry_policy.md",
+        "downstream_qc_metric_reference.md",
         "exception_handling_manual.md",
+        "controlled_sop_dna_quantification.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.9309999877586961,
+      "missing_answer_terms": [
+        "does not retroactively validate",
+        "invalid upstream"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "validate_qc_provenance"
+      ],
+      "passed": true,
+      "question": "Can passing downstream QC retroactively validate an invalid LabFlow batch?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "ngs_qc_provenance_policy.md",
+        "lab_to_analysis_lineage_policy.md"
+      ],
+      "required_tool_calls": [
+        "validate_qc_provenance"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "ngs_qc_provenance_policy.md#chunk-004",
+        "lab_to_analysis_lineage_policy.md#chunk-005",
+        "sample_ancestry_policy.md#chunk-009",
+        "downstream_qc_metric_reference.md#chunk-007",
+        "exception_handling_manual.md#chunk-007",
+        "controlled_sop_dna_quantification.md#chunk-011"
+      ],
+      "retrieved_sources": [
+        "ngs_qc_provenance_policy.md",
+        "lab_to_analysis_lineage_policy.md",
+        "sample_ancestry_policy.md",
+        "downstream_qc_metric_reference.md",
+        "exception_handling_manual.md",
+        "controlled_sop_dna_quantification.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.3333333333333333,
+      "case_id": "q_qc_002",
+      "category": "downstream_qc_provenance",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "ngs_qc_provenance_policy.md",
+        "lab_to_analysis_lineage_policy.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md",
+        "downstream_qc_metric_reference.md",
+        "controlled_sop_dna_quantification.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 1.0515000903978944,
+      "missing_answer_terms": [
+        "does not prove a lab root cause",
+        "observed QC metrics"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "explain_qc_failure"
+      ],
+      "passed": true,
+      "question": "Can the assistant infer the lab root cause of a downstream QC failure?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [
+        "No"
+      ],
+      "required_sources": [
+        "ngs_qc_provenance_policy.md",
+        "downstream_qc_metric_reference.md"
+      ],
+      "required_tool_calls": [
+        "explain_qc_failure"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "ngs_qc_provenance_policy.md#chunk-004",
+        "lab_to_analysis_lineage_policy.md#chunk-005",
+        "ai_guardrails_policy.md#chunk-008",
+        "sample_ancestry_policy.md#chunk-009",
+        "downstream_qc_metric_reference.md#chunk-007",
+        "controlled_sop_dna_quantification.md#chunk-007"
+      ],
+      "retrieved_sources": [
+        "ngs_qc_provenance_policy.md",
+        "lab_to_analysis_lineage_policy.md",
+        "ai_guardrails_policy.md",
+        "sample_ancestry_policy.md",
+        "downstream_qc_metric_reference.md",
+        "controlled_sop_dna_quantification.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_qc_003",
+      "category": "downstream_qc_provenance",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "lab_to_analysis_lineage_policy.md",
+        "ngs_qc_provenance_policy.md",
+        "sample_ancestry_policy.md",
+        "batch_readiness_doctrine.md",
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.7812499534338713,
+      "missing_answer_terms": [
+        "UNMATCHED_QC_SAMPLE_ID",
+        "manual review",
+        "sample ID"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "validate_qc_provenance"
+      ],
+      "passed": true,
+      "question": "What should happen when an NGS QC row has an unmatched sample ID?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "ngs_qc_provenance_policy.md",
+        "lab_to_analysis_lineage_policy.md"
+      ],
+      "required_tool_calls": [
+        "validate_qc_provenance"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "lab_to_analysis_lineage_policy.md#chunk-005",
+        "ngs_qc_provenance_policy.md#chunk-004",
+        "sample_ancestry_policy.md#chunk-009",
+        "batch_readiness_doctrine.md#chunk-005",
+        "dna_quant_picogreen_sop.md#chunk-006",
+        "varioskan_tsv_import_spec.md#chunk-006"
+      ],
+      "retrieved_sources": [
+        "lab_to_analysis_lineage_policy.md",
+        "ngs_qc_provenance_policy.md",
+        "sample_ancestry_policy.md",
+        "batch_readiness_doctrine.md",
+        "dna_quant_picogreen_sop.md",
+        "varioskan_tsv_import_spec.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_qc_004",
+      "category": "downstream_qc_provenance",
+      "citation_precision_proxy": 0.3333333333333333,
+      "cited_sources": [
+        "lab_to_analysis_lineage_policy.md",
+        "sample_ancestry_policy.md",
+        "ngs_qc_provenance_policy.md",
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "downstream_qc_metric_reference.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.691958935931325,
+      "missing_answer_terms": [
+        "sample ID",
+        "quantification",
+        "normalization",
+        "re-quantification",
+        "downstream QC"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "generate_lab_to_analysis_lineage"
+      ],
+      "passed": true,
+      "question": "What should a lab-to-analysis lineage report connect?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "lab_to_analysis_lineage_policy.md",
         "sample_ancestry_policy.md"
+      ],
+      "required_tool_calls": [
+        "generate_lab_to_analysis_lineage"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "lab_to_analysis_lineage_policy.md#chunk-006",
+        "sample_ancestry_policy.md#chunk-009",
+        "ngs_qc_provenance_policy.md#chunk-006",
+        "ai_guardrails_policy.md#chunk-004",
+        "batch_readiness_doctrine.md#chunk-006",
+        "downstream_qc_metric_reference.md#chunk-005"
+      ],
+      "retrieved_sources": [
+        "lab_to_analysis_lineage_policy.md",
+        "sample_ancestry_policy.md",
+        "ngs_qc_provenance_policy.md",
+        "ai_guardrails_policy.md",
+        "batch_readiness_doctrine.md",
+        "downstream_qc_metric_reference.md"
+      ],
+      "unsupported_claim_count": 0
+    },
+    {
+      "answer": "Retrieval-only eval did not compose an answer.",
+      "answer_contains_match": 0.0,
+      "case_id": "q_qc_005",
+      "category": "downstream_qc_provenance",
+      "citation_precision_proxy": 0.5,
+      "cited_sources": [
+        "lab_to_analysis_lineage_policy.md",
+        "ngs_qc_provenance_policy.md",
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md",
+        "controlled_sop_dna_quantification.md",
+        "downstream_qc_metric_reference.md"
+      ],
+      "disallowed_answer_violations": [],
+      "latency_ms": 0.8759580086916685,
+      "missing_answer_terms": [
+        "read count",
+        "Q30",
+        "provenance",
+        "manual review"
+      ],
+      "missing_required_citations": [],
+      "missing_required_sources": [],
+      "missing_required_tool_calls": [
+        "explain_qc_failure"
+      ],
+      "passed": true,
+      "question": "How can a failed downstream QC sample be explained safely?",
+      "recommended_tool_calls": [],
+      "required_answer_matches": [],
+      "required_sources": [
+        "downstream_qc_metric_reference.md",
+        "ngs_qc_provenance_policy.md",
+        "lab_to_analysis_lineage_policy.md"
+      ],
+      "required_tool_calls": [
+        "explain_qc_failure"
+      ],
+      "retrieval_recall_at_k": 1.0,
+      "retrieved_chunk_ids": [
+        "lab_to_analysis_lineage_policy.md#chunk-005",
+        "ngs_qc_provenance_policy.md#chunk-004",
+        "sample_ancestry_policy.md#chunk-009",
+        "rna_norm_requant_sop.md#chunk-008",
+        "controlled_sop_dna_quantification.md#chunk-012",
+        "downstream_qc_metric_reference.md#chunk-007"
+      ],
+      "retrieved_sources": [
+        "lab_to_analysis_lineage_policy.md",
+        "ngs_qc_provenance_policy.md",
+        "sample_ancestry_policy.md",
+        "rna_norm_requant_sop.md",
+        "controlled_sop_dna_quantification.md",
+        "downstream_qc_metric_reference.md"
       ],
       "unsupported_claim_count": 0
     }
@@ -2029,19 +2474,19 @@
   "cases_path": "/Users/joseph/labflow/evals/golden_questions.yaml",
   "corpus_dir": "/Users/joseph/labflow/knowledge",
   "eval_run_id": "demo_eval_stage16",
-  "generated_at": "2026-06-10T01:38:08.759665Z",
+  "generated_at": "2026-06-11T20:29:33.331787Z",
   "metrics": {
-    "case_count": 37,
-    "citation_precision_proxy": 0.3198198198198198,
+    "case_count": 45,
+    "citation_precision_proxy": 0.3296296296296296,
     "disallowed_answer_violations": 0,
     "failed_count": 0,
-    "latency_ms_avg": 0.42471955089855035,
-    "latency_ms_p50": 0.4211660707369447,
-    "latency_ms_p95": 0.5153329111635685,
-    "passed_count": 37,
-    "required_answer_contains_match": 0.09999999999999999,
+    "latency_ms_avg": 0.8623990385482708,
+    "latency_ms_p50": 0.7886249804869294,
+    "latency_ms_p95": 1.1048329761251807,
+    "passed_count": 45,
+    "required_answer_contains_match": 0.09703703703703703,
     "retrieval_recall_at_k": 1.0,
-    "tool_call_expectation_match": 0.5675675675675675,
+    "tool_call_expectation_match": 0.5333333333333333,
     "unsupported_claim_count": 0
   },
   "prompt_model": {

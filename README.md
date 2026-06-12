@@ -1,6 +1,6 @@
 # LabFlow AI Studio
 
-LabFlow AI Studio is a local-first, AI-assisted workflow development studio for synthetic NGS quantification, normalization, and RNA re-quantification workflows.
+LabFlow AI Studio is a local-first, AI-assisted workflow development studio for synthetic NGS quantification, normalization, RNA re-quantification, and downstream QC provenance workflows.
 
 It is built as a portfolio project for AI/LIMS platform work: deterministic lab workflow logic, retrieval over domain documentation, evals, guarded tool-using agents, VS Code workflow diagnostics, a FastAPI boundary, and AWS-shaped infrastructure.
 
@@ -14,7 +14,7 @@ For the role-focused portfolio path, start with:
 ## What This Is
 
 - A synthetic LIMS workflow development environment.
-- A deterministic lab engine for wells, containers, quantification, normalization, split workflows, in-place normalization, RNA re-quantification, JANUS-style previews, audit records, and readiness checks.
+- A deterministic lab engine for wells, containers, quantification, normalization, split workflows, in-place normalization, RNA re-quantification, downstream QC provenance, JANUS-style previews, audit records, and readiness checks.
 - A local RAG system over synthetic domain docs with citations and no-answer behavior.
 - A controlled agent runtime that calls deterministic tools rather than inventing lab facts.
 - A VS Code extension skeleton for LabFlow workflow YAML diagnostics and API-backed commands.
@@ -27,6 +27,7 @@ For the role-focused portfolio path, start with:
 - Not a robot controller.
 - Not a STARLIMS clone or proprietary SOP reproduction.
 - Not a system for patient, customer, or real lab data.
+- Not a full bioinformatics pipeline; it does not parse FASTQ, align reads, call variants, or perform clinical QC.
 - Not a live-inference demo by default. Current demos and tests use deterministic/local components for reproducibility.
 
 All demo data is synthetic.
@@ -125,14 +126,18 @@ Do not run `terraform apply` unless you explicitly intend to mutate an AWS accou
 
 ## Demo Flow
 
-Stage 16 added a complete local demo:
+Stage 16 added the core local demo, and Stage 19 extends it with synthetic
+downstream QC provenance:
 
 1. Validate `examples/workflows/invalid_rna_norm_requant.workflow.yaml`.
 2. See deterministic errors for missing blank, missing concentration, invalid standards, and JANUS blocking.
 3. Validate `examples/workflows/fixed_rna_norm_requant.workflow.yaml`.
 4. Generate a dry-run JANUS-style preview for the fixed workflow.
 5. Confirm split workflow and in-place normalization rows in `examples/expected/janus_rna_preview.csv`.
-6. Review retrieval-only eval results in `examples/expected/eval_report.json`.
+6. Ingest `examples/qc/synthetic_ngs_qc_results.csv`.
+7. Generate a dry-run lab-to-analysis lineage report.
+8. Ask the agent to explain a downstream QC failure with cited policy and no invented root cause.
+9. Review retrieval-only eval results in `examples/expected/eval_report.json`.
 
 The walkthrough is in [docs/demo_walkthrough.md](docs/demo_walkthrough.md).
 
@@ -148,6 +153,9 @@ The walkthrough is in [docs/demo_walkthrough.md](docs/demo_walkthrough.md).
 - Split workflow when calculated transfer is below 1 uL.
 - In-place normalization when source volume constraints require it.
 - RNA re-quant downstream concentration handling.
+- Synthetic downstream NGS QC summary parsing.
+- Configurable read-count and Q30 threshold evaluation.
+- Lab-to-analysis lineage reports linking quantification, normalization, re-quantification, and downstream QC by sample ID.
 - JANUS-style dry-run CSV preview.
 - Structured exceptions, ancestry, and audit events.
 - Throughput simulation for one-container versus multi-container batching.
@@ -179,7 +187,7 @@ Current verification includes:
 - `make type`: mypy strict checks plus VS Code TypeScript compile.
 - `terraform validate`: local validation for the AWS skeleton when Terraform is installed.
 
-Latest local verification passed with 258 Python tests.
+Latest local verification should be checked with the commands above before sharing.
 
 ## Limitations
 
@@ -189,6 +197,7 @@ Latest local verification passed with 258 Python tests.
 - No robot execution.
 - No auth, tenancy, or enterprise deployment hardening.
 - No live model provider by default.
+- No FASTQ parsing, alignment, variant calling, differential expression, or clinical QC logic.
 - Terraform is a skeleton, not an applied cloud environment.
 - JANUS output is a preview format for demonstration, not a certified robot-ready artifact.
 

@@ -1,27 +1,38 @@
 {
   "manifest_version": "0.1.0",
-  "created_for": "Stage 18.15 STARLIMS portfolio readiness",
+  "created_for": "Stage 19.1 STARLIMS portfolio readiness",
   "artifacts": [
     {
       "id": "semantic_generalization_live",
       "kind": "inference_eval_ladder",
       "suite": "semantic_generalization",
       "path": "artifacts/inference_eval_ladders/inference_eval_ladder_20260611T182645477712Z.json",
-      "why_canonical": "Latest live semantic/generalization evidence after frozen keyword baseline reporting."
+      "release_status": "historical_live_reference",
+      "why_canonical": "Historical live semantic/generalization evidence after frozen keyword baseline reporting; not a Stage 19.1 live release claim."
     },
     {
       "id": "grounded_answer_quality_live",
       "kind": "inference_eval_ladder",
       "suite": "grounded_answer_quality",
       "path": "artifacts/inference_eval_ladders/inference_eval_ladder_20260611T181433514172Z.json",
-      "why_canonical": "Latest live grounded-answer evidence after Stage 18.14 claim and source-family hardening."
+      "release_status": "historical_live_reference",
+      "why_canonical": "Historical live grounded-answer evidence after Stage 18.14 claim and source-family hardening; not a Stage 19.1 live release claim."
     },
     {
       "id": "repair_planning_live",
       "kind": "inference_eval_ladder",
       "suite": "repair_planning",
       "path": "artifacts/inference_eval_ladders/inference_eval_ladder_20260611T180238570518Z.json",
-      "why_canonical": "Live repair-planning evidence with dry-run patch/refusal safety checks."
+      "release_status": "historical_live_reference",
+      "why_canonical": "Historical live repair-planning evidence with dry-run patch/refusal safety checks; not a Stage 19.1 live release claim."
+    },
+    {
+      "id": "stage19_1_offline_ladder",
+      "kind": "inference_eval_ladder",
+      "suite": "full_ladder_offline",
+      "path": "artifacts/inference_eval_ladders/inference_eval_ladder_20260612T030345546680Z.json",
+      "release_status": "current_local_evidence",
+      "why_canonical": "Current Stage 19.1 local/offline reliability evidence. It intentionally fails the downstream QC release gate on semantic QC tool correctness; live release evidence is pending an explicitly authorized live run."
     },
     {
       "id": "rag_retrieval_sop_check",
@@ -29,6 +40,13 @@
       "suite": "retrieval_only",
       "path": "artifacts/eval_reports/sop_retrieval_only_check.json",
       "why_canonical": "Retrieval-only corpus check after SOP alignment work."
+    },
+    {
+      "id": "rag_retrieval_stage19_demo",
+      "kind": "rag_eval",
+      "suite": "retrieval_only",
+      "path": "examples/expected/eval_report.json",
+      "why_canonical": "Checked-in retrieval-only demo evidence including Stage 19 downstream QC provenance golden cases."
     }
   ]
 }

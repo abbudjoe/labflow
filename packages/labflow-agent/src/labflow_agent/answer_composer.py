@@ -60,6 +60,8 @@ class AnswerComposer:
 
         if plan.task is AgentTask.EXPLAIN_DIAGNOSTIC:
             return self._compose_diagnostic(plan, rag_answer, tool_calls, sources)
+        if plan.task is AgentTask.EXPLAIN_QC_FAILURE:
+            return self._compose_qc_failure(plan, rag_answer, tool_calls, sources)
         if plan.task is AgentTask.VALIDATE_BATCH:
             return self._compose_validation(plan, rag_answer, tool_calls, sources)
         return self._compose_knowledge_answer(plan, rag_answer, tool_calls, sources)
@@ -113,6 +115,29 @@ class AnswerComposer:
             sources=sources,
             tool_calls=tool_calls,
             next_safe_action=_next_action_for_tools(tool_calls),
+            blocked_reason=_blocked_reason(tool_calls),
+        )
+
+    def _compose_qc_failure(
+        self,
+        plan: AgentPlan,
+        rag_answer: RagAnswer,
+        tool_calls: tuple[ExecutedToolCall, ...],
+        sources: tuple[SourceChunk, ...],
+    ) -> AgentResponse:
+        answer_parts = [
+            "I checked deterministic downstream QC/provenance tool output before explaining this sample.",
+            _artifact_summary(tool_calls),
+            _tool_error_summary(tool_calls),
+            _rag_sentence(rag_answer),
+        ]
+        return AgentResponse(
+            answer=" ".join(part for part in answer_parts if part),
+            task=plan.task,
+            plan=plan,
+            sources=sources,
+            tool_calls=tool_calls,
+            next_safe_action="Review QC metrics and LabFlow lineage; do not infer lab root cause from QC alone.",
             blocked_reason=_blocked_reason(tool_calls),
         )
 
@@ -175,6 +200,11 @@ def _profile_policy_sentence(
         sentences.append(
             "The measured RNA re-quant result becomes the downstream concentration for normalization."
         )
+    if "downstream_qc" in profiles or "lab_to_analysis_lineage" in profiles:
+        sentences.append(
+            "Downstream QC can be explained from observed summary metrics and lineage only; "
+            "it must not be used to invent a lab root cause."
+        )
     return " ".join(sentences)
 
 
@@ -201,6 +231,13 @@ def _artifact_summary(tool_calls: tuple[ExecutedToolCall, ...]) -> str:
                     action = data.get("suggested_action")
                     if meaning and action:
                         return f"{meaning} Suggested action: {action}"
+            if isinstance(artifact, dict) and artifact.get("artifact_type") == "qc_failure_explanation":
+                data = artifact.get("data", {})
+                if isinstance(data, dict):
+                    interpretation = data.get("safe_interpretation")
+                    boundary = data.get("root_cause_boundary")
+                    if interpretation and boundary:
+                        return f"{interpretation} {boundary}"
     return ""
 
 

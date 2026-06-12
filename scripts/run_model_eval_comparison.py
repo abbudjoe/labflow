@@ -32,7 +32,24 @@ _VALIDATION_FIXTURES = {
     "q_batch_003": ("examples/workflows/valid_dna_normalization.workflow.yaml", "DNA_NORM_BATCH_001"),
     "q_batch_004": ("examples/workflows/invalid_duplicate_well.workflow.yaml", "DNA_NORM_BAD_DUPLICATE"),
 }
-_REQUEST_BACKED_TOOLS = frozenset({"validate_batch"})
+_QC_FIXTURE = "examples/qc/synthetic_ngs_qc_results.csv"
+_QC_LINEAGE_FIXTURE = "examples/qc/synthetic_lab_lineage_manifest.csv"
+_QC_SAMPLE_FIXTURES = {
+    "q_qc_001": None,
+    "q_qc_002": "RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+    "q_qc_003": None,
+    "q_qc_004": None,
+    "q_qc_005": "RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+}
+_REQUEST_BACKED_TOOLS = frozenset(
+    {
+        "validate_batch",
+        "ingest_ngs_qc_results",
+        "validate_qc_provenance",
+        "explain_qc_failure",
+        "generate_lab_to_analysis_lineage",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -54,6 +71,11 @@ def main() -> int:
     parser.add_argument("--output-dir", default="artifacts/model_eval_comparisons")
     parser.add_argument("--live-openrouter", action="store_true")
     parser.add_argument(
+        "--confirm-live-openrouter",
+        action="store_true",
+        help="Confirm explicit current-turn approval for live OpenRouter provider calls.",
+    )
+    parser.add_argument(
         "--openrouter-timeout-seconds",
         type=float,
         default=float(os.environ.get("OPENROUTER_TIMEOUT_SECONDS", DEFAULT_OPENROUTER_TIMEOUT_SECONDS)),
@@ -67,6 +89,11 @@ def main() -> int:
     )
     parser.add_argument("--verbose", action="store_true", help="Print provider and case progress.")
     args = parser.parse_args()
+    if args.live_openrouter and not args.confirm_live_openrouter:
+        raise ValueError(
+            "--live-openrouter requires --confirm-live-openrouter to document explicit "
+            "current-turn approval for live provider calls."
+        )
 
     cases = load_golden_cases(_repo_path(args.cases))[: args.limit]
     _verbose(args.verbose, f"Loaded {len(cases)} cases from {args.cases}.")
@@ -295,6 +322,16 @@ def _elapsed_ms(started_at: datetime) -> float:
 
 
 def _request_for_case(case: Any) -> AgentRequest:
+    if case.id in _QC_SAMPLE_FIXTURES:
+        qc_path = _repo_path(_QC_FIXTURE)
+        lineage_path = _repo_path(_QC_LINEAGE_FIXTURE)
+        if qc_path.exists() and lineage_path.exists():
+            return AgentRequest(
+                question=case.question,
+                qc_csv=str(qc_path),
+                lineage_csv=str(lineage_path),
+                sample_id=_QC_SAMPLE_FIXTURES[case.id],
+            )
     fixture = _VALIDATION_FIXTURES.get(case.id)
     if fixture is None:
         return AgentRequest(question=case.question)
@@ -341,8 +378,16 @@ def _evaluate_required_tools(
 
 
 def _tool_requirement_is_applicable(tool_name: str, request: AgentRequest) -> bool:
-    if tool_name in _REQUEST_BACKED_TOOLS:
+    if tool_name == "validate_batch":
         return request.workflow_yaml is not None
+    if tool_name == "ingest_ngs_qc_results":
+        return request.qc_csv is not None
+    if tool_name == "validate_qc_provenance":
+        return request.qc_csv is not None and request.lineage_csv is not None
+    if tool_name == "explain_qc_failure":
+        return request.qc_csv is not None and request.sample_id is not None
+    if tool_name == "generate_lab_to_analysis_lineage":
+        return request.qc_csv is not None and request.lineage_csv is not None
     return False
 
 

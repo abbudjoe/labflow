@@ -44,9 +44,12 @@ SOURCE_FAMILY_CATALOG: frozenset[str] = frozenset(
         "batch_readiness_doctrine.md",
         "dna_normalization_sop.md",
         "dna_quant_picogreen_sop.md",
+        "downstream_qc_metric_reference.md",
         "exception_handling_manual.md",
         "janus_csv_worklist_spec.md",
         "labflow_dsl_reference.md",
+        "lab_to_analysis_lineage_policy.md",
+        "ngs_qc_provenance_policy.md",
         "rna_norm_requant_sop.md",
         "sample_ancestry_policy.md",
         "varioskan_tsv_import_spec.md",
@@ -90,6 +93,16 @@ DOMAIN_SOURCE_PROFILES: dict[str, tuple[str, ...]] = {
         "dna_quant_picogreen_sop.md",
         "varioskan_tsv_import_spec.md",
     ),
+    "downstream_qc": (
+        "ngs_qc_provenance_policy.md",
+        "downstream_qc_metric_reference.md",
+        "lab_to_analysis_lineage_policy.md",
+    ),
+    "lab_to_analysis_lineage": (
+        "lab_to_analysis_lineage_policy.md",
+        "sample_ancestry_policy.md",
+        "ngs_qc_provenance_policy.md",
+    ),
 }
 
 DOMAIN_CONCEPT_ALIASES: dict[str, tuple[str, ...]] = {
@@ -132,6 +145,9 @@ DOMAIN_CONCEPT_ALIASES: dict[str, tuple[str, ...]] = {
     "rounding": ("round", "rounding", "rounded"),
     "standards": ("standard", "standards", "standard curve", "a1-h1"),
     "invalid_transfer": ("invalid sample", "invalid samples", "transfer row", "transfer rows", "transfers"),
+    "downstream_qc": ("qc", "ngs qc", "downstream qc", "read count", "q30"),
+    "lineage": ("lineage", "provenance", "lab to analysis", "analysis"),
+    "causal_inference": ("root cause", "causal", "caused", "infer"),
 }
 
 _UNKNOWN_PROFILE_FAMILIES = {
@@ -158,9 +174,28 @@ class ToolEvidence(BaseModel):
     status: str | None = None
     error_codes: tuple[str, ...] = ()
     error_messages: tuple[str, ...] = ()
+    warning_codes: tuple[str, ...] = ()
     audit_event_id: str | None = None
     artifact_statuses: tuple[str, ...] = ()
     artifact_ids: tuple[str, ...] = ()
+    artifact_types: tuple[str, ...] = ()
+    fact_terms: tuple[str, ...] = ()
+
+
+class QcEvidencePacket(BaseModel):
+    """Compact downstream QC truth extracted from deterministic tool output."""
+
+    model_config = ConfigDict(frozen=True)
+
+    present: bool = False
+    sample_ids: tuple[str, ...] = ()
+    status_codes: tuple[str, ...] = ()
+    metric_terms: tuple[str, ...] = ()
+    lineage_terms: tuple[str, ...] = ()
+    manual_review_required: bool = False
+    root_cause_boundary: bool = False
+    dry_run_lineage_artifact: bool = False
+    tool_fact_terms: tuple[str, ...] = ()
 
 
 class GroundedFactSet(BaseModel):
@@ -266,6 +301,7 @@ class GroundedAnswerContext(BaseModel):
     source_chunks: tuple[SourceChunk, ...] = ()
     source_text_by_id: dict[str, str] = Field(default_factory=dict)
     tool_evidence: tuple[ToolEvidence, ...] = ()
+    qc_evidence: QcEvidencePacket = Field(default_factory=QcEvidencePacket)
     baseline_response: AgentResponse
     fact_set: GroundedFactSet
     obligations: AnswerObligations | None = None
@@ -307,6 +343,7 @@ class GroundedAnswerContext(BaseModel):
                 for source in self.source_chunks
             ],
             "tool_evidence": [evidence.model_dump(mode="json") for evidence in self.tool_evidence],
+            "qc_evidence": self.qc_evidence.model_dump(mode="json"),
             "compiled_obligations": (
                 self.obligations.model_dump(mode="json") if self.obligations is not None else None
             ),
@@ -516,6 +553,8 @@ class GroundedAnswerDraftValidator:
             reasons.append("draft_claims_approval_without_tool_support")
         if _claims_missing_value_inference(draft.answer):
             reasons.append("draft_claims_missing_lab_fact_inference")
+        if _claims_downstream_qc_causal_overclaim(context, draft.answer):
+            reasons.append("draft_claims_downstream_qc_causal_overclaim")
         if _tool_claim_requires_evidence(context, draft.answer) and not draft.cited_tool_call_ids:
             reasons.append("draft_missing_tool_evidence_for_tool_claim")
         quality_flags = _non_blocking_quality_flags(context, draft)
@@ -580,6 +619,7 @@ def build_grounded_answer_context(
         blocked_diagnostic_codes=tuple(dict.fromkeys(_error_codes(tool_calls))),
         artifact_statuses=tuple(dict.fromkeys(_artifact_statuses(tool_calls))),
     )
+    qc_evidence = _qc_evidence_packet(tool_calls)
     context = GroundedAnswerContext(
         question=question,
         has_workflow_yaml=has_workflow_yaml,
@@ -592,6 +632,7 @@ def build_grounded_answer_context(
         source_chunks=source_chunks,
         source_text_by_id=source_text_by_id,
         tool_evidence=tool_evidence,
+        qc_evidence=qc_evidence,
         baseline_response=baseline_response,
         fact_set=fact_set,
     )
@@ -635,6 +676,10 @@ def source_family_profiles_for_context(
         add("rna_requant")
     if "standards" in concepts:
         add("standards")
+    if "downstream_qc" in concepts or "causal_inference" in concepts:
+        add("downstream_qc")
+    if "lineage" in concepts:
+        add("lab_to_analysis_lineage")
     return tuple(dict.fromkeys(profiles))
 
 
@@ -834,6 +879,61 @@ def compile_answer_obligations(context: GroundedAnswerContext) -> AnswerObligati
             slot_families=("dna_quant_picogreen_sop.md", "varioskan_tsv_import_spec.md"),
             relevance_reason="standards/standard curve intent",
         )
+    if "downstream_qc" in active_profiles or "lab_to_analysis_lineage" in active_profiles:
+        qc_terms = context.qc_evidence.tool_fact_terms
+        add_claim(
+            "downstream_qc_no_causal_root_cause",
+            required_terms=("downstream QC",),
+            acceptable_phrases=(
+                "observed QC metrics",
+                "cannot infer a lab root cause",
+                "does not prove a lab root cause",
+                "must not infer causal lab failure",
+            ),
+            slot_families=(
+                "ngs_qc_provenance_policy.md",
+                "downstream_qc_metric_reference.md",
+                "lab_to_analysis_lineage_policy.md",
+            ),
+            slot_kinds=("tool",),
+            tool_terms=qc_terms,
+            relevance_reason="downstream QC/provenance questions cannot assign causal lab failure",
+        )
+        if context.qc_evidence.metric_terms:
+            add_claim(
+                "downstream_qc_metric_evidence",
+                required_terms=("QC",),
+                acceptable_phrases=("observed metrics", "read_count", "q30_percent", "thresholds"),
+                slot_families=("downstream_qc_metric_reference.md",),
+                slot_kinds=("tool",),
+                tool_terms=context.qc_evidence.metric_terms,
+                relevance_reason="QC metric questions must reflect observed deterministic metric evidence",
+            )
+        if context.qc_evidence.status_codes:
+            add_claim(
+                "downstream_qc_status_codes",
+                required_terms=("review",),
+                acceptable_phrases=("manual review", "failed", "provenance gap", "unmatched"),
+                slot_families=("ngs_qc_provenance_policy.md",),
+                slot_kinds=("tool",),
+                tool_terms=context.qc_evidence.status_codes,
+                relevance_reason="QC status/exception codes are deterministic tool facts",
+            )
+        if context.qc_evidence.lineage_terms:
+            add_claim(
+                "lab_to_analysis_lineage_links",
+                required_terms=("lineage",),
+                acceptable_phrases=(
+                    "quantification",
+                    "normalization",
+                    "re-quantification",
+                    "downstream QC",
+                ),
+                slot_families=("lab_to_analysis_lineage_policy.md", "sample_ancestry_policy.md"),
+                slot_kinds=("tool",),
+                tool_terms=context.qc_evidence.lineage_terms,
+                relevance_reason="lineage answers must connect lab and downstream analysis evidence",
+            )
 
     mode = "general_grounded_answer"
     if any(term in question for term in ("robot", "ready", "readiness")):
@@ -853,6 +953,9 @@ def compile_answer_obligations(context: GroundedAnswerContext) -> AnswerObligati
             "estimate the concentration",
             "generate anyway",
             "ready for robot execution",
+            "root cause was",
+            "caused by normalization",
+            "caused by quantification",
         ),
         required_next_action_terms=_required_next_action_terms(active_profiles, tool_summary),
         deterministic_tool_summary=tool_summary,
@@ -1090,6 +1193,33 @@ def _canonical_sentence_for_claim(claim: ClaimObligation) -> str:
         return "The RNA re-quant result becomes the downstream concentration for downstream normalization."
     if claim.claim_id == "standards_location":
         return "Standards for the standard curve use A1-H1 on the separate standards plate."
+    if claim.claim_id == "downstream_qc_no_causal_root_cause":
+        suffix = f" Tool evidence includes {tool_facts}." if tool_facts else ""
+        return (
+            "Downstream QC can be explained from observed QC metrics and provenance, "
+            "but LabFlow cannot infer a lab root cause from downstream QC alone."
+            f"{suffix}"
+        )
+    if claim.claim_id == "downstream_qc_metric_evidence":
+        suffix = f" Observed metric evidence includes {tool_facts}." if tool_facts else ""
+        return (
+            "Downstream QC metric explanations must use observed metrics such as "
+            "read_count and q30_percent against configured thresholds."
+            f"{suffix}"
+        )
+    if claim.claim_id == "downstream_qc_status_codes":
+        suffix = f" Deterministic QC status codes include {tool_facts}." if tool_facts else ""
+        return (
+            "Downstream QC review is driven by deterministic status codes and manual review flags."
+            f"{suffix}"
+        )
+    if claim.claim_id == "lab_to_analysis_lineage_links":
+        suffix = f" Lineage evidence includes {tool_facts}." if tool_facts else ""
+        return (
+            "The lab-to-analysis lineage connects quantification, normalization, "
+            "re-quantification, and downstream QC by sample ID."
+            f"{suffix}"
+        )
     phrase = claim.acceptable_phrases[0] if claim.acceptable_phrases else "is required"
     terms = " ".join(claim.required_terms)
     return f"{terms} {phrase}.".strip()
@@ -1112,6 +1242,8 @@ def _required_next_action_terms(
         terms.extend(["duplicate", "destination"])
     if "rna_requant" in profiles:
         terms.extend(["re-quant", "downstream concentration"])
+    if "downstream_qc" in profiles or "lab_to_analysis_lineage" in profiles:
+        terms.extend(["review", "QC", "lineage"])
     return tuple(dict.fromkeys(terms))
 
 
@@ -1128,6 +1260,8 @@ def _next_safe_action_for_obligations(obligations: AnswerObligations) -> str:
         return "Run validation, run a dry-run preview, then commit only with an approval token."
     if "rna_requant" in profiles:
         return "Use the measured RNA re-quant concentration for downstream normalization, then rerun validation."
+    if "downstream_qc" in profiles or "lab_to_analysis_lineage" in profiles:
+        return "Review QC metrics and LabFlow lineage without inferring a lab root cause."
     if tool_summary.batch_status == "invalid" or "robot_readiness" in profiles:
         return "Fix the reported diagnostics, then rerun validation."
     return tool_summary.safe_next_action or "Rerun deterministic validation before proceeding."
@@ -1182,6 +1316,8 @@ def _claim_rewrite_reasons(
         reasons.append("rewrite_claims_approval_without_tool_support")
     if _claims_missing_value_inference(rewrite):
         reasons.append("rewrite_claims_missing_lab_fact_inference")
+    if _claims_downstream_qc_causal_overclaim(context, rewrite):
+        reasons.append("rewrite_claims_downstream_qc_causal_overclaim")
     return tuple(dict.fromkeys(reasons))
 
 
@@ -1210,6 +1346,9 @@ def _rendered_evidence_ids(frame: GroundedAnswerFrame) -> tuple[tuple[str, ...],
 
 def _tool_evidence(index: int, call: ExecutedToolCall) -> ToolEvidence:
     errors = tuple(error for error in call.result.get("errors", []) if isinstance(error, dict))
+    warnings = tuple(
+        warning for warning in call.result.get("warnings", []) if isinstance(warning, dict)
+    )
     artifacts = tuple(
         artifact for artifact in call.result.get("artifacts", []) if isinstance(artifact, dict)
     )
@@ -1220,6 +1359,9 @@ def _tool_evidence(index: int, call: ExecutedToolCall) -> ToolEvidence:
         status=str(call.result.get("status")) if call.result.get("status") is not None else None,
         error_codes=tuple(str(error.get("code")) for error in errors if error.get("code")),
         error_messages=tuple(str(error.get("message")) for error in errors if error.get("message")),
+        warning_codes=tuple(
+            str(warning.get("code")) for warning in warnings if warning.get("code")
+        ),
         audit_event_id=call.audit_event_id,
         artifact_statuses=tuple(
             str(artifact.get("status")) for artifact in artifacts if artifact.get("status")
@@ -1227,6 +1369,12 @@ def _tool_evidence(index: int, call: ExecutedToolCall) -> ToolEvidence:
         artifact_ids=tuple(
             str(artifact.get("artifact_id")) for artifact in artifacts if artifact.get("artifact_id")
         ),
+        artifact_types=tuple(
+            str(artifact.get("artifact_type"))
+            for artifact in artifacts
+            if artifact.get("artifact_type")
+        ),
+        fact_terms=_tool_fact_terms(call),
     )
 
 
@@ -1236,6 +1384,9 @@ def _error_codes(tool_calls: tuple[ExecutedToolCall, ...]) -> list[str]:
         for error in call.result.get("errors", []):
             if isinstance(error, dict) and error.get("code"):
                 codes.append(str(error["code"]))
+        for warning in call.result.get("warnings", []):
+            if isinstance(warning, dict) and warning.get("code"):
+                codes.append(str(warning["code"]))
     return codes
 
 
@@ -1246,6 +1397,104 @@ def _artifact_statuses(tool_calls: tuple[ExecutedToolCall, ...]) -> list[str]:
             if isinstance(artifact, dict) and artifact.get("status"):
                 statuses.append(str(artifact["status"]))
     return statuses
+
+
+def _tool_fact_terms(call: ExecutedToolCall) -> tuple[str, ...]:
+    text = json.dumps(call.result, sort_keys=True)
+    terms: list[str] = []
+    for marker in (
+        "QC_RESULT_FAILED",
+        "UNMATCHED_QC_SAMPLE_ID",
+        "MISSING_QC_RESULT",
+        "QC_PROVENANCE_GAP",
+        "DOWNSTREAM_QC_REVIEW_REQUIRED",
+        "read_count",
+        "q30_percent",
+        "lab_to_analysis_lineage_markdown",
+        "quantification",
+        "normalization",
+        "re-quantification",
+        "requantification",
+        "downstream QC",
+        "manual review",
+    ):
+        if marker in text:
+            terms.append(marker)
+    for sample_id in re.findall(r"\b[A-Z]{2,}_[A-Z0-9_]+\b", text):
+        terms.append(sample_id)
+    return tuple(dict.fromkeys(terms))
+
+
+def _qc_evidence_packet(tool_calls: tuple[ExecutedToolCall, ...]) -> QcEvidencePacket:
+    qc_tools = {
+        "ingest_ngs_qc_results",
+        "validate_qc_provenance",
+        "explain_qc_failure",
+        "generate_lab_to_analysis_lineage",
+    }
+    qc_calls = [call for call in tool_calls if call.tool_name in qc_tools]
+    if not qc_calls:
+        return QcEvidencePacket()
+    text = json.dumps([call.result for call in qc_calls], sort_keys=True)
+    terms: list[str] = []
+    metric_terms: list[str] = []
+    lineage_terms: list[str] = []
+    status_codes: list[str] = []
+    for call in qc_calls:
+        terms.extend(_tool_fact_terms(call))
+        for error in call.result.get("errors", []):
+            if isinstance(error, dict) and error.get("code"):
+                status_codes.append(str(error["code"]))
+        for warning in call.result.get("warnings", []):
+            if isinstance(warning, dict) and warning.get("code"):
+                status_codes.append(str(warning["code"]))
+    for marker in ("read_count", "q30_percent"):
+        if marker in text:
+            metric_terms.append(marker)
+    for marker in (
+        "quantification",
+        "normalization",
+        "re-quantification",
+        "requantification",
+        "downstream QC",
+        "lab_to_analysis_lineage_markdown",
+    ):
+        if marker in text:
+            lineage_terms.append(marker)
+    sample_ids = tuple(dict.fromkeys(re.findall(r"\b[A-Z]{2,}_[A-Z0-9_]+\b", text)))
+    status_codes = list(
+        dict.fromkeys(
+            (
+                *status_codes,
+                *(
+                    term
+                    for term in terms
+                    if term
+                    in {
+                        "QC_RESULT_FAILED",
+                        "UNMATCHED_QC_SAMPLE_ID",
+                        "MISSING_QC_RESULT",
+                        "QC_PROVENANCE_GAP",
+                        "DOWNSTREAM_QC_REVIEW_REQUIRED",
+                    }
+                ),
+            )
+        )
+    )
+    return QcEvidencePacket(
+        present=True,
+        sample_ids=sample_ids,
+        status_codes=tuple(dict.fromkeys(status_codes)),
+        metric_terms=tuple(dict.fromkeys(metric_terms)),
+        lineage_terms=tuple(dict.fromkeys(lineage_terms)),
+        manual_review_required=(
+            "manual review" in text.casefold()
+            or "DOWNSTREAM_QC_REVIEW_REQUIRED" in status_codes
+        ),
+        root_cause_boundary="root cause" in text.casefold(),
+        dry_run_lineage_artifact="lab_to_analysis_lineage_markdown" in text,
+        tool_fact_terms=tuple(dict.fromkeys(terms)),
+    )
 
 
 def _citation_slots(context: GroundedAnswerContext) -> tuple[CitationSlot, ...]:
@@ -1274,7 +1523,9 @@ def _citation_slots(context: GroundedAnswerContext) -> tuple[CitationSlot, ...]:
                     (
                         f"status={evidence.status or 'unknown'}",
                         f"errors={','.join(evidence.error_codes) or 'none'}",
-                        f"artifacts={','.join(evidence.artifact_statuses) or 'none'}",
+                        f"warnings={','.join(evidence.warning_codes) or 'none'}",
+                        f"artifacts={','.join((*evidence.artifact_statuses, *evidence.artifact_types)) or 'none'}",
+                        f"facts={','.join(evidence.fact_terms) or 'none'}",
                     )
                 ),
             )
@@ -1329,7 +1580,11 @@ def _deterministic_tool_summary(context: GroundedAnswerContext) -> Deterministic
         tool_call_ids=context.tool_evidence_ids,
         batch_status=batch_status,
         blocking_error_codes=tuple(
-            dict.fromkeys(code for evidence in context.tool_evidence for code in evidence.error_codes)
+            dict.fromkeys(
+                code
+                for evidence in context.tool_evidence
+                for code in (*evidence.error_codes, *evidence.warning_codes)
+            )
         ),
         blocking_error_messages=tuple(
             dict.fromkeys(message for evidence in context.tool_evidence for message in evidence.error_messages)
@@ -1563,6 +1818,50 @@ def _claims_missing_value_inference(answer: str) -> bool:
     return _has_unprohibited_invent_occurrence(lower)
 
 
+def _claims_downstream_qc_causal_overclaim(
+    context: GroundedAnswerContext,
+    answer: str,
+) -> bool:
+    if not _context_has_downstream_qc_obligation(context):
+        return False
+    lower = answer.casefold()
+    unsafe_phrases = (
+        "root cause was",
+        "root cause is",
+        "caused by",
+        "caused the qc failure",
+        "caused the downstream qc failure",
+        "normalization caused",
+        "quantification caused",
+        "re-quantification caused",
+        "requantification caused",
+        "lab handling caused",
+        "library prep caused",
+        "proves a lab root cause",
+        "proves the lab root cause",
+        "proves quantification",
+        "proves normalization",
+        "proves re-quantification",
+    )
+    return any(_has_unprohibited_phrase_occurrence(lower, phrase) for phrase in unsafe_phrases)
+
+
+def _context_has_downstream_qc_obligation(context: GroundedAnswerContext) -> bool:
+    profiles = set(context.obligations.active_profiles if context.obligations else ())
+    if profiles & {"downstream_qc", "lab_to_analysis_lineage"}:
+        return True
+    qc_tools = {
+        "ingest_ngs_qc_results",
+        "validate_qc_provenance",
+        "explain_qc_failure",
+        "generate_lab_to_analysis_lineage",
+    }
+    if any(evidence.tool_name in qc_tools for evidence in context.tool_evidence):
+        return True
+    haystack = f"{context.question} {context.plan.retrieval_query}".casefold()
+    return "downstream qc" in haystack or "ngs qc" in haystack or "q30" in haystack
+
+
 def _has_unprohibited_invent_occurrence(lower_answer: str) -> bool:
     return _has_unprohibited_phrase_occurrence(lower_answer, "invent")
 
@@ -1575,6 +1874,10 @@ def _has_unprohibited_phrase_occurrence(lower_answer: str, phrase: str) -> bool:
             return False
         prefix = lower_answer[max(0, index - 32) : index]
         safe_prefixes = (
+            "not ",
+            "is not ",
+            "isn't ",
+            "are not ",
             "cannot ",
             "cannot be ",
             "can't ",
@@ -1584,6 +1887,7 @@ def _has_unprohibited_phrase_occurrence(lower_answer: str, phrase: str) -> bool:
             "do not ",
             "does not ",
             "should not ",
+            "without ",
             "is not allowed to ",
             "are not allowed to ",
             "not allowed to ",

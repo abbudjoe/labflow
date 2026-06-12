@@ -42,17 +42,22 @@ except ModuleNotFoundError:
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CORE_SRC = REPO_ROOT / "packages" / "labflow-core" / "src"
 RAG_SRC = REPO_ROOT / "packages" / "labflow-rag" / "src"
-for src in (CORE_SRC, RAG_SRC):
+AGENT_SRC = REPO_ROOT / "packages" / "labflow-agent" / "src"
+for src in (CORE_SRC, RAG_SRC, AGENT_SRC):
     if str(src) not in sys.path:
         sys.path.insert(0, str(src))
 
 try:
+    from labflow_agent import LabFlowAgentRuntime  # noqa: E402
     from labflow_core.dsl.parser import parse_workflow_file  # noqa: E402
     from labflow_core.dsl.validator import validate_workflow_file  # noqa: E402
     from labflow_core.tools import (  # noqa: E402
         generate_janus_csv,
+        generate_lab_to_analysis_lineage,
         generate_normalization_plan,
+        ingest_ngs_qc_results,
         parse_varioskan_tsv,
+        validate_qc_provenance,
         validate_batch,
     )
     from labflow_rag.evals import EvalRunConfig, run_eval  # noqa: E402
@@ -88,6 +93,17 @@ def main() -> int:
     invalid_janus = generate_janus_csv(str(invalid_config), dry_run=True)
     fixed_janus = generate_janus_csv(str(fixed_config), dry_run=True)
     fixed_plan = generate_normalization_plan(str(fixed_config))
+    qc_csv = REPO_ROOT / "examples/qc/synthetic_ngs_qc_results.csv"
+    lineage_csv = REPO_ROOT / "examples/qc/synthetic_lab_lineage_manifest.csv"
+    qc_ingest = ingest_ngs_qc_results(str(qc_csv))
+    qc_validation = validate_qc_provenance(str(qc_csv), str(lineage_csv))
+    qc_lineage = generate_lab_to_analysis_lineage(str(qc_csv), str(lineage_csv), dry_run=True)
+    qc_agent_response = LabFlowAgentRuntime().ask(
+        "Why did RNA_DEMO_FAILED_VALID_UPSTREAM_001 fail downstream QC?",
+        qc_csv=str(qc_csv),
+        lineage_csv=str(lineage_csv),
+        sample_id="RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+    ).to_json_dict()
     parsed_tsvs = _parse_demo_tsvs()
     eval_report = run_eval(
         EvalRunConfig(
@@ -101,17 +117,23 @@ def main() -> int:
     _write_janus_preview(output_dir / "janus_rna_preview.csv", fixed_janus)
     _write_json(output_dir / "eval_report.json", eval_report)
     _write_exception_report(output_dir / "exception_report.csv", invalid_validation)
+    _write_qc_demo_artifacts(output_dir, qc_validation, qc_lineage, qc_agent_response)
+    audited_results = [
+        invalid_batch,
+        fixed_batch,
+        invalid_janus,
+        fixed_janus,
+        fixed_plan,
+        qc_ingest,
+        qc_validation,
+        qc_lineage,
+        *parsed_tsvs.values(),
+    ]
     _write_audit_log(
         output_dir / "audit_log.jsonl",
-        [
-            invalid_batch,
-            fixed_batch,
-            invalid_janus,
-            fixed_janus,
-            fixed_plan,
-            *parsed_tsvs.values(),
-        ],
+        audited_results,
     )
+    _write_audit_report(output_dir / "audit_report.md", audited_results)
 
     validation_report = {
         "demo_id": "stage16_rna_norm_requant",
@@ -133,6 +155,14 @@ def main() -> int:
             ),
             "janus_generation_blocked_until_errors_resolved": invalid_janus["status"] == "blocked",
             "fixed_workflow_generates_janus_preview": fixed_janus["status"] == "ok",
+            "qc_results_ingested": qc_ingest["status"] == "ok",
+            "qc_provenance_flags_manual_review": qc_validation["status"] == "invalid",
+            "lineage_report_generated": qc_lineage["status"] == "ok",
+            "qc_failure_explanation_no_root_cause": (
+                "does not infer causal lab failure"
+                in qc_agent_response["answer"].casefold()
+                or "does not infer a lab root cause" in qc_agent_response["answer"].casefold()
+            ),
         },
         "janus": {
             "invalid_status": invalid_janus["status"],
@@ -152,14 +182,23 @@ def main() -> int:
             "metrics": eval_report["metrics"],
             "report_path": str(output_dir / "eval_report.json"),
         },
+        "qc": {
+            "ingest_status": qc_ingest["status"],
+            "validation_status": qc_validation["status"],
+            "lineage_status": qc_lineage["status"],
+            "summary_path": str(output_dir / "qc_summary_report.json"),
+            "lineage_report_path": str(output_dir / "lab_to_analysis_lineage_report.md"),
+            "agent_response_path": str(output_dir / "qc_failure_agent_response.json"),
+        },
     }
     _write_json(output_dir / "validation_report.json", validation_report)
 
     print(f"Wrote demo artifacts to {output_dir}")
     print(
-        "invalid_errors={invalid_errors} fixed_janus={fixed_janus} eval_passed={passed}/{cases}".format(
+        "invalid_errors={invalid_errors} fixed_janus={fixed_janus} qc_lineage={qc_lineage} eval_passed={passed}/{cases}".format(
             invalid_errors=len(invalid_validation["diagnostics"]),
             fixed_janus=fixed_janus["status"],
+            qc_lineage=qc_lineage["status"],
             passed=eval_report["metrics"]["passed_count"],
             cases=eval_report["metrics"]["case_count"],
         )
@@ -204,7 +243,7 @@ def _write_normalization_inputs(workflow_path: Path, output_dir: Path) -> Path:
         "destination_well",
     ]
     with sample_csv.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for sample in workflow.samples:
             writer.writerow(
@@ -273,6 +312,7 @@ def _write_janus_preview(path: Path, result: dict[str, Any]) -> None:
         writer = csv.DictWriter(
             handle,
             fieldnames=["well", "diluent_volume_ul", "sample_volume_ul"],
+            lineterminator="\n",
         )
         writer.writeheader()
         writer.writerows(rows)
@@ -283,6 +323,7 @@ def _write_exception_report(path: Path, report: dict[str, Any]) -> None:
         writer = csv.DictWriter(
             handle,
             fieldnames=["code", "severity", "path", "source", "message", "suggested_action"],
+            lineterminator="\n",
         )
         writer.writeheader()
         for diagnostic in report["diagnostics"]:
@@ -304,6 +345,94 @@ def _write_audit_log(path: Path, tool_results: list[dict[str, Any]]) -> None:
             event = result.get("audit_event")
             if event is not None:
                 handle.write(json.dumps(event, sort_keys=True) + "\n")
+
+
+def _write_audit_report(path: Path, tool_results: list[dict[str, Any]]) -> None:
+    lines = [
+        "# Demo Audit Report",
+        "",
+        "This report summarizes the synthetic audit evidence generated by the LabFlow demo.",
+        "",
+        "## Scope",
+        "",
+        "- Demo workflow: RNA normalization, re-quantification, and downstream QC provenance.",
+        "- Data type: synthetic only.",
+        "- Commit actions: none.",
+        "- Robot execution: none.",
+        "- JANUS-style and lineage files: dry-run previews only.",
+        "",
+        "## Audit Chain",
+        "",
+        "| Step | Tool | Mode | Workflow | Result | Exception Codes |",
+        "| ---: | --- | --- | --- | --- | --- |",
+    ]
+    for index, result in enumerate(tool_results, start=1):
+        event = result.get("audit_event") or {}
+        errors = result.get("errors") or []
+        warnings = result.get("warnings") or []
+        codes = [
+            str(item.get("code"))
+            for item in [*errors, *warnings]
+            if isinstance(item, dict) and item.get("code")
+        ]
+        lines.append(
+            "| {index} | `{tool}` | `{mode}` | `{workflow}` | `{status}` | {codes} |".format(
+                index=index,
+                tool=result.get("tool_name", event.get("tool_name", "unknown")),
+                mode=event.get("mode", "read_only"),
+                workflow=event.get("workflow_id") or "synthetic inputs",
+                status=result.get("status", event.get("result_status", "unknown")),
+                codes=", ".join(f"`{code}`" for code in codes) or "none",
+            )
+        )
+    lines.extend(
+        [
+            "",
+            "## Guardrail Evidence",
+            "",
+            "- Invalid workflows are validated before artifact generation.",
+            "- Missing concentrations remain blocking facts; the system does not invent them.",
+            "- The invalid JANUS dry-run is blocked with `JANUS_BLOCKED_FOR_INVALID_BATCH`.",
+            "- The fixed JANUS output is still a dry-run preview, not a robot command.",
+            "- Downstream QC provenance is linked by sample ID and batch IDs.",
+            "- Failed QC metrics, unmatched sample IDs, missing QC rows, and provenance gaps require review.",
+            "- QC results do not retroactively validate invalid upstream workflows or prove lab root cause.",
+            "- No approval token appears in this demo because no commit action is performed.",
+            "",
+            "## Reviewer Notes",
+            "",
+            "The ignored raw file `examples/expected/audit_log.jsonl` can be regenerated locally by running:",
+            "",
+            "```sh",
+            "python3 scripts/run_demo.py",
+            "```",
+            "",
+            "For the public portfolio path, this markdown report is the canonical audit evidence.",
+        ]
+    )
+    path.write_text("\n".join(lines) + "\n")
+
+
+def _write_qc_demo_artifacts(
+    output_dir: Path,
+    qc_validation: dict[str, Any],
+    qc_lineage: dict[str, Any],
+    qc_agent_response: dict[str, Any],
+) -> None:
+    summary = _artifact_data(qc_validation, "downstream_qc_summary")
+    if isinstance(summary, dict):
+        _write_json(output_dir / "qc_summary_report.json", summary)
+    markdown = _artifact_data(qc_lineage, "lab_to_analysis_lineage_markdown")
+    if isinstance(markdown, str):
+        (output_dir / "lab_to_analysis_lineage_report.md").write_text(markdown)
+    _write_json(output_dir / "qc_failure_agent_response.json", qc_agent_response)
+
+
+def _artifact_data(result: dict[str, Any], artifact_type: str) -> Any:
+    for artifact in result.get("artifacts", []):
+        if isinstance(artifact, dict) and artifact.get("artifact_type") == artifact_type:
+            return artifact.get("data")
+    return None
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
