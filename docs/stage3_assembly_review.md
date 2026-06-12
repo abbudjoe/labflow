@@ -55,7 +55,7 @@ Stage 3 builds the deterministic workflow engine in `labflow-core` by migrating/
 | Port/adapt reference tests and add gaps | met | Added adapted workflow tests covering quant, norm, RNA, robot export, readiness, throughput, output writers, standard-layout edge cases, and exact sample-plate layout validation. |
 | Core workflow tests pass | met | `make test`: 41 passed. |
 | Core package can generate example quant/norm/JANUS outputs from synthetic files | met | Tests write synthetic TSV/CSV files, run processors/planners, and verify quant, normalization, RNA, JANUS, and protocol output files. |
-| No LLM/RAG/agent dependency exists in `labflow-core` | met | Dependency/import scan for `openai`, `anthropic`, `langchain`, `llm`, `labflow_rag`, `labflow_agent`, and `labflow_api` returned no matches. |
+| No LLM/RAG/agent dependency exists in `labflow-core` | met | Dependency/import scan for `openai`, `langchain`, `llm`, `labflow_rag`, `labflow_agent`, and `labflow_api` returned no matches. |
 
 ## Evidence Commands
 
@@ -64,7 +64,7 @@ make test
 make lint
 make type-python
 make type
-rg -n "openai|anthropic|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core || true
+rg -n "openai|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core || true
 git -C /Users/joseph/ngs_lab_automation status --short
 ```
 

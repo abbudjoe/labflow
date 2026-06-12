@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`labflow-core` contains deterministic lab/LIMS workflow logic. It must not import RAG, agent, OpenAI, Anthropic, or any LLM-specific package.
+`labflow-core` contains deterministic lab/LIMS workflow logic. It must not import RAG, agent, OpenAI, or any LLM-specific package.
 
 ## Modules
 

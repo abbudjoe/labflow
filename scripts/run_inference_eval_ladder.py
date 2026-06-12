@@ -70,6 +70,7 @@ from labflow_agent.patch_proposer import PatchProposal  # noqa: E402
 from labflow_agent.planner import DeterministicFakeModel  # noqa: E402
 from labflow_core.tools.core_tools import validate_batch  # noqa: E402
 from labflow_rag import RagAnswer, RagIndex, answer_query  # noqa: E402
+from labflow_rag.corpus_manifest import build_corpus_manifest  # noqa: E402
 from labflow_rag.evals import load_golden_cases  # noqa: E402
 
 RUNNER_VERSION = "0.1.0"
@@ -399,6 +400,7 @@ def main() -> int:
         skip_deterministic_baseline=args.skip_deterministic_baseline,
     )
     _verbose(args.verbose, f"[runner] providers={_provider_progress_summary(providers)}")
+    corpus_manifest = build_corpus_manifest(_repo_path("knowledge"))
     suite_reports = []
     for suite in selected_suites:
         _verbose(args.verbose, f"[{suite}] running")
@@ -456,6 +458,8 @@ def main() -> int:
         "planner_primary_provider_under_test": _primary_provider_name(providers),
         "baseline_path": str(_repo_path(BASELINE_FILE)),
         "live_provider_config": _live_provider_config(args),
+        "corpus_fingerprint": corpus_manifest.corpus_fingerprint,
+        "corpus_manifest": corpus_manifest.to_json_dict(),
         "suite_count": len(suite_reports),
         "suites": suite_reports,
         "aggregate": aggregate,

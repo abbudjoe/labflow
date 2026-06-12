@@ -13,6 +13,7 @@ from typing import Any
 
 from labflow_rag.answering import UNSUPPORTED_RESPONSE, RagAnswer, answer_query
 from labflow_rag.citations import citations_for_results
+from labflow_rag.corpus_manifest import CorpusManifest, build_corpus_manifest
 from labflow_rag.evals.cases import EvalCase, load_golden_cases
 from labflow_rag.evals.metrics import CaseEvalResult, EvalMetrics, calculate_metrics
 from labflow_rag.index import RagIndex
@@ -69,6 +70,7 @@ class EvalRunReport:
     metrics: EvalMetrics
     cases: tuple[CaseEvalResult, ...]
     prompt_model: EvalPromptModelMetadata
+    corpus_manifest: CorpusManifest
     baseline_comparison: dict[str, Any]
 
     def to_json_dict(self) -> dict[str, Any]:
@@ -80,6 +82,8 @@ class EvalRunReport:
             "top_k": self.top_k,
             "retrieval_only": self.retrieval_only,
             "prompt_model": self.prompt_model.to_json_dict(),
+            "corpus_manifest": self.corpus_manifest.to_json_dict(),
+            "corpus_fingerprint": self.corpus_manifest.corpus_fingerprint,
             "baseline_comparison": self.baseline_comparison,
             "metrics": self.metrics.to_json_dict(),
             "cases": [case.to_json_dict() for case in self.cases],
@@ -98,6 +102,7 @@ def run_eval(
     active_config = config or EvalRunConfig()
     active_cases = load_golden_cases(active_config.cases_path) if cases is None else cases
     active_index = index or RagIndex.from_corpus(active_config.corpus_dir)
+    active_manifest = build_corpus_manifest(active_config.corpus_dir, max_tokens=220)
     active_retriever = retriever or HybridRetriever(active_index)
     case_results = tuple(
         _run_case(
@@ -127,6 +132,7 @@ def run_eval(
             model_id=active_config.model_id,
             model_version=active_config.model_version,
         ),
+        corpus_manifest=active_manifest,
         baseline_comparison=_baseline_comparison(metrics, active_config.baseline_report_path),
     )
 

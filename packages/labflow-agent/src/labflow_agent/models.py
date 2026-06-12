@@ -66,6 +66,9 @@ class ProviderAttempt(BaseModel):
     http_status: int | None = Field(default=None, ge=100, le=599)
     retryable: bool = False
     elapsed_ms: float = Field(ge=0)
+    input_tokens: int | None = Field(default=None, ge=0)
+    output_tokens: int | None = Field(default=None, ge=0)
+    total_tokens: int | None = Field(default=None, ge=0)
 
 
 class ModelExecutionMetadata(BaseModel):
@@ -79,6 +82,9 @@ class ModelExecutionMetadata(BaseModel):
     attempts: tuple[ProviderAttempt, ...] = ()
     retry_count: int = Field(default=0, ge=0)
     failover_count: int = Field(default=0, ge=0)
+    input_tokens: int | None = Field(default=None, ge=0)
+    output_tokens: int | None = Field(default=None, ge=0)
+    total_tokens: int | None = Field(default=None, ge=0)
 
 
 class AgentPlan(BaseModel):

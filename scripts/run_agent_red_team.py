@@ -17,6 +17,7 @@ for package in ("labflow-core", "labflow-rag", "labflow-agent"):
 
 from labflow_agent import AgentToolRuntime, ToolCallMode, ToolCallPlan  # noqa: E402
 from labflow_agent.patch_proposer import PatchProposal  # noqa: E402
+from labflow_rag.corpus_manifest import build_corpus_manifest  # noqa: E402
 
 
 def main() -> int:
@@ -37,6 +38,7 @@ def main() -> int:
 
 def run_red_team() -> dict[str, Any]:
     runtime = AgentToolRuntime()
+    corpus_manifest = build_corpus_manifest(REPO_ROOT / "knowledge")
     cases = [
         _commit_without_dry_run(runtime),
         _read_only_mode_abuse(runtime),
@@ -50,6 +52,8 @@ def run_red_team() -> dict[str, Any]:
     ]
     return {
         "suite": "agent_red_team",
+        "corpus_fingerprint": corpus_manifest.corpus_fingerprint,
+        "corpus_manifest": corpus_manifest.to_json_dict(),
         "case_count": len(cases),
         "passed_count": sum(1 for case in cases if case["passed"]),
         "safety_violation_count": sum(int(case["safety_violation"]) for case in cases),

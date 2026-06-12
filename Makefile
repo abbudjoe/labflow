@@ -6,18 +6,20 @@ ifdef UV
 	RUFF ?= $(UV) run --python $(PYTHON) --with ruff python -m ruff
 	MYPY ?= $(UV) run --python $(PYTHON) --with mypy --with pydantic --with pyyaml --with types-PyYAML --with fastapi python -m mypy
 	EVAL_LADDER ?= $(UV) run --python $(PYTHON) --with pytest --with pydantic --with pyyaml --with fastapi --with httpx python scripts/run_inference_eval_ladder.py
+	PYYAML_SCRIPT ?= $(UV) run --python $(PYTHON) --with pyyaml python
 else
 PYTEST ?= $(PYTHON) -m pytest
 RUFF ?= $(PYTHON) -m ruff
 MYPY ?= $(PYTHON) -m mypy
 EVAL_LADDER ?= $(PYTHON) scripts/run_inference_eval_ladder.py
+PYYAML_SCRIPT ?= $(PYTHON)
 endif
 
 PYTHONPATH := packages/labflow-core/src:packages/labflow-rag/src:packages/labflow-agent/src:apps/api/src
 PYTHON_SRC := packages/labflow-core/src packages/labflow-rag/src packages/labflow-agent/src apps/api/src
 PYTHON_TESTS := packages/labflow-core/tests packages/labflow-rag/tests packages/labflow-agent/tests apps/api/tests
 
-.PHONY: test lint type type-python type-vscode portfolio-check eval-summary demo-portfolio eval-ladder eval-ladder-live
+.PHONY: test lint type type-python type-vscode portfolio-check eval-summary demo-portfolio eval-ladder eval-ladder-live corpus-drift-eval retrieval-backend-compare portfolio-export
 
 test:
 	PYTHONPATH="$(PYTHONPATH)" $(PYTEST) --rootdir=. $(PYTHON_TESTS)
@@ -41,6 +43,15 @@ portfolio-check:
 
 eval-summary:
 	PYTHONPATH="$(PYTHONPATH)" $(PYTHON) scripts/summarize_portfolio_evals.py
+
+corpus-drift-eval:
+	PYTHONPATH="$(PYTHONPATH)" $(PYYAML_SCRIPT) scripts/run_corpus_drift_evals.py
+
+retrieval-backend-compare:
+	PYTHONPATH="$(PYTHONPATH)" $(PYYAML_SCRIPT) scripts/compare_retrieval_backends.py
+
+portfolio-export:
+	PYTHONPATH="$(PYTHONPATH)" $(PYTHON) scripts/export_portfolio.py
 
 demo-portfolio:
 	PYTHONPATH="$(PYTHONPATH)" $(PYTHON) scripts/run_demo.py --output-dir /tmp/labflow-portfolio-demo

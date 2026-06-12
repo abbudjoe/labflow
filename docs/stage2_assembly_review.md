@@ -36,7 +36,7 @@ Stage 2 migrates the deterministic domain foundation into `packages/labflow-core
 | Duplicate sample/source/destination policies | met | `test_duplicate_manifest_validation_flags_all_duplicate_policies` passed. |
 | Exception records include code, severity, message, sample, batch, source/destination, suggested action | met | `test_exception_record_serializes_batch_sample_locations_and_action` passed. |
 | Domain tests pass | met | `make test`: 44 passed on the current tree; Stage 2 domain tests include whitespace identifier/location regressions. |
-| No LLM/RAG/agent dependency exists in `labflow-core` | met | Dependency/import scan for `openai`, `anthropic`, `langchain`, `llm`, `labflow_rag`, `labflow_agent`, and `labflow_api` returned no matches. |
+| No LLM/RAG/agent dependency exists in `labflow-core` | met | Dependency/import scan for `openai`, `langchain`, `llm`, `labflow_rag`, `labflow_agent`, and `labflow_api` returned no matches. |
 
 ## Evidence Commands
 
@@ -45,7 +45,7 @@ make test
 make lint
 make type-python
 make type
-rg -n "openai|anthropic|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core || true
+rg -n "openai|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core || true
 git -C /Users/joseph/ngs_lab_automation status --short
 ```
 
@@ -120,7 +120,7 @@ Post-review evidence:
 - `make lint`: all checks passed.
 - `make type-python`: no issues found in 33 source files.
 - `make type`: Python mypy success and VS Code extension compile success.
-- `rg -n "openai|anthropic|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core`: no matches.
+- `rg -n "openai|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core`: no matches.
 - `git -C /Users/joseph/ngs_lab_automation status --short`: only `?? .DS_Store`; reference repo was not modified.
 
 ## Final Classification

@@ -69,5 +69,20 @@ def create_agent_trace(
         retrieved_chunk_ids=retrieved_chunk_ids,
         tool_calls=tuple(call.tool_name for call in tool_calls),
         latency_ms=latency_ms,
+        input_tokens=_sum_optional_ints(
+            model_execution.input_tokens if model_execution else None,
+            answer_composer_execution.input_tokens if answer_composer_execution else None,
+        ),
+        output_tokens=_sum_optional_ints(
+            model_execution.output_tokens if model_execution else None,
+            answer_composer_execution.output_tokens if answer_composer_execution else None,
+        ),
         outcome_status=outcome_status,
     )
+
+
+def _sum_optional_ints(*values: int | None) -> int | None:
+    present = [value for value in values if value is not None]
+    if not present:
+        return None
+    return sum(present)

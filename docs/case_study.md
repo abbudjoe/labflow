@@ -23,7 +23,8 @@ The goal is a portfolio-ready system that shows:
 - VS Code workflow developer tooling;
 - local API boundaries;
 - downstream QC provenance without causal overclaiming;
-- production-shaped AWS architecture.
+- production-shaped AWS architecture;
+- corpus lifecycle reliability and optional vector backend comparison.
 
 For the role-focused review path, see `docs/role_alignment_starlims.md`,
 `docs/demo_script_starlims_role.md`, and `docs/eval_summary.md`.
@@ -76,6 +77,12 @@ Stage 16 adds a retrieval-only demo eval report in
 goldens. That report proves corpus coverage for the demo. Earlier eval code
 also supports answer-term checks, disallowed-answer checks, tool-call
 expectations, latency, and prompt/model metadata.
+
+Stage 20 makes the corpus itself part of the eval contract. Each RAG eval report
+includes a corpus fingerprint, and `make corpus-drift-eval` tests behavior under
+irrelevant document additions, source renames, removed sources, conflicting SOPs,
+updated current SOPs, and stale SOPs. The point is to catch retrieval lifecycle
+regressions before a model answer is judged in isolation.
 
 ## Guardrails
 
@@ -141,4 +148,5 @@ LabFlow AI Studio now demonstrates a coherent AI/LIMS workflow platform shape:
 
 The portfolio hardening path adds share-readiness checks, curated eval
 summaries, frozen baseline policy, retrieval conflict/staleness diagnostics,
-agent failure taxonomy, and explicit AWS/API/threat-model documentation.
+agent failure taxonomy, corpus lifecycle reliability, optional vector backend
+comparison, and explicit AWS/API/threat-model documentation.

@@ -130,6 +130,21 @@ Run curated eval summary generation:
 make eval-summary
 ```
 
+Run the corpus lifecycle drift check:
+
+```sh
+make corpus-drift-eval
+```
+
+Open:
+
+```text
+docs/corpus_lifecycle_reliability.md
+```
+
+Explain that eval reports are fingerprinted to the corpus and the drift suite
+checks renamed, removed, stale, and conflicting source scenarios.
+
 ## Optional Live Model Evidence
 
 Live inference is not required for the default portfolio demo. If an

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from labflow_rag.citations import Citation, citations_for_results, format_citation
-from labflow_rag.enterprise import conflict_notice_for_results
+from labflow_rag.conflict_detection import conflict_notice_for_results
 from labflow_rag.index import RagIndex, tokenize
 from labflow_rag.retrieval import KeywordRetriever, RetrievalResult, Retriever
 

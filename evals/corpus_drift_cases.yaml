@@ -1,0 +1,45 @@
+- id: drift_irrelevant_docs
+  variant: irrelevant_docs
+  question: "Can the agent invent a missing concentration for robot readiness?"
+  required_source_families:
+    - ai_guardrails_policy
+    - batch_readiness_doctrine
+  expected_behavior: "Irrelevant documents do not degrade required source-family retrieval."
+
+- id: drift_renamed_rechunked
+  variant: renamed_rechunked
+  question: "What happens when calculated sample transfer volume is below 1 uL?"
+  required_source_families:
+    - dna_normalization_sop
+    - exception_handling_manual
+  expected_behavior: "Renamed or rechunked documents still satisfy source-family recall."
+
+- id: drift_conflicting_sop
+  variant: conflicting_sop
+  question: "Can JANUS output be generated for an invalid batch?"
+  required_source_families:
+    - batch_readiness_doctrine
+    - janus_csv_worklist_spec
+  expected_behavior: "Conflicting SOP text triggers conflict detection or locked-doctrine precedence."
+
+- id: drift_removed_source
+  variant: removed_source
+  question: "What happens when calculated sample transfer volume is below 1 uL?"
+  required_source_families:
+    - dna_normalization_sop
+  expected_behavior: "Missing required source fails loudly."
+  expect_failure: true
+
+- id: drift_updated_current_sop
+  variant: updated_current_sop
+  question: "What happens when calculated sample transfer volume is below 1 uL?"
+  required_source_families:
+    - dna_normalization_sop
+  expected_behavior: "Updated current SOP is preferred over retired SOP."
+
+- id: drift_stale_sop
+  variant: stale_sop
+  question: "Can old retired SOPs decide whether downstream QC proves the lab failed?"
+  required_source_families:
+    - ngs_qc_provenance_policy
+  expected_behavior: "Stale retrieved sources are surfaced as stale."

@@ -61,6 +61,8 @@ make test
 make lint
 make type
 make eval-summary
+make corpus-drift-eval
+make portfolio-export
 ```
 
 Terraform evidence must stay local and non-mutating:
@@ -81,6 +83,8 @@ Start with:
 - `docs/eval_summary.md` for eval results;
 - `docs/demo_script_starlims_role.md` for the live narrative;
 - `docs/role_alignment_starlims.md` for job-description mapping;
-- `docs/case_study.md` for architecture and tradeoffs.
+- `docs/case_study.md` for architecture and tradeoffs;
+- `docs/corpus_lifecycle_reliability.md` for corpus drift and fingerprinting;
+- `docs/portfolio_brief.md` for the short hiring-reviewer packet.
 
 Raw eval artifacts are audit support, not the primary reviewer experience.

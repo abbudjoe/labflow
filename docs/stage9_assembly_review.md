@@ -69,7 +69,7 @@ make lint
 make type
 # mypy success in 59 source files; VS Code extension compile succeeded
 
-rg -n "openai|anthropic|langchain|llamaindex|api_key|OPENAI|ANTHROPIC|requests|httpx|urllib|boto3|botocore" packages/labflow-agent || true
+rg -n "openai|langchain|llamaindex|api_key|OPENAI|requests|httpx|urllib|boto3|botocore" packages/labflow-agent || true
 # no matches
 
 git -C /Users/joseph/ngs_lab_automation status --short

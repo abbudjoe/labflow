@@ -22,6 +22,7 @@ for package in ("labflow-core", "labflow-rag", "labflow-agent"):
         sys.path.insert(0, str(src))
 
 from labflow_agent import AgentRequest, LabFlowAgentRuntime, model_from_env  # noqa: E402
+from labflow_rag.corpus_manifest import build_corpus_manifest  # noqa: E402
 from labflow_rag.evals import load_golden_cases  # noqa: E402
 
 DEFAULT_OPENROUTER_TIMEOUT_SECONDS = "20"
@@ -161,6 +162,8 @@ def main() -> int:
     report = {
         "created_at": datetime.now(UTC).isoformat(),
         "case_count": len(cases),
+        "corpus_fingerprint": build_corpus_manifest(_repo_path("knowledge")).corpus_fingerprint,
+        "corpus_manifest": build_corpus_manifest(_repo_path("knowledge")).to_json_dict(),
         "gate_policy": "exploratory_report_only",
         "gate_note": "Nonzero fail_count is reported in JSON and does not make this smoke command fail.",
         "runs": runs,

@@ -17,6 +17,11 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RUNNER = REPO_ROOT / "scripts" / "run_inference_eval_ladder.py"
+RAG_SRC = REPO_ROOT / "packages" / "labflow-rag" / "src"
+if str(RAG_SRC) not in sys.path:
+    sys.path.insert(0, str(RAG_SRC))
+
+from labflow_rag.corpus_manifest import build_corpus_manifest  # noqa: E402
 DEFAULT_SUITES = (
     "control_parity",
     "semantic_generalization",
@@ -124,11 +129,14 @@ def main() -> int:
         if results[-1]["returncode"] != 0 and not args.continue_on_error:
             break
 
+    corpus_manifest = build_corpus_manifest(REPO_ROOT / "knowledge")
     report = {
         "created_at": datetime.now(UTC).isoformat(),
         "runner_version": "0.1.0",
         "suites": list(suites),
         "profile_count": len(profiles),
+        "corpus_fingerprint": corpus_manifest.corpus_fingerprint,
+        "corpus_manifest": corpus_manifest.to_json_dict(),
         "results": results,
     }
     json_path = output_dir / f"eval_benchmark_matrix_{started}.json"

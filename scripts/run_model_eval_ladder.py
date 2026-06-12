@@ -20,6 +20,7 @@ for package in ("labflow-core", "labflow-rag", "labflow-agent"):
 
 import run_model_eval_comparison as comparison  # noqa: E402
 from labflow_rag.evals import EvalCase, load_golden_cases  # noqa: E402
+from labflow_rag.corpus_manifest import build_corpus_manifest  # noqa: E402
 
 DEFAULT_TIERS = (
     "smoke_3",
@@ -85,6 +86,7 @@ def main() -> int:
         raise ValueError("No ladder tiers selected.")
 
     _verbose(args.verbose, f"Running {len(selected_tiers)} ladder tiers.")
+    corpus_manifest = build_corpus_manifest(_repo_path("knowledge"))
     comparison_output_dir = _repo_path(args.comparison_output_dir)
     comparison_output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -109,6 +111,8 @@ def main() -> int:
         "created_at": datetime.now(UTC).isoformat(),
         "cases_path": str(_repo_path(args.cases)),
         "live_openrouter_requested": args.live_openrouter,
+        "corpus_fingerprint": corpus_manifest.corpus_fingerprint,
+        "corpus_manifest": corpus_manifest.to_json_dict(),
         "aggregate_note": (
             "Aggregate counts are tier executions and may count the same golden case more than once "
             "when tiers overlap."
@@ -197,9 +201,12 @@ def _run_tier(
             }
         )
 
+    corpus_manifest = build_corpus_manifest(_repo_path("knowledge"))
     comparison_report = {
         "created_at": datetime.now(UTC).isoformat(),
         "case_count": len(tier.cases),
+        "corpus_fingerprint": corpus_manifest.corpus_fingerprint,
+        "corpus_manifest": corpus_manifest.to_json_dict(),
         "gate_policy": "exploratory_report_only",
         "gate_note": "Nonzero fail_count is reported in JSON and does not make this smoke command fail.",
         "tier": {

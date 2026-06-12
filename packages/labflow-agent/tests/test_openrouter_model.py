@@ -677,6 +677,46 @@ def test_retryable_missing_choices_retries_and_records_execution_metadata() -> N
     assert len(client.calls) == 2
 
 
+def test_successful_openrouter_response_records_usage_metadata() -> None:
+    expected_plan = {
+        "task": "answer_workflow_question",
+        "rationale": "Question is answerable from LabFlow knowledge.",
+        "retrieval_query": "What gates must pass before robot readiness?",
+        "tool_calls": [],
+        "unsupported_reason": None,
+    }
+    client = SequenceClient(
+        [
+            {
+                "model": "served-model",
+                "usage": {
+                    "prompt_tokens": 123,
+                    "completion_tokens": 45,
+                    "total_tokens": 168,
+                },
+                "choices": [{"message": {"content": json.dumps(expected_plan)}}],
+            }
+        ]
+    )
+    adapter = OpenRouterModelAdapter(
+        OpenRouterConfig(api_key="test-key", model="requested-model"),
+        client=client,
+    )
+
+    plan = adapter.plan(AgentRequest(question="What gates must pass before robot readiness?"))
+
+    assert plan.task is AgentTask.ANSWER_WORKFLOW_QUESTION
+    metadata = adapter.last_execution_metadata()
+    assert metadata is not None
+    assert metadata.served_model_id == "served-model"
+    assert metadata.input_tokens == 123
+    assert metadata.output_tokens == 45
+    assert metadata.total_tokens == 168
+    assert metadata.attempts[0].input_tokens == 123
+    assert metadata.attempts[0].output_tokens == 45
+    assert metadata.attempts[0].total_tokens == 168
+
+
 def test_openrouter_case_deadline_blocks_attempt_when_timeout_cannot_fit_budget() -> None:
     client = SequenceClient([{"choices": [{"message": {"content": "{}"}}]}])
     adapter = OpenRouterModelAdapter(

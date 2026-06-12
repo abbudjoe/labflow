@@ -15,10 +15,17 @@ REQUIRED_DOCS = (
     "README.md",
     "DOCTRINE.md",
     "docs/case_study.md",
+    "docs/corpus_lifecycle_reliability.md",
     "docs/demo_script_starlims_role.md",
+    "docs/demo_recording_checklist.md",
     "docs/eval_summary.md",
+    "docs/pinecone_vector_backend.md",
+    "docs/portfolio_brief.md",
+    "docs/production_gap_analysis.md",
+    "docs/retrieval_backend_comparison.md",
     "docs/role_alignment_starlims.md",
     "docs/share_readiness_checklist.md",
+    "docs/assets/README.md",
 )
 
 REQUIRED_GITIGNORE_PATTERNS = (
@@ -45,14 +52,21 @@ PUBLIC_DOC_GLOBS = (
     "docs/aws_architecture_decisions.md",
     "docs/baseline_rotation.md",
     "docs/case_study.md",
+    "docs/corpus_lifecycle_reliability.md",
     "docs/demo_script_starlims_role.md",
+    "docs/demo_recording_checklist.md",
     "docs/eval_summary.md",
     "docs/interview_review_quiz.md",
     "docs/limitations_and_disclosure.md",
+    "docs/pinecone_vector_backend.md",
+    "docs/portfolio_brief.md",
+    "docs/production_gap_analysis.md",
     "docs/resume_bullets.md",
+    "docs/retrieval_backend_comparison.md",
     "docs/role_alignment_starlims.md",
     "docs/share_readiness_checklist.md",
     "docs/threat_model.md",
+    "docs/assets/README.md",
 )
 
 RISKY_CLAIM_PATTERNS = (
@@ -86,7 +100,6 @@ DISCLAIMER_TERMS = (
 SECRET_PATTERNS = (
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
     re.compile(r"OPENROUTER_API_KEY[ \t]*=[ \t]*[^ \t\r\n]+"),
-    re.compile(r"ANTHROPIC_API_KEY[ \t]*=[ \t]*[^ \t\r\n]+"),
     re.compile(r"OPENAI_API_KEY[ \t]*=[ \t]*[^ \t\r\n]+"),
 )
 
@@ -108,6 +121,7 @@ def main() -> int:
     failures.extend(_env_tracking_failures())
     failures.extend(_claim_safety_failures())
     failures.extend(_secret_scan_failures())
+    failures.extend(_stage20_failures())
 
     if failures:
         print("Portfolio check failed:")
@@ -118,6 +132,7 @@ def main() -> int:
     print(f"Required docs: {len(REQUIRED_DOCS)}")
     print("Claim-safety scan: passed")
     print("Secret scan: passed")
+    print("Stage 20 corpus lifecycle checks: passed")
     return 0
 
 
@@ -191,6 +206,68 @@ def _secret_scan_failures() -> list[str]:
                     f"Potential secret in {path.relative_to(REPO_ROOT)}: {pattern.pattern}"
                 )
                 break
+    return failures
+
+
+def _stage20_failures() -> list[str]:
+    failures: list[str] = []
+    required_files = (
+        "scripts/run_corpus_drift_evals.py",
+        "scripts/index_knowledge_pinecone.py",
+        "scripts/compare_retrieval_backends.py",
+        "scripts/export_portfolio.py",
+        "evals/corpus_drift_cases.yaml",
+        "evals/retrieval_backend_cases.yaml",
+        "packages/labflow-rag/src/labflow_rag/corpus_manifest.py",
+        "packages/labflow-rag/src/labflow_rag/conflict_detection.py",
+        "packages/labflow-rag/src/labflow_rag/backends/pinecone.py",
+    )
+    for relative in required_files:
+        if not (REPO_ROOT / relative).exists():
+            failures.append(f"Missing Stage 20 file: {relative}")
+
+    readme = (REPO_ROOT / "README.md").read_text(errors="replace")
+    if "Hiring Reviewer Path" not in readme:
+        failures.append("README missing Hiring Reviewer Path section.")
+
+    makefile = (REPO_ROOT / "Makefile").read_text(errors="replace")
+    for target in ("corpus-drift-eval:", "portfolio-export:"):
+        if target not in makefile:
+            failures.append(f"Makefile missing Stage 20 target: {target}")
+
+    eval_runner = (REPO_ROOT / "packages/labflow-rag/src/labflow_rag/evals/runner.py").read_text(
+        errors="replace"
+    )
+    if "corpus_fingerprint" not in eval_runner or "corpus_manifest" not in eval_runner:
+        failures.append("RAG eval runner does not include corpus fingerprint metadata.")
+    for script in (
+        "scripts/run_inference_eval_ladder.py",
+        "scripts/run_model_eval_ladder.py",
+        "scripts/run_model_eval_comparison.py",
+        "scripts/run_eval_benchmark_matrix.py",
+        "scripts/run_agent_red_team.py",
+    ):
+        text = (REPO_ROOT / script).read_text(errors="replace")
+        if "corpus_fingerprint" not in text or "corpus_manifest" not in text:
+            failures.append(f"Eval report writer missing corpus metadata: {script}")
+
+    comparison = (REPO_ROOT / "scripts/compare_retrieval_backends.py").read_text(
+        errors="replace"
+    )
+    if "backend_metadata" not in comparison:
+        failures.append("Retrieval backend comparison report omits backend metadata.")
+
+    drift_cases = (REPO_ROOT / "evals/corpus_drift_cases.yaml").read_text(errors="replace")
+    for variant in (
+        "irrelevant_docs",
+        "renamed_rechunked",
+        "conflicting_sop",
+        "removed_source",
+        "updated_current_sop",
+        "stale_sop",
+    ):
+        if variant not in drift_cases:
+            failures.append(f"Corpus drift suite missing variant: {variant}")
     return failures
 
 

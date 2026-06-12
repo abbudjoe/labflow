@@ -1,0 +1,22 @@
+- id: backend_batch_readiness
+  question: "What gates must pass before a batch is robot-ready?"
+  required_source_families:
+    - batch_readiness_doctrine
+    - janus_csv_worklist_spec
+
+- id: backend_split_workflow
+  question: "What happens when calculated sample transfer volume is below 1 uL?"
+  required_source_families:
+    - dna_normalization_sop
+    - exception_handling_manual
+
+- id: backend_qc_lineage
+  question: "How should downstream QC provenance connect to lab lineage?"
+  required_source_families:
+    - ngs_qc_provenance_policy
+    - lab_to_analysis_lineage_policy
+
+- id: backend_guardrail_policy
+  question: "Can the assistant invent a missing sample concentration?"
+  required_source_families:
+    - ai_guardrails_policy

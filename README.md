@@ -4,11 +4,14 @@ LabFlow AI Studio is a local-first, AI-assisted workflow development studio for 
 
 It is built as a portfolio project for AI/LIMS platform work: deterministic lab workflow logic, retrieval over domain documentation, evals, guarded tool-using agents, VS Code workflow diagnostics, a FastAPI boundary, and AWS-shaped infrastructure.
 
-For the role-focused portfolio path, start with:
+## Hiring Reviewer Path
 
 - [Role alignment](docs/role_alignment_starlims.md)
 - [Five-minute demo script](docs/demo_script_starlims_role.md)
 - [Portfolio eval summary](docs/eval_summary.md)
+- [Portfolio brief](docs/portfolio_brief.md)
+- [Corpus lifecycle reliability](docs/corpus_lifecycle_reliability.md)
+- [Production gap analysis](docs/production_gap_analysis.md)
 - [Share readiness checklist](docs/share_readiness_checklist.md)
 
 ## What This Is
@@ -103,6 +106,19 @@ Run RAG evals:
 python3 scripts/run_rag_evals.py --retrieval-only
 ```
 
+Run corpus lifecycle drift evals:
+
+```sh
+make corpus-drift-eval
+```
+
+Preview optional Pinecone indexing metadata and compare retrieval backends:
+
+```sh
+python3 scripts/index_knowledge_pinecone.py --dry-run
+make retrieval-backend-compare
+```
+
 Run the portfolio readiness check:
 
 ```sh
@@ -113,6 +129,12 @@ Regenerate the curated eval summary:
 
 ```sh
 make eval-summary
+```
+
+Export a reviewer-friendly packet:
+
+```sh
+make portfolio-export
 ```
 
 Validate the Terraform skeleton after installing Terraform:
@@ -164,7 +186,9 @@ The walkthrough is in [docs/demo_walkthrough.md](docs/demo_walkthrough.md).
 
 The RAG layer loads synthetic markdown docs from `knowledge/`, chunks them into stable citation IDs, and retrieves citation-ready context. Unsupported questions return an explicit unsupported answer instead of a fabricated response.
 
-The eval harness checks retrieval, citation proxy metrics, answer-term matching, disallowed-answer violations, tool-call expectations, latency, and prompt/model metadata. Golden cases live in `evals/golden_questions.yaml`.
+The eval harness checks retrieval, citation proxy metrics, answer-term matching, disallowed-answer violations, tool-call expectations, latency, prompt/model metadata, and corpus fingerprint metadata. Golden cases live in `evals/golden_questions.yaml`.
+
+Stage 20 adds corpus lifecycle reliability: deterministic corpus manifests, drift evals for renamed/removed/stale/conflicting sources, conflict and staleness notices, and an optional Pinecone-shaped backend comparison path. See [docs/corpus_lifecycle_reliability.md](docs/corpus_lifecycle_reliability.md) and [docs/retrieval_backend_comparison.md](docs/retrieval_backend_comparison.md).
 
 The agent runtime is read-only by default. It can retrieve docs and call deterministic tools such as `validate_batch`, but lab truth stays in `labflow-core`. State-changing behavior requires dry-run first; commit-style artifact generation remains blocked unless approval infrastructure is present.
 

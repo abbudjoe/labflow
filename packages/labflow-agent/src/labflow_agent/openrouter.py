@@ -697,6 +697,9 @@ def complete_chat_content(
                         served_model_id=_served_model_id(response.body_json),
                         http_status=response.status,
                         elapsed_ms=response.elapsed_ms,
+                        input_tokens=_usage_value(response.body_json, "prompt_tokens"),
+                        output_tokens=_usage_value(response.body_json, "completion_tokens"),
+                        total_tokens=_usage_value(response.body_json, "total_tokens"),
                     )
                 )
                 metadata = _execution_metadata(
@@ -966,6 +969,9 @@ def _execution_metadata(
     attempts: list[ProviderAttempt],
     failover_count: int,
 ) -> ModelExecutionMetadata:
+    input_tokens = _usage_value(response.body_json, "prompt_tokens")
+    output_tokens = _usage_value(response.body_json, "completion_tokens")
+    total_tokens = _usage_value(response.body_json, "total_tokens")
     return ModelExecutionMetadata(
         requested_model_id=config.model,
         final_requested_model_id=requested_model,
@@ -973,6 +979,9 @@ def _execution_metadata(
         attempts=tuple(attempts),
         retry_count=max(0, len(attempts) - 1 - failover_count),
         failover_count=failover_count,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        total_tokens=total_tokens,
     )
 
 
@@ -1075,6 +1084,22 @@ def _served_model_id(body: JsonDict | None) -> str | None:
         return None
     model = body.get("model")
     return str(model) if isinstance(model, str) and model else None
+
+
+def _usage_value(body: JsonDict | None, key: str) -> int | None:
+    if not isinstance(body, dict):
+        return None
+    usage = body.get("usage")
+    if not isinstance(usage, dict):
+        return None
+    value = usage.get(key)
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int) and value >= 0:
+        return value
+    if isinstance(value, float) and value >= 0 and value.is_integer():
+        return int(value)
+    return None
 
 
 def _sanitize_preview(value: str) -> str:

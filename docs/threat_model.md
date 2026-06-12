@@ -26,6 +26,7 @@ uses or would need before production.
 | Commit without approval | Tool runtime requires dry-run audit event and approval token. |
 | Source conflict | Retrieval diagnostics flag policy-critical conflicts and cite both sources. |
 | Stale SOP guidance | Stale/retired source metadata is surfaced in retrieval diagnostics. |
+| Hosted index drift | Corpus fingerprints and vector metadata previews make index/corpus mismatch visible before relying on hosted retrieval. |
 | Audit tampering | Current local audit is demonstrative only; production would need append-only durable storage and IAM controls. |
 | Tenant data leakage | Out of scope for v0.1; production would need tenant-scoped keys, auth, and access tests. |
 

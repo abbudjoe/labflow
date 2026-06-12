@@ -23,6 +23,7 @@ and exception handling.
 | --- | --- |
 | RAG over domain-specific content | `packages/labflow-rag`, `knowledge/`, `scripts/rag_demo.py`, `docs/eval_summary.md` |
 | Retrieval ranking and grounding | source-family retrieval controls, policy boosts, citation-ready chunks, `packages/labflow-rag/tests/test_rag_foundation.py` |
+| Corpus lifecycle reliability | corpus manifests, fingerprinted eval reports, drift suite, conflict/staleness notices, `docs/corpus_lifecycle_reliability.md` |
 | Eval frameworks | `scripts/run_inference_eval_ladder.py`, `evals/`, `docs/eval_summary.md` |
 | Hallucination reduction | unsupported-answer behavior, grounded answer verifier, deterministic claim obligations, no-invention guardrails |
 | Production AI reliability | provider diagnostics, fallback paths, production-gate summaries, prompt/model metadata |
@@ -41,7 +42,7 @@ and exception handling.
 | Theme | Current Project Position |
 | --- | --- |
 | React/Next/Tailwind frontend | Not core to the demo. The portfolio surface is VS Code plus FastAPI because the role emphasizes developer tooling for a DSL. A future web dashboard could reuse the API and eval summary outputs. |
-| Pinecone or managed vector search | Not required locally. The RAG package isolates retrieval so a vector database can replace or augment the local hybrid retriever. The architecture docs treat this as a production scaling option. |
+| Pinecone or managed vector search | Optional Pinecone-shaped backend, indexing metadata preview, and backend comparison scripts are included. Local hybrid retrieval remains the default so reviewers do not need external services. |
 | Containerization/orchestration | Not required for local portfolio use. The API boundary and Terraform skeleton make later container or Lambda packaging straightforward. |
 | Distributed-systems debugging | Represented by traces, provider diagnostics, eval reports, and API/agent/RAG separation. Full distributed tracing is future production work. |
 | Latency/cost tradeoffs | Captured in `docs/eval_summary.md`: deterministic paths are fast and free; live model paths provide language generalization at variable latency and provider availability. |

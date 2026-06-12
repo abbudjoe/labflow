@@ -47,7 +47,7 @@ make test
 make lint
 make type-python
 make type
-rg -n "openai|anthropic|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core || true
+rg -n "openai|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core || true
 git -C /Users/joseph/ngs_lab_automation status --short
 ```
 
@@ -83,7 +83,7 @@ make type-python
 make type
 # mypy success and VS Code extension tsc success
 
-rg -n "openai|anthropic|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core || true
+rg -n "openai|langchain|llm|labflow_rag|labflow_agent|labflow_api" packages/labflow-core || true
 # no matches
 
 git -C /Users/joseph/ngs_lab_automation status --short

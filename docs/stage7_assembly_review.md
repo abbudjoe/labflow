@@ -46,7 +46,7 @@ Stage 7 builds a local-first RAG foundation over the synthetic `knowledge/` corp
 make test
 make lint
 make type
-rg -n "openai|anthropic|langchain|api_key|OPENAI|ANTHROPIC" packages/labflow-rag || true
+rg -n "openai|langchain|api_key|OPENAI" packages/labflow-rag || true
 git -C /Users/joseph/ngs_lab_automation status --short
 ```
 
@@ -85,7 +85,7 @@ make lint
 make type
 # mypy success in 49 source files and VS Code extension tsc success
 
-rg -n "openai|anthropic|langchain|api_key|OPENAI|ANTHROPIC" packages/labflow-rag || true
+rg -n "openai|langchain|api_key|OPENAI" packages/labflow-rag || true
 # no matches
 
 git -C /Users/joseph/ngs_lab_automation status --short

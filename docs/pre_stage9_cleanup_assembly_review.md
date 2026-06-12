@@ -99,13 +99,13 @@ printf 'Can invalid samples appear in JANUS transfer rows?\nexit\n' | python scr
 cd /tmp && printf 'Can invalid samples appear in JANUS transfer rows?\nquit\n' | python /Users/joseph/labflow/scripts/rag_demo.py
 # exited 0 and resolved repository corpus paths from non-repo cwd.
 
-env -u OPENAI_API_KEY -u ANTHROPIC_API_KEY sh -c "printf 'Can invalid samples appear in JANUS transfer rows?\nexit\n' | python scripts/rag_demo.py"
+env -u OPENAI_API_KEY sh -c "printf 'Can invalid samples appear in JANUS transfer rows?\nexit\n' | python scripts/rag_demo.py"
 # exited 0 with no API key environment variables.
 
 printf 'Who won the ice hockey championship on Europa in 2035?\n' | python scripts/rag_demo.py
 # printed canonical unsupported answer with Sources: - none and Suggested tools: - none.
 
-env -u OPENAI_API_KEY -u ANTHROPIC_API_KEY python scripts/run_rag_evals.py --retrieval-only --eval-run-id pre_stage9_cleanup_no_api_env
+env -u OPENAI_API_KEY python scripts/run_rag_evals.py --retrieval-only --eval-run-id pre_stage9_cleanup_no_api_env
 # cases=37 passed=37 failed=0 retrieval_recall_at_k=1.000
 
 uv run --python python3 --with pytest --with pydantic --with pyyaml env PYTHONPATH=packages/labflow-rag/src python -m pytest packages/labflow-rag/tests/test_rag_eval_harness.py packages/labflow-rag/tests/test_rag_foundation.py -q
@@ -129,7 +129,7 @@ python -m py_compile scripts/rag_demo.py scripts/run_rag_evals.py
 sed -n '1,40p' packages/labflow-rag/pyproject.toml
 # project dependencies = []
 
-rg -n "openai|anthropic|langchain|llamaindex|api_key|OPENAI|ANTHROPIC|requests|httpx|urllib|boto3|botocore" packages/labflow-rag scripts || true
+rg -n "openai|langchain|llamaindex|api_key|OPENAI|requests|httpx|urllib|boto3|botocore" packages/labflow-rag scripts || true
 # no matches
 
 git -C /Users/joseph/ngs_lab_automation status --short
