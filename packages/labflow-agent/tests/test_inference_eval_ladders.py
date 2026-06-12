@@ -627,6 +627,7 @@ def test_suite_summary_uses_live_provider_as_primary(monkeypatch: pytest.MonkeyP
         *,
         verbose: bool,
         max_case_seconds: float | None = None,
+        **_: object,
     ) -> dict[str, object]:
         del verbose, max_case_seconds
         passed = getattr(provider, "name") == "deterministic"
@@ -1418,6 +1419,8 @@ def test_offline_cli_writes_report_without_live_provider(tmp_path: Path, monkeyp
     payload = json.loads(reports[0].read_text())
     assert payload["live_requested"] is False
     assert payload["planner_primary_provider_under_test"] == "deterministic"
+    assert payload["retrieval_backend"]["backend_name"] == "local"
+    assert payload["suites"][0]["retrieval_backend"]["backend_name"] == "local"
     assert "aggregate_by_provider" in payload
     assert "production_gate" in payload
     assert payload["production_gate"]["primary_provider"] == "deterministic"
@@ -1426,6 +1429,30 @@ def test_offline_cli_writes_report_without_live_provider(tmp_path: Path, monkeyp
     ] == 0
     assert payload["suites"][0]["provider_diagnostics"]["openrouter"]["skipped"] is True
     assert payload["suites"][0]["provider_diagnostics"]["openrouter"]["model"]["provider"] == "openrouter"
+
+
+def test_inference_ladder_pinecone_backend_requires_explicit_confirmation(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    runner = _load_runner()
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_inference_eval_ladder.py",
+            "--suite",
+            "semantic_generalization",
+            "--no-live",
+            "--rag-backend",
+            "pinecone",
+            "--output-dir",
+            str(tmp_path),
+        ],
+    )
+
+    with pytest.raises(ValueError, match="confirm-live-pinecone"):
+        runner.main()
 
 
 def test_production_gate_scopes_failures_to_primary_provider() -> None:

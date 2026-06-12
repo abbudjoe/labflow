@@ -12,21 +12,43 @@ RAG_SRC = REPO_ROOT / "packages" / "labflow-rag" / "src"
 if str(RAG_SRC) not in sys.path:
     sys.path.insert(0, str(RAG_SRC))
 
-from labflow_rag import HybridRetriever, RagAnswer, RagIndex, answer_query  # noqa: E402
+from labflow_rag import RagAnswer, RagIndex, answer_query  # noqa: E402
+from labflow_rag.backends import SUPPORTED_RAG_BACKENDS, build_retriever_from_env  # noqa: E402
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--corpus", default="knowledge")
     parser.add_argument("--top-k", type=int, default=6)
+    parser.add_argument(
+        "--rag-backend",
+        choices=SUPPORTED_RAG_BACKENDS,
+        default="local",
+        help="Retrieval backend. Defaults to local; use pinecone explicitly for hosted retrieval.",
+    )
+    parser.add_argument(
+        "--confirm-live-pinecone",
+        action="store_true",
+        help="Confirm an explicit live Pinecone retrieval run when --rag-backend=pinecone.",
+    )
     args = parser.parse_args()
 
-    index = RagIndex.from_corpus(_resolve_repo_path(args.corpus))
-    retriever = HybridRetriever(index)
+    corpus_dir = _resolve_repo_path(args.corpus)
+    index = RagIndex.from_corpus(corpus_dir)
+    retriever_build = build_retriever_from_env(
+        index,
+        corpus_dir=corpus_dir,
+        backend_name=args.rag_backend,
+        confirm_live_pinecone=args.confirm_live_pinecone,
+    )
+    retriever = retriever_build.retriever
     interactive = sys.stdin.isatty()
 
     if interactive:
-        print("LabFlow RAG demo. Type a question, or 'exit' to quit.")
+        print(
+            f"LabFlow RAG demo [{retriever_build.backend_name}]. "
+            "Type a question, or 'exit' to quit."
+        )
     _print_prompt(interactive)
 
     for line in sys.stdin:

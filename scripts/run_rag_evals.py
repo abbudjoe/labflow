@@ -12,7 +12,13 @@ RAG_SRC = REPO_ROOT / "packages" / "labflow-rag" / "src"
 if str(RAG_SRC) not in sys.path:
     sys.path.insert(0, str(RAG_SRC))
 
+from labflow_rag.backends import (  # noqa: E402
+    SUPPORTED_RAG_BACKENDS,
+    build_retriever_from_env,
+    retriever_runtime_metadata,
+)
 from labflow_rag.evals import EvalRunConfig, run_eval, write_eval_report  # noqa: E402
+from labflow_rag.index import RagIndex  # noqa: E402
 
 
 def main() -> int:
@@ -23,6 +29,17 @@ def main() -> int:
     parser.add_argument("--top-k", type=int, default=6)
     parser.add_argument("--eval-run-id", default=None)
     parser.add_argument(
+        "--rag-backend",
+        choices=SUPPORTED_RAG_BACKENDS,
+        default="local",
+        help="Retrieval backend. Defaults to local; use pinecone explicitly for hosted retrieval.",
+    )
+    parser.add_argument(
+        "--confirm-live-pinecone",
+        action="store_true",
+        help="Confirm an explicit live Pinecone retrieval run when --rag-backend=pinecone.",
+    )
+    parser.add_argument(
         "--retrieval-only",
         action="store_true",
         help="Skip answer composition and evaluate retrieval/citation metadata only.",
@@ -31,6 +48,13 @@ def main() -> int:
     cases_path = _resolve_repo_path(args.cases)
     corpus_dir = _resolve_repo_path(args.corpus)
     output_dir = _resolve_repo_path(args.output_dir)
+    index = RagIndex.from_corpus(corpus_dir)
+    retriever_build = build_retriever_from_env(
+        index,
+        corpus_dir=corpus_dir,
+        backend_name=args.rag_backend,
+        confirm_live_pinecone=args.confirm_live_pinecone,
+    )
 
     report = run_eval(
         EvalRunConfig(
@@ -39,11 +63,18 @@ def main() -> int:
             top_k=args.top_k,
             retrieval_only=args.retrieval_only,
             eval_run_id=args.eval_run_id,
-        )
+        ),
+        index=index,
+        retriever=retriever_build.retriever,
+    )
+    report.baseline_comparison["retrieval_backend"] = retriever_runtime_metadata(
+        retriever_build.retriever,
+        retriever_build.metadata,
     )
     report_path = write_eval_report(report, output_dir)
     metrics = report.metrics
     print(f"Wrote RAG eval report: {report_path}")
+    print(f"retrieval_backend={retriever_build.backend_name}")
     print(
         "cases={case_count} passed={passed_count} failed={failed_count} "
         "retrieval_recall_at_k={retrieval:.3f} citation_precision_proxy={citation:.3f} "

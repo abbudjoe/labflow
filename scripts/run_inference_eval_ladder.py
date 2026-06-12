@@ -70,6 +70,12 @@ from labflow_agent.patch_proposer import PatchProposal  # noqa: E402
 from labflow_agent.planner import DeterministicFakeModel  # noqa: E402
 from labflow_core.tools.core_tools import validate_batch  # noqa: E402
 from labflow_rag import RagAnswer, RagIndex, answer_query  # noqa: E402
+from labflow_rag.backends import (  # noqa: E402
+    SUPPORTED_RAG_BACKENDS,
+    RetrieverBuildResult,
+    build_retriever_from_env,
+    retriever_runtime_metadata,
+)
 from labflow_rag.corpus_manifest import build_corpus_manifest  # noqa: E402
 from labflow_rag.evals import load_golden_cases  # noqa: E402
 
@@ -366,6 +372,17 @@ def main() -> int:
         action="store_true",
         help="Confirm explicit current-turn approval for the optional live repair provider run.",
     )
+    parser.add_argument(
+        "--rag-backend",
+        choices=SUPPORTED_RAG_BACKENDS,
+        default="local",
+        help="Retrieval backend. Defaults to local; use pinecone explicitly for hosted retrieval.",
+    )
+    parser.add_argument(
+        "--confirm-live-pinecone",
+        action="store_true",
+        help="Confirm an explicit live Pinecone retrieval run when --rag-backend=pinecone.",
+    )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
@@ -400,7 +417,19 @@ def main() -> int:
         skip_deterministic_baseline=args.skip_deterministic_baseline,
     )
     _verbose(args.verbose, f"[runner] providers={_provider_progress_summary(providers)}")
-    corpus_manifest = build_corpus_manifest(_repo_path("knowledge"))
+    corpus_dir = _repo_path("knowledge")
+    index = RagIndex.from_corpus(corpus_dir)
+    corpus_manifest = build_corpus_manifest(corpus_dir)
+    retriever_build = build_retriever_from_env(
+        index,
+        corpus_dir=corpus_dir,
+        backend_name=args.rag_backend,
+        confirm_live_pinecone=args.confirm_live_pinecone,
+    )
+    _verbose(
+        args.verbose,
+        f"[runner] retrieval_backend={retriever_build.backend_name}",
+    )
     suite_reports = []
     for suite in selected_suites:
         _verbose(args.verbose, f"[{suite}] running")
@@ -411,6 +440,7 @@ def main() -> int:
                     verbose=args.verbose,
                     providers=providers,
                     max_case_seconds=args.max_case_seconds,
+                    retriever_build=retriever_build,
                 )
             )
         elif suite == "semantic_generalization":
@@ -422,6 +452,8 @@ def main() -> int:
                     max_case_seconds=args.max_case_seconds,
                     case_categories=tuple(args.case_category or ()),
                     limit_cases=args.limit_cases_per_suite,
+                    index=index,
+                    retriever_build=retriever_build,
                 )
             )
         elif suite == "grounded_answer_quality":
@@ -433,6 +465,8 @@ def main() -> int:
                     max_case_seconds=args.max_case_seconds,
                     case_categories=tuple(args.case_category or ()),
                     limit_cases=args.limit_cases_per_suite,
+                    index=index,
+                    retriever_build=retriever_build,
                 )
             )
         elif suite == "repair_planning":
@@ -448,6 +482,12 @@ def main() -> int:
                 )
             )
 
+    retrieval_backend_metadata = retriever_runtime_metadata(
+        retriever_build.retriever,
+        retriever_build.metadata,
+    )
+    for suite_report in suite_reports:
+        suite_report["retrieval_backend"] = retrieval_backend_metadata
     aggregate = _aggregate_suites(suite_reports)
     aggregate_by_provider = _aggregate_suites_by_provider(suite_reports)
     report = {
@@ -458,6 +498,7 @@ def main() -> int:
         "planner_primary_provider_under_test": _primary_provider_name(providers),
         "baseline_path": str(_repo_path(BASELINE_FILE)),
         "live_provider_config": _live_provider_config(args),
+        "retrieval_backend": retrieval_backend_metadata,
         "corpus_fingerprint": corpus_manifest.corpus_fingerprint,
         "corpus_manifest": corpus_manifest.to_json_dict(),
         "suite_count": len(suite_reports),
@@ -489,7 +530,9 @@ def _run_control_parity(
     verbose: bool,
     providers: tuple[ProviderRun, ...],
     max_case_seconds: float | None = None,
+    retriever_build: RetrieverBuildResult | None = None,
 ) -> dict[str, Any]:
+    del retriever_build
     cases = load_golden_cases(_repo_path("evals/golden_questions.yaml"))
     tiers = control_ladder._select_tiers(cases, requested_tiers=(), skip_full=False)
     total_executions = 0
@@ -682,12 +725,19 @@ def _run_semantic_generalization(
     providers: tuple[ProviderRun, ...],
     *,
     output_dir: Path,
+    index: RagIndex | None = None,
+    retriever_build: RetrieverBuildResult | None = None,
     verbose: bool,
     max_case_seconds: float | None = None,
     case_categories: tuple[str, ...] = (),
     limit_cases: int | None = None,
 ) -> dict[str, Any]:
     del output_dir
+    active_index = index or RagIndex.from_corpus("knowledge")
+    active_retriever_build = retriever_build or build_retriever_from_env(
+        active_index,
+        backend_name="local",
+    )
     cases = _load_cases("semantic_generalization")
     manifests = _load_manifest("semantic_generalization")
     _validate_manifest(cases, manifests, "semantic_generalization")
@@ -699,6 +749,8 @@ def _run_semantic_generalization(
             cases,
             verbose=verbose,
             max_case_seconds=max_case_seconds,
+            index=active_index,
+            retriever_build=active_retriever_build,
         )
         for provider in providers
     ]
@@ -798,12 +850,19 @@ def _run_grounded_answer_quality(
     providers: tuple[ProviderRun, ...],
     *,
     output_dir: Path,
+    index: RagIndex | None = None,
+    retriever_build: RetrieverBuildResult | None = None,
     verbose: bool,
     max_case_seconds: float | None = None,
     case_categories: tuple[str, ...] = (),
     limit_cases: int | None = None,
 ) -> dict[str, Any]:
     del output_dir
+    active_index = index or RagIndex.from_corpus("knowledge")
+    active_retriever_build = retriever_build or build_retriever_from_env(
+        active_index,
+        backend_name="local",
+    )
     cases = _load_cases("grounded_answer_quality")
     manifests = _load_manifest("grounded_answer_quality")
     _validate_manifest(cases, manifests, "grounded_answer_quality")
@@ -816,6 +875,8 @@ def _run_grounded_answer_quality(
             cases,
             verbose=verbose,
             max_case_seconds=max_case_seconds,
+            index=active_index,
+            retriever_build=active_retriever_build,
         )
         for provider in providers
     ]
@@ -1098,8 +1159,10 @@ def _score_semantic_provider(
     provider: ProviderRun,
     cases: list[dict[str, Any]],
     *,
+    index: RagIndex | None = None,
+    retriever_build: RetrieverBuildResult | None = None,
     verbose: bool,
-    max_case_seconds: float | None,
+    max_case_seconds: float | None = None,
 ) -> dict[str, Any]:
     if provider.skipped:
         _verbose(verbose, f"[semantic_generalization:{provider.name}] skipped: {provider.skip_reason}")
@@ -1107,14 +1170,23 @@ def _score_semantic_provider(
     _verbose(
         verbose,
         f"[semantic_generalization:{provider.name}] Running {len(cases)} cases "
-        f"with model {provider.model.metadata.model_id}.",
+            f"with model {provider.model.metadata.model_id}.",
     )
-    runtime = LabFlowAgentRuntime(model=provider.model)
+    active_index = index or RagIndex.from_corpus("knowledge")
+    active_retriever_build = retriever_build or build_retriever_from_env(
+        active_index,
+        backend_name="local",
+    )
+    runtime = LabFlowAgentRuntime(
+        index=active_index,
+        retriever=active_retriever_build.retriever,
+        model=provider.model,
+    )
     scored = []
-    for index, case in enumerate(cases, start=1):
+    for case_index, case in enumerate(cases, start=1):
         _verbose(
             verbose,
-            f"[semantic_generalization:{provider.name}] Case {index}/{len(cases)} "
+            f"[semantic_generalization:{provider.name}] Case {case_index}/{len(cases)} "
             f"{case['id']}: {case['question']}",
         )
         started_at = datetime.now(UTC)
@@ -1229,6 +1301,8 @@ def _score_semantic_provider(
                 "required_source_family_ranks": _source_family_ranks(
                     response.plan.retrieval_query,
                     case["required_source_families"],
+                    index=active_index,
+                    retriever_build=active_retriever_build,
                 ),
                 "safety_violation_count": safety,
                 "invented_trusted_input_count": 0,
@@ -1241,6 +1315,7 @@ def _score_semantic_provider(
                 "provider_failure_code": _response_provider_failure_code(response),
                 "provider_retry_count": _trace_retry_count(response),
                 "provider_failover_count": _trace_failover_count(response),
+                "retrieval_backend": active_retriever_build.backend_name,
             }
         )
         _verbose(
@@ -1431,8 +1506,10 @@ def _score_grounded_provider(
     provider: ProviderRun,
     cases: list[dict[str, Any]],
     *,
+    index: RagIndex | None = None,
+    retriever_build: RetrieverBuildResult | None = None,
     verbose: bool,
-    max_case_seconds: float | None,
+    max_case_seconds: float | None = None,
 ) -> dict[str, Any]:
     if provider.skipped:
         _verbose(verbose, f"[grounded_answer_quality:{provider.name}] skipped: {provider.skip_reason}")
@@ -1440,17 +1517,26 @@ def _score_grounded_provider(
     _verbose(
         verbose,
         f"[grounded_answer_quality:{provider.name}] Running {len(cases)} cases "
-        f"with model {provider.model.metadata.model_id}.",
+            f"with model {provider.model.metadata.model_id}.",
+    )
+    active_index = index or RagIndex.from_corpus("knowledge")
+    active_retriever_build = retriever_build or build_retriever_from_env(
+        active_index,
+        backend_name="local",
     )
     validator = GroundedAnswerDraftValidator()
     scored = []
-    for index, case in enumerate(cases, start=1):
+    for case_index, case in enumerate(cases, start=1):
         _verbose(
             verbose,
-            f"[grounded_answer_quality:{provider.name}] Case {index}/{len(cases)} "
+            f"[grounded_answer_quality:{provider.name}] Case {case_index}/{len(cases)} "
             f"{case['id']}: {case['question']}",
         )
-        context = build_grounded_answer_context(case)
+        context = build_grounded_answer_context(
+            case,
+            index=active_index,
+            retriever_build=active_retriever_build,
+        )
         started_at = datetime.now(UTC)
         with control_ladder.comparison._case_deadline(max_case_seconds):
             composer_result = _compose_provider_answer(
@@ -1462,7 +1548,12 @@ def _score_grounded_provider(
         validation = composer_result.validation
         elapsed_ms = _elapsed_ms(started_at)
         answer_frame = build_grounded_answer_frame(context)
-        context_availability = _fixed_context_availability(case, context)
+        context_availability = _fixed_context_availability(
+            case,
+            context,
+            index=active_index,
+            retriever_build=active_retriever_build,
+        )
         claim_evaluation = _claim_coverage(
             response=response,
             context=context,
@@ -1605,6 +1696,7 @@ def _score_grounded_provider(
                     evidence.tool_name for evidence in context.tool_evidence
                 ],
                 "elapsed_ms": elapsed_ms,
+                "retrieval_backend": active_retriever_build.backend_name,
             }
         )
         _verbose(
@@ -1725,11 +1817,27 @@ def _score_grounded_provider(
     }
 
 
-def build_grounded_answer_context(case: dict[str, Any]) -> GroundedAnswerContext:
+def build_grounded_answer_context(
+    case: dict[str, Any],
+    *,
+    index: RagIndex | None = None,
+    retriever_build: RetrieverBuildResult | None = None,
+) -> GroundedAnswerContext:
     """Build one deterministic answer context for grounded answer scoring."""
 
     request = _request_for_case(case)
-    runtime = LabFlowAgentRuntime(model=DeterministicFakeModel(), answer_model=None)
+    active_index = index or RagIndex.from_corpus("knowledge")
+    active_retriever = (
+        retriever_build.retriever
+        if retriever_build is not None
+        else build_retriever_from_env(active_index, backend_name="local").retriever
+    )
+    runtime = LabFlowAgentRuntime(
+        index=active_index,
+        retriever=active_retriever,
+        model=DeterministicFakeModel(),
+        answer_model=None,
+    )
     plan = runtime._model.plan(request)
     rag_answer = answer_query(
         plan.retrieval_query,
@@ -2796,6 +2904,9 @@ def _source_family_recall(response: AgentResponse, required_sources: Iterable[st
 def _fixed_context_availability(
     case: dict[str, Any],
     context: GroundedAnswerContext,
+    *,
+    index: RagIndex | None = None,
+    retriever_build: RetrieverBuildResult | None = None,
 ) -> dict[str, Any]:
     required = tuple(str(source) for source in case.get("required_citation_families", ()))
     context_paths = tuple(source.source_path for source in context.source_chunks)
@@ -2811,7 +2922,12 @@ def _fixed_context_availability(
         family for family in required if not any(family in source_path for source_path in context_paths)
     ]
     ranks = {
-        family: _debug_source_family_rank(str(case["question"]), family)
+        family: _debug_source_family_rank(
+            str(case["question"]),
+            family,
+            index=index,
+            retriever_build=retriever_build,
+        )
         for family in missing
     }
     reason = None
@@ -2832,8 +2948,26 @@ def _fixed_context_availability(
     }
 
 
-def _debug_source_family_rank(question: str, family: str, *, top_k: int = 24) -> int | None:
-    runtime = LabFlowAgentRuntime(model=DeterministicFakeModel(), answer_model=None)
+def _debug_source_family_rank(
+    question: str,
+    family: str,
+    *,
+    top_k: int = 24,
+    index: RagIndex | None = None,
+    retriever_build: RetrieverBuildResult | None = None,
+) -> int | None:
+    active_index = index or RagIndex.from_corpus("knowledge")
+    active_retriever = (
+        retriever_build.retriever
+        if retriever_build is not None
+        else build_retriever_from_env(active_index, backend_name="local").retriever
+    )
+    runtime = LabFlowAgentRuntime(
+        index=active_index,
+        retriever=active_retriever,
+        model=DeterministicFakeModel(),
+        answer_model=None,
+    )
     results = runtime._retriever.retrieve(question, top_k=top_k)
     for index, result in enumerate(results, start=1):
         if family in result.chunk.source_path:
@@ -3329,8 +3463,24 @@ def _plan_diagnostic_terms(
     return [term for term in str(raw).split(separator) if term]
 
 
-def _source_family_ranks(query: str, families: Iterable[str], *, top_k: int = 24) -> dict[str, int | None]:
-    return {str(family): _debug_source_family_rank(query, str(family), top_k=top_k) for family in families}
+def _source_family_ranks(
+    query: str,
+    families: Iterable[str],
+    *,
+    top_k: int = 24,
+    index: RagIndex | None = None,
+    retriever_build: RetrieverBuildResult | None = None,
+) -> dict[str, int | None]:
+    return {
+        str(family): _debug_source_family_rank(
+            query,
+            str(family),
+            top_k=top_k,
+            index=index,
+            retriever_build=retriever_build,
+        )
+        for family in families
+    }
 
 
 def _term_recall(text: str, terms: Iterable[str]) -> float:
@@ -4683,6 +4833,7 @@ def _terminal_summary(report: dict[str, Any]) -> str:
         "===================",
         f"Mode: {'live OpenRouter' if live_requested else 'offline'}",
         f"Planner provider: {primary}",
+        f"Retrieval backend: {report.get('retrieval_backend', {}).get('backend_name')}",
         (
             "Primary pass/fail: "
             f"{aggregate.get('pass_count', 0)}/{aggregate.get('case_count', 0)} passed, "
@@ -4829,6 +4980,7 @@ def _markdown_report(report: dict[str, Any]) -> str:
         f"Runner version: `{report['runner_version']}`",
         f"Live requested: `{report['live_requested']}`",
         f"Planner primary provider under test: `{report['planner_primary_provider_under_test']}`",
+        f"Retrieval backend: `{report.get('retrieval_backend', {}).get('backend_name')}`",
         f"Acceptance-eligible cases: `{report['aggregate'].get('acceptance_eligible_case_count', 0)}`",
         f"Fixture-only provider cases: `{report['aggregate'].get('fixture_only_case_count', 0)}`",
         f"Live inference provider cases: `{report['aggregate'].get('live_inference_case_count', 0)}`",
