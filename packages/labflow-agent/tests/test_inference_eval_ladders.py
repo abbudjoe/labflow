@@ -24,6 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 SCRIPT_PATH = REPO_ROOT / "scripts" / "run_inference_eval_ladder.py"
 MODEL_LADDER_SCRIPT_PATH = REPO_ROOT / "scripts" / "run_model_eval_ladder.py"
 MODEL_COMPARISON_SCRIPT_PATH = REPO_ROOT / "scripts" / "run_model_eval_comparison.py"
+BENCHMARK_MATRIX_SCRIPT_PATH = REPO_ROOT / "scripts" / "run_eval_benchmark_matrix.py"
 
 
 def _claim_citations_for_context(context: GroundedAnswerContext) -> tuple[ClaimCitation, ...]:
@@ -497,6 +498,50 @@ def test_live_provider_env_preserves_temperature_override(
     assert openrouter.eval_env["OPENROUTER_TEMPERATURE"] == "default"
     assert openrouter.model._config.temperature is None
     assert openrouter.answer_model._config.temperature is None
+
+
+def test_benchmark_openai_compatible_profiles_use_provider_default_temperature(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    matrix = _load_script(BENCHMARK_MATRIX_SCRIPT_PATH, "run_eval_benchmark_matrix")
+    profile = next(
+        profile
+        for profile in matrix._default_profiles()
+        if profile.model_id == "gpt-5.4-mini"
+    )
+    captured: dict[str, str] = {}
+
+    class FakeStdout:
+        def __iter__(self) -> object:
+            return iter(())
+
+    class FakePopen:
+        stdout = FakeStdout()
+
+        def __init__(self, *args: object, **kwargs: object) -> None:
+            captured.update(kwargs["env"])
+
+        def wait(self) -> int:
+            return 0
+
+    monkeypatch.setattr(matrix.subprocess, "Popen", FakePopen)
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+
+    matrix._run_profile(
+        profile,
+        suites=("semantic_generalization",),
+        run_root=tmp_path,
+        timeout_seconds=20.0,
+        max_case_seconds=45.0,
+        verbose_runs=False,
+        case_categories=(),
+        limit_cases=3,
+        skip_deterministic_baseline=False,
+    )
+
+    assert profile.temperature == "default"
+    assert captured["OPENROUTER_TEMPERATURE"] == "default"
 
 
 def test_portfolio_frozen_baselines_load_for_acceptance_gates() -> None:

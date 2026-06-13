@@ -53,6 +53,7 @@ class MatrixProfile:
     base_url: str
     api_key_env: str
     reasoning_effort: str | None = None
+    temperature: str | None = None
 
 
 def main() -> int:
@@ -170,6 +171,7 @@ def _default_profiles() -> tuple[MatrixProfile, ...]:
             base_url=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
             api_key_env="OPENAI_API_KEY",
             reasoning_effort=effort,
+            temperature="default",
         )
         for model, effort in DEFAULT_OPENAI_MODELS
     )
@@ -228,6 +230,8 @@ def _run_profile(
         env["OPENROUTER_REASONING_EFFORT"] = profile.reasoning_effort
     else:
         env.pop("OPENROUTER_REASONING_EFFORT", None)
+    if profile.temperature is not None:
+        env["OPENROUTER_TEMPERATURE"] = profile.temperature
 
     command = [
         sys.executable,
