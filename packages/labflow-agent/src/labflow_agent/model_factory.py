@@ -117,6 +117,7 @@ def _openrouter_config(values: Mapping[str, str], *, api_key: str, model: str) -
             "OPENROUTER_CASE_DEADLINE_SECONDS",
         ),
         reasoning_effort=_openrouter_optional_string(values, "OPENROUTER_REASONING_EFFORT"),
+        temperature=_openrouter_temperature(values),
     )
 
 
@@ -173,6 +174,24 @@ def _openrouter_optional_string(values: Mapping[str, str], name: str) -> str | N
         return None
     parsed = raw_value.strip()
     return parsed or None
+
+
+def _openrouter_temperature(values: Mapping[str, str]) -> float | None:
+    raw_value = values.get("OPENROUTER_TEMPERATURE")
+    if raw_value is None or not raw_value.strip():
+        return 0.0
+    normalized = raw_value.strip().casefold()
+    if normalized in {"default", "none", "omit"}:
+        return None
+    try:
+        parsed = float(raw_value)
+    except ValueError as exc:
+        raise ModelConfigurationError(
+            "OPENROUTER_TEMPERATURE must be a number or default."
+        ) from exc
+    if parsed < 0:
+        raise ModelConfigurationError("OPENROUTER_TEMPERATURE must be non-negative.")
+    return parsed
 
 
 def _openrouter_bool(values: Mapping[str, str], name: str, *, default: bool) -> bool:

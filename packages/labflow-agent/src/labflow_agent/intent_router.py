@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import StrEnum
+from typing import Any
 
 from labflow_agent.answer_model import (
     domain_concepts_for_text,
@@ -49,6 +50,12 @@ _TRUSTED_QC_TOOLS = {
     "explain_qc_failure",
     "generate_lab_to_analysis_lineage",
 }
+_QC_EVIDENCE_INTENTS = {
+    EvidenceIntent.QC_INGEST_ONLY,
+    EvidenceIntent.QC_VALIDATE_PROVENANCE,
+    EvidenceIntent.QC_EXPLAIN_SAMPLE_FAILURE,
+    EvidenceIntent.QC_LINEAGE_PREVIEW,
+}
 _TRUSTED_TOOL_ALLOWLIST = frozenset(
     {
         *_TRUSTED_QC_TOOLS,
@@ -76,13 +83,13 @@ def decide_tool_intent(request: AgentRequest, retrieval_query: str = "") -> Tool
         intent = EvidenceIntent.WORKFLOW_VALIDATE_BATCH
     elif request.diagnostic_code is not None:
         intent = EvidenceIntent.DIAGNOSTIC_EXPLAIN
-    elif request.qc_csv is not None and request.sample_id is not None and _asks_for_qc_failure_explanation(haystack):
+    elif request.qc_csv is not None and request.sample_id is not None and _asks_for_qc_failure_explanation(question):
         intent = EvidenceIntent.QC_EXPLAIN_SAMPLE_FAILURE
-    elif request.qc_csv is not None and request.lineage_csv is not None and _asks_for_lineage_preview(haystack):
+    elif request.qc_csv is not None and request.lineage_csv is not None and _asks_for_lineage_preview(question):
         intent = EvidenceIntent.QC_LINEAGE_PREVIEW
     elif request.qc_csv is not None and request.lineage_csv is not None:
         intent = EvidenceIntent.QC_VALIDATE_PROVENANCE
-    elif request.qc_csv is not None and _asks_for_qc_ingest(haystack):
+    elif request.qc_csv is not None and _asks_for_qc_ingest(question):
         intent = EvidenceIntent.QC_INGEST_ONLY
     else:
         intent = EvidenceIntent.KNOWLEDGE_ONLY
@@ -110,18 +117,18 @@ def base_plan_for_request(request: AgentRequest) -> AgentPlan | None:
     """Return a deterministic plan when trusted context requires a tool."""
 
     decision = decide_tool_intent(request)
-    call = tool_call_for_intent(decision.intent, request)
-    if call is None:
+    calls = tool_calls_for_intent(decision.intent, request)
+    if not calls:
         return None
     return AgentPlan(
         task=_task_for_intent(decision.intent),
         rationale=_rationale_for_intent(decision.intent),
         retrieval_query=_retrieval_query_for_decision(request, decision),
-        tool_calls=(call,),
+        tool_calls=calls,
         diagnostic=_overlay_diagnostic(
             decision,
             action="deterministic_base_plan",
-            repaired_tools=(call.tool_name,),
+            repaired_tools=tuple(call.tool_name for call in calls),
         ),
     )
 
@@ -130,13 +137,24 @@ def apply_tool_intent_overlay(plan: AgentPlan, request: AgentRequest) -> AgentPl
     """Bind trusted tool arguments and add mandatory deterministic evidence tools."""
 
     decision = decide_tool_intent(request, plan.retrieval_query)
-    required_call = tool_call_for_intent(decision.intent, request)
+    required_calls = tool_calls_for_intent(decision.intent, request)
+    allowed_tool_names = {call.tool_name for call in required_calls}
     bound_calls: list[ToolCallPlan] = []
     rejected_tools: list[str] = []
     repaired_tools: list[str] = []
 
     for call in plan.tool_calls:
         if call.tool_name not in _TRUSTED_TOOL_ALLOWLIST:
+            rejected_tools.append(call.tool_name)
+            continue
+        if call.tool_name in _TRUSTED_QC_TOOLS and decision.intent not in _QC_EVIDENCE_INTENTS:
+            rejected_tools.append(call.tool_name)
+            continue
+        if (
+            allowed_tool_names
+            and call.tool_name in _TRUSTED_QC_TOOLS
+            and call.tool_name not in allowed_tool_names
+        ):
             rejected_tools.append(call.tool_name)
             continue
         if call.tool_name in _TRUSTED_TOOL_ALLOWLIST:
@@ -146,26 +164,17 @@ def apply_tool_intent_overlay(plan: AgentPlan, request: AgentRequest) -> AgentPl
                 continue
             bound_calls.append(bound)
 
-    if required_call is not None and required_call.tool_name not in {
-        call.tool_name for call in bound_calls
-    }:
-        bound_calls.append(required_call)
-        repaired_tools.append(required_call.tool_name)
+    bound_tool_names = {call.tool_name for call in bound_calls}
+    for required_call in required_calls:
+        if required_call.tool_name not in bound_tool_names:
+            bound_calls.append(required_call)
+            bound_tool_names.add(required_call.tool_name)
+            repaired_tools.append(required_call.tool_name)
 
-    if not rejected_tools and not repaired_tools:
-        return plan.model_copy(update={"tool_calls": tuple(bound_calls)})
-
-    update = {
+    update: dict[str, Any] = {
         "tool_calls": tuple(bound_calls),
-        "diagnostic": _overlay_diagnostic(
-            decision,
-            action="repaired_or_rebound_tool_intents",
-            repaired_tools=tuple(repaired_tools),
-            rejected_tools=tuple(rejected_tools),
-            previous=plan.diagnostic,
-        ),
     }
-    if required_call is not None:
+    if required_calls:
         update.update(
             {
                 "task": _task_for_intent(decision.intent),
@@ -174,6 +183,27 @@ def apply_tool_intent_overlay(plan: AgentPlan, request: AgentRequest) -> AgentPl
                 "unsupported_reason": None,
             }
         )
+    if not rejected_tools and not repaired_tools:
+        if not required_calls:
+            return plan.model_copy(update=update)
+        expected_task = _task_for_intent(decision.intent)
+        expected_query = _retrieval_query_for_decision(request, decision)
+        if plan.task is expected_task and plan.retrieval_query == expected_query:
+            return plan.model_copy(update=update)
+        update["diagnostic"] = _overlay_diagnostic(
+            decision,
+            action="normalized_trusted_tool_intent",
+            previous=plan.diagnostic,
+        )
+        return plan.model_copy(update=update)
+
+    update["diagnostic"] = _overlay_diagnostic(
+        decision,
+        action="repaired_or_rebound_tool_intents",
+        repaired_tools=tuple(repaired_tools),
+        rejected_tools=tuple(rejected_tools),
+        previous=plan.diagnostic,
+    )
     return plan.model_copy(
         update=update
     )
@@ -250,65 +280,93 @@ def bind_trusted_tool_call(call: ToolCallPlan, request: AgentRequest) -> ToolCal
 def tool_call_for_intent(intent: EvidenceIntent, request: AgentRequest) -> ToolCallPlan | None:
     """Build the mandatory trusted tool call for an evidence intent."""
 
+    calls = tool_calls_for_intent(intent, request)
+    return calls[-1] if calls else None
+
+
+def tool_calls_for_intent(intent: EvidenceIntent, request: AgentRequest) -> tuple[ToolCallPlan, ...]:
+    """Build mandatory trusted tool calls for an evidence intent."""
+
     if intent is EvidenceIntent.WORKFLOW_VALIDATE_BATCH and request.workflow_yaml is not None:
-        return ToolCallPlan(
-            tool_name="validate_batch",
-            arguments={"batch_id": request.batch_id, "workflow_yaml": request.workflow_yaml},
-            mode=ToolCallMode.READ_ONLY,
-            reason="Validate supplied workflow data before making any claim about it.",
+        return (
+            ToolCallPlan(
+                tool_name="validate_batch",
+                arguments={"batch_id": request.batch_id, "workflow_yaml": request.workflow_yaml},
+                mode=ToolCallMode.READ_ONLY,
+                reason="Validate supplied workflow data before making any claim about it.",
+            ),
         )
     if intent is EvidenceIntent.DIAGNOSTIC_EXPLAIN and request.diagnostic_code is not None:
-        return ToolCallPlan(
-            tool_name="explain_exception_code",
-            arguments={"exception_code": request.diagnostic_code},
-            mode=ToolCallMode.READ_ONLY,
-            reason="Explain the concrete diagnostic code using deterministic core metadata.",
+        return (
+            ToolCallPlan(
+                tool_name="explain_exception_code",
+                arguments={"exception_code": request.diagnostic_code},
+                mode=ToolCallMode.READ_ONLY,
+                reason="Explain the concrete diagnostic code using deterministic core metadata.",
+            ),
         )
     if intent is EvidenceIntent.QC_INGEST_ONLY and request.qc_csv is not None:
-        return ToolCallPlan(
-            tool_name="ingest_ngs_qc_results",
-            arguments={"qc_csv": request.qc_csv},
-            mode=ToolCallMode.READ_ONLY,
-            reason="Parse and threshold the supplied synthetic downstream QC summary metrics.",
+        return (
+            ToolCallPlan(
+                tool_name="ingest_ngs_qc_results",
+                arguments={"qc_csv": request.qc_csv},
+                mode=ToolCallMode.READ_ONLY,
+                reason="Parse and threshold the supplied synthetic downstream QC summary metrics.",
+            ),
         )
     if (
         intent is EvidenceIntent.QC_VALIDATE_PROVENANCE
         and request.qc_csv is not None
         and request.lineage_csv is not None
     ):
-        return ToolCallPlan(
-            tool_name="validate_qc_provenance",
-            arguments={"qc_csv": request.qc_csv, "lineage_csv": request.lineage_csv},
-            mode=ToolCallMode.READ_ONLY,
-            reason="Validate QC provenance before answering about downstream analysis linkage.",
+        return (
+            ToolCallPlan(
+                tool_name="validate_qc_provenance",
+                arguments={"qc_csv": request.qc_csv, "lineage_csv": request.lineage_csv},
+                mode=ToolCallMode.READ_ONLY,
+                reason="Validate QC provenance before answering about downstream analysis linkage.",
+            ),
         )
     if (
         intent is EvidenceIntent.QC_EXPLAIN_SAMPLE_FAILURE
         and request.qc_csv is not None
         and request.sample_id is not None
     ):
-        return ToolCallPlan(
-            tool_name="explain_qc_failure",
-            arguments={
-                "qc_csv": request.qc_csv,
-                "lineage_csv": request.lineage_csv,
-                "sample_id": request.sample_id,
-            },
-            mode=ToolCallMode.READ_ONLY,
-            reason="Explain observed QC metrics and provenance without inferring root cause.",
+        calls: list[ToolCallPlan] = []
+        if request.lineage_csv is not None:
+            calls.extend(tool_calls_for_intent(EvidenceIntent.QC_VALIDATE_PROVENANCE, request))
+        calls.append(
+            ToolCallPlan(
+                tool_name="explain_qc_failure",
+                arguments={
+                    "qc_csv": request.qc_csv,
+                    "lineage_csv": request.lineage_csv,
+                    "sample_id": request.sample_id,
+                },
+                mode=ToolCallMode.READ_ONLY,
+                reason="Explain observed QC metrics and provenance without inferring root cause.",
+            )
         )
+        return tuple(calls)
     if (
         intent is EvidenceIntent.QC_LINEAGE_PREVIEW
         and request.qc_csv is not None
         and request.lineage_csv is not None
     ):
-        return ToolCallPlan(
-            tool_name="generate_lab_to_analysis_lineage",
-            arguments={"qc_csv": request.qc_csv, "lineage_csv": request.lineage_csv, "dry_run": True},
-            mode=ToolCallMode.DRY_RUN,
-            reason="Preview lab-to-analysis lineage as a dry-run artifact only.",
+        return (
+            *tool_calls_for_intent(EvidenceIntent.QC_VALIDATE_PROVENANCE, request),
+            ToolCallPlan(
+                tool_name="generate_lab_to_analysis_lineage",
+                arguments={
+                    "qc_csv": request.qc_csv,
+                    "lineage_csv": request.lineage_csv,
+                    "dry_run": True,
+                },
+                mode=ToolCallMode.DRY_RUN,
+                reason="Preview lab-to-analysis lineage as a dry-run artifact only.",
+            ),
         )
-    return None
+    return ()
 
 
 def _trusted_context_fields(request: AgentRequest) -> tuple[str, ...]:
@@ -357,6 +415,8 @@ def _retrieval_query_for_decision(request: AgentRequest, decision: ToolIntentDec
         EvidenceIntent.QC_LINEAGE_PREVIEW,
     }:
         terms = f"downstream QC provenance lineage no causal inference {terms}"
+    if decision.intent is EvidenceIntent.QC_LINEAGE_PREVIEW:
+        terms = f"lab-to-analysis lineage report preview {terms}"
     return f"{request.question} {terms}".strip()
 
 
@@ -389,27 +449,69 @@ def _overlay_diagnostic(
 def _asks_for_lineage_preview(text: str) -> bool:
     concepts = set(domain_concepts_for_text(text))
     lowered = text.casefold()
-    return "lineage" in concepts and any(
-        term in lowered for term in ("report", "generate", "preview", "connect", "lineage")
+    has_lineage_signal = "lineage" in concepts or "lab-to-analysis" in lowered
+    has_lab_to_analysis_bundle = (
+        any(term in lowered for term in ("quant", "quantification"))
+        and any(term in lowered for term in ("normalization", "norm"))
+        and any(term in lowered for term in ("re-quant", "requant", "re quant"))
+        and any(term in lowered for term in ("qc", "downstream"))
+    )
+    if not has_lineage_signal and not has_lab_to_analysis_bundle:
+        return False
+    if any(
+        term in lowered
+        for term in (
+            "check",
+            "match",
+            "validate",
+            "missing",
+            "unmatched",
+            "manual review",
+            "duplicate",
+            "no downstream qc",
+            "ignore",
+        )
+    ) and not any(term in lowered for term in ("report", "preview", "generate")):
+        return False
+    return any(
+        term in lowered for term in ("report", "generate", "preview", "connect")
     )
 
 
 def _asks_for_qc_failure_explanation(text: str) -> bool:
     lowered = text.casefold()
-    concepts = set(domain_concepts_for_text(text))
-    return "downstream_qc" in concepts and any(
+    failure_or_metric_context = any(
         term in lowered
         for term in (
-            "why",
             "fail",
             "failed",
             "failure",
-            "explain",
-            "root cause",
-            "causal",
+            "downstream qc miss",
+            "downstream qc failure",
             "q30",
             "read count",
+            "low-read",
+            "low read",
+            "low-q30",
+            "low q30",
         )
+    )
+    lab_causality_context = any(
+        term in lowered
+        for term in (
+            "root cause",
+            "causal",
+            "cause",
+            "caused",
+            "lab step",
+            "mess",
+            "messed",
+        )
+    )
+    explanatory_prompt = any(term in lowered for term in ("why", "explain", "what can"))
+    qc_context = any(term in lowered for term in ("qc", "downstream", "sample"))
+    return failure_or_metric_context or lab_causality_context or (
+        explanatory_prompt and qc_context
     )
 
 

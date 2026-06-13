@@ -62,6 +62,7 @@ _RETRIEVAL_ALLOWED_TERMS = frozenset(
     {
         "approval",
         "artifact",
+        "artifacts",
         "ancestry",
         "batch",
         "blank",
@@ -125,9 +126,12 @@ _RETRIEVAL_ALLOWED_TERMS = frozenset(
         "cause",
         "manual",
         "review",
+        "failed",
+        "robot-facing",
         "metrics",
         "ingest",
         "import",
+        "lab-to-analysis",
         "parse",
         "load",
         "report",
@@ -270,10 +274,21 @@ _CORPUS_RETRIEVAL_EXPANSIONS: tuple[_CorpusRetrievalExpansion, ...] = (
             ("blocked",),
         ),
         "any_term_groups": (
-            ("blocked",),
-            ("worklist", "export", "csv", "janus"),
+            ("blocked", "failed", "invalid"),
+            ("worklist", "export", "csv", "janus", "artifact", "artifacts", "robot-facing"),
         ),
-        "terms": ("janus", "csv", "worklist", "blocked", "validation", "readiness"),
+        "terms": (
+            "janus",
+            "csv",
+            "worklist",
+            "blocked",
+            "validation",
+            "readiness",
+            "invalid",
+            "batch",
+            "robot-ready",
+            "artifacts",
+        ),
         "source_document_ids": (
             "janus_csv_worklist_spec.md",
             "batch_readiness_doctrine.md",
@@ -404,6 +419,7 @@ class OpenRouterConfig:
     response_format: str = "json_object"
     case_deadline_seconds: float | None = None
     reasoning_effort: str | None = None
+    temperature: float | None = 0.0
 
 
 @dataclass(frozen=True)
@@ -431,11 +447,11 @@ class UrlLibOpenRouterClient:
         response_format: JsonDict | None = None,
     ) -> OpenRouterHTTPResponse:
         url = self._config.base_url.rstrip("/") + "/chat/completions"
-        payload = {
-            "model": model or self._config.model,
-            "messages": messages,
-            "temperature": 0,
-        }
+        payload = _chat_completion_payload(
+            model=model or self._config.model,
+            messages=messages,
+            temperature=self._config.temperature,
+        )
         if self._config.reasoning_effort:
             payload["reasoning_effort"] = self._config.reasoning_effort
         if response_format is not None:
@@ -509,6 +525,21 @@ class UrlLibOpenRouterClient:
         if self._config.enable_metadata:
             headers["X-OpenRouter-Metadata"] = "enabled"
         return headers
+
+
+def _chat_completion_payload(
+    *,
+    model: str,
+    messages: list[JsonDict],
+    temperature: float | None,
+) -> JsonDict:
+    payload: JsonDict = {
+        "model": model,
+        "messages": messages,
+    }
+    if temperature is not None:
+        payload["temperature"] = temperature
+    return payload
 
 
 class OpenRouterModelAdapter:

@@ -6,7 +6,7 @@ from typing import Any
 
 from labflow_agent import AgentRequest, AgentTask, ToolCallMode
 from labflow_agent.intent_router import EvidenceIntent, apply_tool_intent_overlay, decide_tool_intent
-from labflow_agent.models import AgentPlan
+from labflow_agent.models import AgentPlan, ToolCallPlan
 from labflow_agent.openrouter import (
     OpenRouterConfig,
     OpenRouterError,
@@ -14,6 +14,7 @@ from labflow_agent.openrouter import (
     OpenRouterModelAdapter,
     UrlLibOpenRouterClient,
     _CORPUS_RETRIEVAL_EXPANSIONS,
+    _chat_completion_payload,
     _corpus_retrieval_expansion,
     _http_response_from_raw,
 )
@@ -124,8 +125,9 @@ def test_openrouter_binds_qc_tool_intents_from_trusted_request_fields() -> None:
     )
 
     assert plan.task is AgentTask.EXPLAIN_QC_FAILURE
-    assert len(plan.tool_calls) == 1
-    call = plan.tool_calls[0]
+    calls = {call.tool_name: call for call in plan.tool_calls}
+    assert set(calls) == {"validate_qc_provenance", "explain_qc_failure"}
+    call = calls["explain_qc_failure"]
     assert call.tool_name == "explain_qc_failure"
     assert call.mode is ToolCallMode.READ_ONLY
     assert call.arguments == {
@@ -154,8 +156,9 @@ def test_tool_intent_overlay_repairs_missing_qc_tool_from_trusted_context() -> N
     )
 
     assert repaired.task is AgentTask.EXPLAIN_QC_FAILURE
-    assert repaired.tool_calls[0].tool_name == "explain_qc_failure"
-    assert repaired.tool_calls[0].arguments["sample_id"] == "RNA_DEMO_FAILED_VALID_UPSTREAM_001"
+    calls = {call.tool_name: call for call in repaired.tool_calls}
+    assert set(calls) == {"validate_qc_provenance", "explain_qc_failure"}
+    assert calls["explain_qc_failure"].arguments["sample_id"] == "RNA_DEMO_FAILED_VALID_UPSTREAM_001"
     assert repaired.diagnostic is not None
     assert repaired.diagnostic.code == "deterministic_tool_intent_overlay"
 
@@ -188,7 +191,7 @@ def test_question_text_is_intent_signal_not_trusted_qc_argument_source() -> None
 def test_openrouter_binds_qc_ingest_as_read_only() -> None:
     adapter = _adapter_for_plan(
         {
-            "task": "answer_workflow_question",
+            "task": "recommend_safe_next_action",
             "rationale": "Ingest supplied QC metrics.",
             "retrieval_query": "downstream QC metrics ingest",
             "tool_calls": [
@@ -210,16 +213,20 @@ def test_openrouter_binds_qc_ingest_as_read_only() -> None:
         )
     )
 
+    assert plan.task is AgentTask.ANSWER_WORKFLOW_QUESTION
     call = plan.tool_calls[0]
     assert call.tool_name == "ingest_ngs_qc_results"
     assert call.mode is ToolCallMode.READ_ONLY
     assert call.arguments == {"qc_csv": "examples/qc/synthetic_ngs_qc_results.csv"}
+    assert plan.diagnostic is not None
+    assert plan.diagnostic.code == "deterministic_tool_intent_overlay"
+    assert plan.diagnostic.details["overlay_action"] == "normalized_trusted_tool_intent"
 
 
 def test_openrouter_binds_lineage_report_as_dry_run_only() -> None:
     adapter = _adapter_for_plan(
         {
-            "task": "answer_workflow_question",
+            "task": "recommend_safe_next_action",
             "rationale": "Preview lineage report.",
             "retrieval_query": "downstream QC lineage report",
             "tool_calls": [
@@ -242,11 +249,315 @@ def test_openrouter_binds_lineage_report_as_dry_run_only() -> None:
         )
     )
 
-    call = plan.tool_calls[0]
+    assert plan.task is AgentTask.ANSWER_WORKFLOW_QUESTION
+    assert "lineage report preview" in plan.retrieval_query
+    calls = {call.tool_name: call for call in plan.tool_calls}
+    assert set(calls) == {"validate_qc_provenance", "generate_lab_to_analysis_lineage"}
+    call = calls["generate_lab_to_analysis_lineage"]
     assert call.tool_name == "generate_lab_to_analysis_lineage"
     assert call.mode is ToolCallMode.DRY_RUN
     assert call.arguments["dry_run"] is True
     assert "approval_token" not in call.arguments
+
+
+def test_qc_missing_and_duplicate_lineage_questions_validate_provenance_not_preview() -> None:
+    plan = apply_tool_intent_overlay(
+        AgentPlan(
+            task=AgentTask.ANSWER_WORKFLOW_QUESTION,
+            rationale="Model over-selected lineage preview.",
+            retrieval_query="downstream QC lineage report",
+            tool_calls=(
+                ToolCallPlan(
+                    tool_name="generate_lab_to_analysis_lineage",
+                    arguments={},
+                    mode=ToolCallMode.DRY_RUN,
+                    reason="Wrong lineage preview.",
+                ),
+            ),
+        ),
+        AgentRequest(
+            question="A lineage manifest has a sample with no downstream QC result. Can LabFlow ignore that?",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+        ),
+    )
+
+    assert plan.tool_calls[0].tool_name == "validate_qc_provenance"
+    assert plan.task is AgentTask.ANSWER_WORKFLOW_QUESTION
+
+    duplicate = apply_tool_intent_overlay(
+        AgentPlan(
+            task=AgentTask.ANSWER_WORKFLOW_QUESTION,
+            rationale="Model over-selected lineage preview.",
+            retrieval_query="downstream QC duplicate lineage report",
+            tool_calls=(
+                ToolCallPlan(
+                    tool_name="generate_lab_to_analysis_lineage",
+                    arguments={},
+                    mode=ToolCallMode.DRY_RUN,
+                    reason="Wrong lineage preview.",
+                ),
+            ),
+        ),
+        AgentRequest(
+            question="The lineage manifest has a duplicate sample ID. What should check it?",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+        ),
+    )
+
+    assert duplicate.tool_calls[0].tool_name == "validate_qc_provenance"
+
+
+def test_qc_colloquial_causality_with_sample_uses_explain_failure_tool() -> None:
+    decision = decide_tool_intent(
+        AgentRequest(
+            question="Did the lab mess this one up?",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+            sample_id="RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+        )
+    )
+
+    assert decision.intent is EvidenceIntent.QC_EXPLAIN_SAMPLE_FAILURE
+
+    plan = apply_tool_intent_overlay(
+        AgentPlan(
+            task=AgentTask.ANSWER_WORKFLOW_QUESTION,
+            rationale="Model answered from policy only.",
+            retrieval_query="downstream QC no causal inference",
+            tool_calls=(),
+        ),
+        AgentRequest(
+            question="Can the agent tell me which lab step caused this downstream QC miss?",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+            sample_id="RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+        ),
+    )
+
+    assert plan.task is AgentTask.EXPLAIN_QC_FAILURE
+    assert {call.tool_name for call in plan.tool_calls} == {
+        "validate_qc_provenance",
+        "explain_qc_failure",
+    }
+
+
+def test_qc_composite_tool_plans_are_preserved_when_intent_allows_them() -> None:
+    lineage = apply_tool_intent_overlay(
+        AgentPlan(
+            task=AgentTask.ANSWER_WORKFLOW_QUESTION,
+            rationale="Model selected a composite lineage preview.",
+            retrieval_query="downstream QC lab-to-analysis lineage report",
+            tool_calls=(
+                ToolCallPlan(
+                    tool_name="validate_qc_provenance",
+                    arguments={},
+                    mode=ToolCallMode.READ_ONLY,
+                    reason="Validate provenance first.",
+                ),
+                ToolCallPlan(
+                    tool_name="generate_lab_to_analysis_lineage",
+                    arguments={},
+                    mode=ToolCallMode.DRY_RUN,
+                    reason="Preview lineage report.",
+                ),
+            ),
+        ),
+        AgentRequest(
+            question="Generate a lab-to-analysis lineage report preview.",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+        ),
+    )
+    assert {call.tool_name for call in lineage.tool_calls} == {
+        "validate_qc_provenance",
+        "generate_lab_to_analysis_lineage",
+    }
+
+    failure = apply_tool_intent_overlay(
+        AgentPlan(
+            task=AgentTask.EXPLAIN_QC_FAILURE,
+            rationale="Model selected composite failure evidence.",
+            retrieval_query="downstream QC failure no causal inference",
+            tool_calls=(
+                ToolCallPlan(
+                    tool_name="validate_qc_provenance",
+                    arguments={},
+                    mode=ToolCallMode.READ_ONLY,
+                    reason="Validate provenance first.",
+                ),
+                ToolCallPlan(
+                    tool_name="explain_qc_failure",
+                    arguments={},
+                    mode=ToolCallMode.READ_ONLY,
+                    reason="Explain failure.",
+                ),
+            ),
+        ),
+        AgentRequest(
+            question="Why did this sample fail downstream QC?",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+            sample_id="RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+        ),
+    )
+    assert {call.tool_name for call in failure.tool_calls} == {
+        "validate_qc_provenance",
+        "explain_qc_failure",
+    }
+
+
+def test_qc_lineage_preview_routes_lab_to_analysis_bundle_without_lineage_word() -> None:
+    decision = decide_tool_intent(
+        AgentRequest(
+            question="Connect quantification, normalization, re-quant, and downstream QC in a report preview.",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+        )
+    )
+
+    assert decision.intent is EvidenceIntent.QC_LINEAGE_PREVIEW
+
+
+def test_knowledge_question_with_trusted_qc_rejects_model_proposed_qc_tool() -> None:
+    plan = apply_tool_intent_overlay(
+        AgentPlan(
+            task=AgentTask.ANSWER_WORKFLOW_QUESTION,
+            rationale="Model over-selected a QC tool for a doctrine question.",
+            retrieval_query="standards placement doctrine",
+            tool_calls=(
+                ToolCallPlan(
+                    tool_name="ingest_ngs_qc_results",
+                    arguments={},
+                    mode=ToolCallMode.READ_ONLY,
+                    reason="Wrongly use QC CSV.",
+                ),
+            ),
+        ),
+        AgentRequest(
+            question="Where are standards placed?",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+        ),
+    )
+
+    assert plan.task is AgentTask.ANSWER_WORKFLOW_QUESTION
+    assert plan.tool_calls == ()
+    assert plan.diagnostic is not None
+    assert plan.diagnostic.details["rejected_tools"] == "ingest_ngs_qc_results"
+
+
+def test_generic_why_question_with_qc_context_does_not_force_failure_explanation() -> None:
+    decision = decide_tool_intent(
+        AgentRequest(
+            question="Why are standards A1-H1?",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+            sample_id="RNA_DEMO_FAILED_VALID_UPSTREAM_001",
+        )
+    )
+
+    assert decision.intent is EvidenceIntent.QC_VALIDATE_PROVENANCE
+
+
+def test_qc_intent_router_covers_required_paraphrase_families() -> None:
+    qc_csv = "examples/qc/synthetic_ngs_qc_results.csv"
+    lineage_csv = "examples/qc/synthetic_lab_lineage_manifest.csv"
+    sample_id = "RNA_DEMO_FAILED_VALID_UPSTREAM_001"
+    cases = (
+        (
+            EvidenceIntent.QC_INGEST_ONLY,
+            {"qc_csv": qc_csv},
+            (
+                "Ingest the supplied downstream QC metrics.",
+                "Load the QC summary and check thresholds.",
+                "Parse these downstream QC results.",
+            ),
+        ),
+        (
+            EvidenceIntent.QC_VALIDATE_PROVENANCE,
+            {"qc_csv": qc_csv, "lineage_csv": lineage_csv},
+            (
+                "Check whether the QC rows match LabFlow lineage.",
+                "This row has QC metrics but missing upstream ancestry.",
+                "The sequencer summary has an unmatched ID that needs manual review.",
+                "The lineage manifest has duplicate sample rows.",
+                "A lineage sample has no downstream QC result.",
+            ),
+        ),
+        (
+            EvidenceIntent.QC_EXPLAIN_SAMPLE_FAILURE,
+            {"qc_csv": qc_csv, "lineage_csv": lineage_csv, "sample_id": sample_id},
+            (
+                "Explain the low-read-count QC failure.",
+                "What can the agent say about the low-Q30 sample?",
+                "Can the agent tell me which lab step caused this downstream QC miss?",
+                "Did the lab mess this one up?",
+            ),
+        ),
+        (
+            EvidenceIntent.QC_LINEAGE_PREVIEW,
+            {"qc_csv": qc_csv, "lineage_csv": lineage_csv},
+            (
+                "Preview the lab-to-analysis lineage report.",
+                "Generate a lineage report preview, not a committed artifact.",
+                "Connect quantification, normalization, re-quant, and downstream QC in a report preview.",
+            ),
+        ),
+        (
+            EvidenceIntent.WORKFLOW_VALIDATE_BATCH,
+            {"workflow_yaml": "workflow: {}", "batch_id": "BATCH_001"},
+            (
+                "Validate this workflow YAML.",
+                "Can this batch go to JANUS?",
+                "Check the duplicate destination workflow.",
+            ),
+        ),
+        (
+            EvidenceIntent.KNOWLEDGE_ONLY,
+            {},
+            (
+                "Where are standards placed?",
+                "Can the assistant invent a missing concentration?",
+                "What canonical units does LabFlow use?",
+            ),
+        ),
+    )
+
+    for expected, context, questions in cases:
+        for question in questions:
+            decision = decide_tool_intent(AgentRequest(question=question, **context))
+            assert decision.intent is expected, question
+
+
+def test_openrouter_retrieval_query_preserves_safe_lab_to_analysis_lineage_terms() -> None:
+    adapter = _adapter_for_plan(
+        {
+            "task": "answer_workflow_question",
+            "rationale": "Preview lineage report.",
+            "retrieval_query": "lab-to-analysis lineage report preview",
+            "tool_calls": [
+                {
+                    "tool_name": "generate_lab_to_analysis_lineage",
+                    "arguments": {},
+                    "mode": "dry_run",
+                    "reason": "Generate a dry-run preview.",
+                }
+            ],
+            "unsupported_reason": None,
+        }
+    )
+
+    plan = adapter.plan(
+        AgentRequest(
+            question="Preview the lineage report.",
+            qc_csv="examples/qc/synthetic_ngs_qc_results.csv",
+            lineage_csv="examples/qc/synthetic_lab_lineage_manifest.csv",
+        )
+    )
+
+    assert "lab-to-analysis" in plan.retrieval_query
+    assert "lineage report preview" in plan.retrieval_query
 
 
 def test_openrouter_rejects_model_supplied_qc_tool_arguments() -> None:
@@ -457,6 +768,20 @@ def test_corpus_expansion_handles_blocked_csv_without_exact_phrase_trigger() -> 
     assert "blocked_worklist_export" in expansion["family_ids"]
     assert "batch_readiness_doctrine.md" in expansion["source_document_ids"]
     assert "janus_csv_worklist_spec.md" in expansion["source_document_ids"]
+
+
+def test_corpus_expansion_maps_failed_robot_facing_artifacts_to_validation_terms() -> None:
+    expansion = _corpus_retrieval_expansion(
+        "Can a failed batch still produce robot-facing artifacts for review?",
+        "",
+    )
+
+    assert "blocked_worklist_export" in expansion["family_ids"]
+    assert "invalid" in expansion["accepted_terms"]
+    assert "batch" in expansion["accepted_terms"]
+    assert "robot-ready" in expansion["accepted_terms"]
+    assert "artifacts" in expansion["accepted_terms"]
+    assert "validation" in expansion["accepted_terms"]
 
 
 def test_corpus_expansion_handles_previewing_and_committing_morphology() -> None:
@@ -875,6 +1200,26 @@ def test_metadata_header_is_sent_only_when_enabled() -> None:
 
     assert "X-OpenRouter-Metadata" not in disabled._headers()
     assert enabled._headers()["X-OpenRouter-Metadata"] == "enabled"
+
+
+def test_chat_completion_payload_defaults_to_configured_temperature() -> None:
+    payload = _chat_completion_payload(
+        model="test-model",
+        messages=[{"role": "user", "content": "hello"}],
+        temperature=0.0,
+    )
+
+    assert payload["temperature"] == 0.0
+
+
+def test_chat_completion_payload_can_omit_temperature_for_default_only_models() -> None:
+    payload = _chat_completion_payload(
+        model="test-model",
+        messages=[{"role": "user", "content": "hello"}],
+        temperature=None,
+    )
+
+    assert "temperature" not in payload
 
 
 def test_schema_invalid_openrouter_plan_records_specific_diagnostic() -> None:

@@ -131,3 +131,30 @@ def test_openrouter_timeout_seconds_must_be_positive() -> None:
         )
 
     assert str(exc_info.value) == "OPENROUTER_TIMEOUT_SECONDS must be greater than 0."
+
+
+def test_openrouter_temperature_can_be_omitted_for_default_only_models() -> None:
+    model = model_from_env(
+        {
+            "LABFLOW_MODEL_PROVIDER": "openrouter",
+            "OPENROUTER_API_KEY": "secret-test-key",
+            "LABFLOW_OPENROUTER_MODEL": "gpt-5.4-mini",
+            "OPENROUTER_TEMPERATURE": "default",
+        }
+    )
+
+    assert isinstance(model, OpenRouterModelAdapter)
+    assert model._config.temperature is None
+
+
+def test_openrouter_temperature_rejects_invalid_value() -> None:
+    with pytest.raises(ModelConfigurationError) as exc_info:
+        model_from_env(
+            {
+                "LABFLOW_MODEL_PROVIDER": "openrouter",
+                "OPENROUTER_API_KEY": "secret-test-key",
+                "OPENROUTER_TEMPERATURE": "cold",
+            }
+        )
+
+    assert str(exc_info.value) == "OPENROUTER_TEMPERATURE must be a number or default."
